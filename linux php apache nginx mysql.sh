@@ -6,38 +6,38 @@
 # Add: php5.3 Apache...and on Centos7..2017-03-17
 # Version:V 0.5
 
-##Ô¤¶¨Òå±äÁ¿
-#Ê±¼ä
+##é¢„å®šä¹‰å˜é‡
+#æ—¶é—´
 DATE_INST=`date +%Y-%m-%d-%H-%M`
 
-#°²×°ÈÕÖ¾ÎÄ¼ş
+#å®‰è£…æ—¥å¿—æ–‡ä»¶
 INSTALL_LOG=/tmp/install_log$DATE_INST
 
-#Ô´Âë°²×°°üÏÂÔØÄ¿Â¼
+#æºç å®‰è£…åŒ…ä¸‹è½½ç›®å½•
 INSTALL_PATH=/data
 mkdir -p $INSTALL_PATH
 
-#ÄÚºË°æ±¾
+#å†…æ ¸ç‰ˆæœ¬
 RL=`uname -r|awk -F "." '{print $1}'`
 #USER_WEB=www
 
-#ÍøÕ¾ÓÃ»§
+#ç½‘ç«™ç”¨æˆ·
 #USER_WEB=""
 read -p "Please input the user you want to run the web server." USER_WEB
 
-#ÓÃ»§ÃÜÂë
+#ç”¨æˆ·å¯†ç 
 read -p "Please input the user's password." USER_PSWD
 
-#Mysql root ÃÜÂë
+#Mysql root å¯†ç 
 read -p "Please input the Mysql root's password." Mysql_PSWD
 
-#ĞÂ½¨MysqlÊı¾İ¿âÃû
+#æ–°å»ºMysqlæ•°æ®åº“å
 read -p "Please input the database name you want to create." Mysql_DBname
 
-#MysqlÆÕÍ¨ÓÃ»§Ãû
+#Mysqlæ™®é€šç”¨æˆ·å
 read -p "Please input the user you want to conncet mysql." Mysql_USER
 
-#MysqlÆÕÍ¨ÓÃ»§ÃÜÂë
+#Mysqlæ™®é€šç”¨æˆ·å¯†ç 
 read -p "Please input the Mysql user's password." Myuser_PSWD
 
 #Menu Web server
@@ -66,32 +66,32 @@ read -p "Please input which PHP you want to install.." PHP_INST
 CHK_SYS(){
 cd $INSTALL_PATH
 [ ! -e CHK_SYS.lock ] && {
-##¼ì²éÏµÍ³
-echo "ÏµÍ³ĞÅÏ¢ÊÕ¼¯ÖĞ/gathering system info...">>$INSTALL_LOG
+##æ£€æŸ¥ç³»ç»Ÿ
+echo "ç³»ç»Ÿä¿¡æ¯æ”¶é›†ä¸­/gathering system info...">>$INSTALL_LOG
 echo "gathering system info..."
 
-echo "ÎÄ¼şÏµÍ³/file-systems">>$INSTALL_LOG
+echo "æ–‡ä»¶ç³»ç»Ÿ/file-systems">>$INSTALL_LOG
 df -h >>$INSTALL_LOG
 echo "#######END1">>$INSTALL_LOG
 
-echo "CPUĞÅÏ¢/CPU info">>$INSTALL_LOG
+echo "CPUä¿¡æ¯/CPU info">>$INSTALL_LOG
 cat /proc/cpuinfo >>$INSTALL_LOG
 echo "#######END2">>$INSTALL_LOG
 
-echo "ÄÚ´æĞÅÏ¢/MEM info">>$INSTALL_LOG
+echo "å†…å­˜ä¿¡æ¯/MEM info">>$INSTALL_LOG
 free -m >>$INSTALL_LOG
 echo "#######END3">>$INSTALL_LOG
 
-echo "ÄÚºË°æ±¾/kernel info.">>$INSTALL_LOG
+echo "å†…æ ¸ç‰ˆæœ¬/kernel info.">>$INSTALL_LOG
 lsb_release -a >>$INSTALL_LOG
 uname -a >>$INSTALL_LOG
 echo "#######END4">>$INSTALL_LOG
 
-echo "ÎÄ¼ş¶ÁĞ´/disk read write info">>$INSTALL_LOG
+echo "æ–‡ä»¶è¯»å†™/disk read write info">>$INSTALL_LOG
 time dd if=/dev/zero of=/tmp/1.gz count=100 bs=10M >> $INSTALL_LOG 2>&1
 echo "#######END5">>$INSTALL_LOG
 
-##ÏµÍ³²ÎÊıÓÅ»¯
+##ç³»ç»Ÿå‚æ•°ä¼˜åŒ–
 cat >>/etc/sysctl.conf<<EOF
 # Decrease the time default value for tcp_fin_timeout connection
 net.ipv4.tcp_fin_timeout = 30
@@ -128,7 +128,7 @@ EOF
 FTP_INST(){
 cd $INSTALL_PATH
 [ ! -e FTP_INST.lock ] && {
-##°²×°FTP£¬½¨Á¢ÓÃ»§£¬²¢ÉèÖÃÃÜÂë
+##å®‰è£…FTPï¼Œå»ºç«‹ç”¨æˆ·ï¼Œå¹¶è®¾ç½®å¯†ç 
 yum install -y vsftpd
 [ $? -eq 0 ] &&
 {
@@ -144,7 +144,7 @@ yum install -y vsftpd
 	exit 1
 	}
 
-#½¨Á¢ÓÃ»§,²¢ÉèÖÃÃÜÂë
+#å»ºç«‹ç”¨æˆ·,å¹¶è®¾ç½®å¯†ç 
 useradd -s /sbin/nologin $USER_WEB && echo "$USER_PSWD" |passwd --stdin $USER_WEB
 [ $? -eq 0 ] && echo {
 	"user $USER_WEB created success">>$INSTALL_LOG
@@ -159,7 +159,7 @@ useradd -s /sbin/nologin $USER_WEB && echo "$USER_PSWD" |passwd --stdin $USER_WE
 DOWN_SOFT(){
 
 cd $INSTALL_PATH
-#°²×°ÒÀÀµ°ü\ÏÂÔØ°²×°Ô´Âë°ü
+#å®‰è£…ä¾èµ–åŒ…\ä¸‹è½½å®‰è£…æºç åŒ…
 #epel
 
 [ ! -e DOWN_soft.lock ] && {
@@ -190,7 +190,7 @@ wget -c http://cn2.php.net/distributions/php-5.3.29.tar.bz2 && wget -c http://ar
 }
 
 My55_INST(){
-##°²×°MySQL################
+##å®‰è£…MySQL################
 
 [ -f mysql-5.5.53-linux2.6-x86_64.tar.gz ] && [ ! -e Mysql55.lock ]{
 	userdel -r mysql
@@ -207,13 +207,13 @@ EOF
 	scripts/mysql_install_db --user=mysql
 	/usr/local/mysql/support-files/mysql.server start
 [ $? -eq 0 ] && {
-	#´´½¨rootÓÃ»§ÃÜÂë
+	#åˆ›å»ºrootç”¨æˆ·å¯†ç 
 	/usr/local/mysql/bin/mysqladmin -u root password $Mysql_PSWD
-	#´´½¨Êı¾İ¿â
+	#åˆ›å»ºæ•°æ®åº“
 	/usr/local/mysql/bin/mysql -u root -p$Mysql_PSWD -e "create database $Mysql_DBname default charset utf8;"
-	#¸³ÆÕÍ¨ÓÃ»§È¨
+	#èµ‹æ™®é€šç”¨æˆ·æƒ
 	/usr/local/mysql/bin/mysql -u root -p$Mysql_PSWD -e "grant all on $Mysql_DBname.* to $Mysql_USER@'127.0.0.1' identified by '$Myuser_PSWD';"
-	#Ë¢ĞÂÈ¨ÏŞ
+	#åˆ·æ–°æƒé™
 	/usr/local/mysql/bin/mysql -u root -p$Mysql_PSWD -e "flush privileges;"
 	touch $INSTALL_PATH/Mysql55.lock
 	echo "Mysql installed successful.">>$INSTALL_LOG
@@ -225,7 +225,7 @@ EOF
 }
 
 APA22_INST(){
-##°²×°apache#####################
+##å®‰è£…apache#####################
 cd $INSTALL_PATH
 [ -f httpd-2.2.32.tar.bz2 ] && [ ! -e APA22_INST.lock ] && {
 tar -jxvf httpd-2.2.32.tar.bz2
@@ -276,7 +276,7 @@ Allow from all
     MaxRequestsPerChild   15000
 </IfModule>
 
-#Ñ¹Ëõ¼¶±ğ
+#å‹ç¼©çº§åˆ«
 DeflateCompressionLevel 9
 SetOutputFilter DEFLATE
 AddOutputFilterByType DEFLATE text/html text/plain text/xml application/x-javascript application/x-httpd-php
@@ -296,7 +296,7 @@ echo "apache2.2 installed success...">>$INSTALL_LOG
 }
 
 NGX_INST(){
-##°²×°nginx################
+##å®‰è£…nginx################
 cd $INSTALL_PATH
 [ -f pcre-8.35.tar.gz ] && [ -f zlib-1.2.11.tar.gz ] && [ -f nginx-1.10.2.tar.gz ] && [ ! -e NGX_INST.lock ] && {
 	tar zxvf pcre-8.35.tar.gz
@@ -317,7 +317,7 @@ cd $INSTALL_PATH
 }
 
 FGP_INST(){
-##°²×°jpeg##################
+##å®‰è£…jpeg##################
 cd $INSTALL_PATH
 
 [ -f jpegsrc.v6b.tar.gz ] && {
@@ -344,7 +344,7 @@ cd $INSTALL_PATH
 
 
 
-##°²×°freetype################
+##å®‰è£…freetype################
 cd $INSTALL_PATH
 
 [ -f freetype-2.4.8.tar.bz2 ] && {
@@ -361,7 +361,7 @@ cd $INSTALL_PATH
 		exit 68
 		}
 
-##°²×°GD¿â###############
+##å®‰è£…GDåº“###############
 cd $INSTALL_PATH
 
 [ -f gd-2.0.33.tar.gz ] && {
@@ -380,7 +380,7 @@ cd $INSTALL_PATH
 }
 
 PHP52_INST(){
-##°²×°PHP###################
+##å®‰è£…PHP###################
 ln -s /usr/lib64/libjpeg.so /usr/lib/
 ln -s /usr/lib64/libpng.so /usr/lib/
 cd $INSTALL_PATH
@@ -411,7 +411,7 @@ cd $INSTALL_PATH
 }
 
 PHP53_INST(){
-##°²×°PHP###################
+##å®‰è£…PHP###################
 ln -s /usr/lib64/libjpeg.so /usr/lib/
 ln -s /usr/lib64/libpng.so /usr/lib/
 cd $INSTALL_PATH
@@ -486,7 +486,7 @@ esac
 
 
 ZOPT_INST(){
-##°²×°ZendOptimizer##################
+##å®‰è£…ZendOptimizer##################
 cd $INSTALL_PATH
 [ -f ZendOptimizer-3.3.9-linux-glibc23-x86_64.tar.gz ] && [ $PHP_INST = 1 ] && [ ! -e ZOPT_INST.lock ] && {
 	mkdir -p /usr/local/php/include/php/ext/zend
@@ -546,22 +546,22 @@ service iptables save
 
 ###########
 echo "#####################"
-#ÍøÕ¾ÓÃ»§
+#ç½‘ç«™ç”¨æˆ·
 echo "The user you want to run the web server. is $USER_WEB"
 
-#ÓÃ»§ÃÜÂë
+#ç”¨æˆ·å¯†ç 
 echo "The user's password. is $USER_PSWD "
 
-#Mysql root ÃÜÂë
+#Mysql root å¯†ç 
 echo  "The Mysql root's password. is $Mysql_PSWD"
 
-#ĞÂ½¨MysqlÊı¾İ¿âÃû
+#æ–°å»ºMysqlæ•°æ®åº“å
 echo  "The database name you want to create. is $Mysql_DBname"
 
-#MysqlÆÕÍ¨ÓÃ»§Ãû
+#Mysqlæ™®é€šç”¨æˆ·å
 echo  "The user you want to conncet mysql. is $Mysql_USER"
 
-#MysqlÆÕÍ¨ÓÃ»§ÃÜÂë
+#Mysqlæ™®é€šç”¨æˆ·å¯†ç 
 echo  "The Mysql user's password. is $Myuser_PSWD"
 
 DATE_INST=`date +%Y-%m-%d-%H:%M`
