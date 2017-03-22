@@ -6,41 +6,42 @@
 # Website:www.pboy8.top pboy8.taobao.com
 # Desc:Install nginx-1.10 php-5.2,gd2,freetype2,mysql-5.5 on linux Centos6, for ruiqi soft..
 # Add: php5.3 Apache...and on Centos7..2017-03-17
+# Add: php5.4,mysql 5.6...2017-03-22
 # Version:V 0.5
 
 
-##Ô¤¶¨Òå±äÁ¿-Predefined variables
-#Ê±¼ä-date-time
+##é¢„å®šä¹‰å˜é‡-Predefined variables
+#æ—¶é—´-date-time
 DATE_INST=`date +%Y-%m-%d-%H-%M`
 
-#°²×°ÈÕÖ¾ÎÄ¼ş-Instlal log
+#å®‰è£…æ—¥å¿—æ–‡ä»¶-Instlal log
 INSTALL_LOG=/tmp/install_log$DATE_INST
 
-#Ô´Âë°²×°°üÏÂÔØÄ¿Â¼-Source packages download dir
+#æºç å®‰è£…åŒ…ä¸‹è½½ç›®å½•-Source packages download dir
 INSTALL_PATH=/data
 mkdir -p $INSTALL_PATH
 
-#ÄÚºË´ó°æ±¾-kernel version
+#å†…æ ¸å¤§ç‰ˆæœ¬-kernel version
 RL=`uname -r|awk -F "." '{print $1}'`
 #USER_WEB=www
 
-#ÍøÕ¾ÓÃ»§-user who run the web server
+#ç½‘ç«™ç”¨æˆ·-user who run the web server
 #USER_WEB=""
 read -p "Please input the user you want to run the web server." USER_WEB
 
-#ÓÃ»§ÃÜÂë-the password for the user
+#ç”¨æˆ·å¯†ç -the password for the user
 read -p "Please input the user's password." USER_PSWD
 
-#Mysql root ÃÜÂë-the password for mysql root
+#Mysql root å¯†ç -the password for mysql root
 read -p "Please input the Mysql root's password." Mysql_PSWD
 
-#ĞÂ½¨MysqlÊı¾İ¿âÃû-the database name
+#æ–°å»ºMysqlæ•°æ®åº“å-the database name
 read -p "Please input the database name you want to create." Mysql_DBname
 
-#MysqlÆÕÍ¨ÓÃ»§Ãû-normal user for mysql
+#Mysqlæ™®é€šç”¨æˆ·å-normal user for mysql
 read -p "Please input the user you want to conncet mysql." Mysql_USER
 
-#MysqlÆÕÍ¨ÓÃ»§ÃÜÂë-password for normal user
+#Mysqlæ™®é€šç”¨æˆ·å¯†ç -password for normal user
 read -p "Please input the Mysql user's password." Myuser_PSWD
 
 #Menu Web server
@@ -69,32 +70,32 @@ read -p "Please input which PHP you want to install.." PHP_INST
 CHK_SYS(){
 cd $INSTALL_PATH
 [ ! -e CHK_SYS.lock ] && {
-##¼ì²éÏµÍ³-check system
-echo "ÏµÍ³ĞÅÏ¢ÊÕ¼¯ÖĞ/gathering system info...">>$INSTALL_LOG
+##æ£€æŸ¥ç³»ç»Ÿ-check system
+echo "ç³»ç»Ÿä¿¡æ¯æ”¶é›†ä¸­/gathering system info...">>$INSTALL_LOG
 echo "gathering system info..."
 
-echo "ÎÄ¼şÏµÍ³/file-systems">>$INSTALL_LOG
+echo "æ–‡ä»¶ç³»ç»Ÿ/file-systems">>$INSTALL_LOG
 df -h >>$INSTALL_LOG
 echo "#######END1">>$INSTALL_LOG
 
-echo "CPUĞÅÏ¢/CPU info">>$INSTALL_LOG
+echo "CPUä¿¡æ¯/CPU info">>$INSTALL_LOG
 cat /proc/cpuinfo >>$INSTALL_LOG
 echo "#######END2">>$INSTALL_LOG
 
-echo "ÄÚ´æĞÅÏ¢/MEM info">>$INSTALL_LOG
+echo "å†…å­˜ä¿¡æ¯/MEM info">>$INSTALL_LOG
 free -m >>$INSTALL_LOG
 echo "#######END3">>$INSTALL_LOG
 
-echo "ÄÚºË°æ±¾/kernel info.">>$INSTALL_LOG
+echo "å†…æ ¸ç‰ˆæœ¬/kernel info.">>$INSTALL_LOG
 lsb_release -a >>$INSTALL_LOG
 uname -a >>$INSTALL_LOG
 echo "#######END4">>$INSTALL_LOG
 
-echo "ÎÄ¼ş¶ÁĞ´/disk read write info">>$INSTALL_LOG
+echo "æ–‡ä»¶è¯»å†™/disk read write info">>$INSTALL_LOG
 time dd if=/dev/zero of=/tmp/1.gz count=100 bs=10M >> $INSTALL_LOG 2>&1
 echo "#######END5">>$INSTALL_LOG
 
-##ÏµÍ³²ÎÊıÓÅ»¯-optimize the system
+##ç³»ç»Ÿå‚æ•°ä¼˜åŒ–-optimize the system
 cat >>/etc/sysctl.conf<<EOF
 # Decrease the time default value for tcp_fin_timeout connection
 net.ipv4.tcp_fin_timeout = 30
@@ -131,7 +132,7 @@ EOF
 FTP_INST(){
 cd $INSTALL_PATH
 [ ! -e FTP_INST.lock ] && {
-##Install FTP£¬½¨Á¢ÓÃ»§£¬²¢ÉèÖÃÃÜÂë
+##Install FTPï¼Œå»ºç«‹ç”¨æˆ·ï¼Œå¹¶è®¾ç½®å¯†ç 
 yum install -y vsftpd
 [ $? -eq 0 ] &&
 {
@@ -147,7 +148,7 @@ yum install -y vsftpd
 	exit 1
 	}
 
-#½¨Á¢ÓÃ»§,²¢ÉèÖÃÃÜÂë
+#å»ºç«‹ç”¨æˆ·,å¹¶è®¾ç½®å¯†ç 
 useradd -s /sbin/nologin $USER_WEB && echo "$USER_PSWD" |passwd --stdin $USER_WEB
 [ $? -eq 0 ] && echo {
 	"user $USER_WEB created success">>$INSTALL_LOG
@@ -162,7 +163,7 @@ useradd -s /sbin/nologin $USER_WEB && echo "$USER_PSWD" |passwd --stdin $USER_WE
 DOWN_SOFT(){
 
 cd $INSTALL_PATH
-#°²×°ÒÀÀµ°ü\ÏÂÔØ°²×°Ô´Âë°ü-download the source packages and depended packages
+#å®‰è£…ä¾èµ–åŒ…\ä¸‹è½½å®‰è£…æºç åŒ…-download the source packages and depended packages
 #epel
 
 [ ! -e DOWN_soft.lock ] && {
@@ -221,13 +222,13 @@ EOF
 	scripts/mysql_install_db --user=mysql
 	/usr/local/mysql/support-files/mysql.server start
 [ $? -eq 0 ] && {
-	#´´½¨rootÓÃ»§ÃÜÂë
+	#åˆ›å»ºrootç”¨æˆ·å¯†ç 
 	/usr/local/mysql/bin/mysqladmin -u root password $Mysql_PSWD
-	#´´½¨Êı¾İ¿â
+	#åˆ›å»ºæ•°æ®åº“
 	/usr/local/mysql/bin/mysql -u root -p$Mysql_PSWD -e "create database $Mysql_DBname default charset utf8;"
-	#¸³ÆÕÍ¨ÓÃ»§È¨
+	#èµ‹æ™®é€šç”¨æˆ·æƒ
 	/usr/local/mysql/bin/mysql -u root -p$Mysql_PSWD -e "grant all on $Mysql_DBname.* to $Mysql_USER@'127.0.0.1' identified by '$Myuser_PSWD';"
-	#Ë¢ĞÂÈ¨ÏŞ
+	#åˆ·æ–°æƒé™
 	/usr/local/mysql/bin/mysql -u root -p$Mysql_PSWD -e "flush privileges;"
 	touch $INSTALL_PATH/Mysql55.lock
 	echo "Mysql installed successful.">>$INSTALL_LOG
@@ -290,7 +291,7 @@ Allow from all
     MaxRequestsPerChild   15000
 </IfModule>
 
-#Ñ¹Ëõ¼¶±ğ
+#å‹ç¼©çº§åˆ«
 DeflateCompressionLevel 9
 SetOutputFilter DEFLATE
 AddOutputFilterByType DEFLATE text/html text/plain text/xml application/x-javascript application/x-httpd-php
@@ -671,22 +672,22 @@ service iptables save
 
 ###########
 echo "#####################"
-#ÍøÕ¾ÓÃ»§-web server's running user
+#ç½‘ç«™ç”¨æˆ·-web server's running user
 echo "The user you want to run the web server. is $USER_WEB"
 
-#ÓÃ»§ÃÜÂë-user password
+#ç”¨æˆ·å¯†ç -user password
 echo "The user's password. is $USER_PSWD "
 
-#Mysql root ÃÜÂë-mysql root's passwd
+#Mysql root å¯†ç -mysql root's passwd
 echo  "The Mysql root's password. is $Mysql_PSWD"
 
-#ĞÂ½¨MysqlÊı¾İ¿âÃû-website database name 
+#æ–°å»ºMysqlæ•°æ®åº“å-website database name 
 echo  "The database name you want to create. is $Mysql_DBname"
 
-#MysqlÆÕÍ¨ÓÃ»§Ãû-normal mysql user
+#Mysqlæ™®é€šç”¨æˆ·å-normal mysql user
 echo  "The user you want to conncet mysql. is $Mysql_USER"
 
-#MysqlÆÕÍ¨ÓÃ»§ÃÜÂë-password for normal user
+#Mysqlæ™®é€šç”¨æˆ·å¯†ç -password for normal user
 echo  "The Mysql user's password. is $Myuser_PSWD"
 
 DATE_INST=`date +%Y-%m-%d-%H:%M`
