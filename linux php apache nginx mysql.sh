@@ -185,7 +185,7 @@ cd $INSTALL_PATH
 
 [ $? -eq 0 ] && yum -y install kernel-devel rpm-build patch make gcc gcc-c++ flex bison \
 file libxml2 libxml2-devel curl curl-devel libjpeg libjpeg-devel libtool libpng \
-libpng-devel wget libaio* vim libmcrypt libmcrypt-devel mcrypt mhash || exit 39
+libpng-devel wget libaio* vim libmcrypt libmcrypt-devel mcrypt mhash openssl openssl-devel|| exit 39
 
 echo "Downloading packages..">>$INSTALL_LOG
 wget -c http://dev.mysql.com/get/Downloads/MySQL-5.5/mysql-5.5.53-linux2.6-x86_64.tar.gz &&\
@@ -599,10 +599,7 @@ cd $INSTALL_PATH
 		echo "PHP installed failed">>$INSTALL_LOG
 		exit 58
 		}
-	}|| {
-		echo "PHP download failed">>$INSTALL_LOG
-		exit 56
-		}
+	}
 }
 
 PHP54_INST(){
@@ -639,10 +636,7 @@ cd $INSTALL_PATH
 		echo "PHP installed failed">>$INSTALL_LOG
 		exit 58
 		}
-	}|| {
-		echo "PHP download failed">>$INSTALL_LOG
-		exit 56
-		}
+	}
 }
 
 ZOPT_INST(){
