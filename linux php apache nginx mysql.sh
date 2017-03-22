@@ -71,6 +71,8 @@ cat <<EOF
 1. Install PHP 5.2.17
 2. Install PHP 5.3.29
 3. Install PHP 5.4.45
+4. Install PHP 5.5.38
+5. Install PHP 5.6.30
 EOF
 }
 menu
@@ -203,7 +205,9 @@ wget -c http://archive.apache.org/dist/httpd/httpd-2.4.25.tar.bz2 &&\
 wget -c http://archive.apache.org/dist/apr/apr-1.5.2.tar.bz2 &&\
 wget -c http://archive.apache.org/dist/apr/apr-util-1.5.4.tar.bz2 &&\
 wget -c http://downloads.zend.com/guard/5.5.0/ZendGuardLoader-php-5.3-linux-glibc23-x86_64.tar.gz &&\
-wget -c http://cn2.php.net/distributions/php-5.4.45.tar.bz2
+wget -c http://cn2.php.net/distributions/php-5.4.45.tar.bz2 &&\
+wget -c http://cn2.php.net/distributions/php-5.5.38.tar.bz2 &&\
+wget -c http://cn2.php.net/distributions/php-5.6.30.tar.bz2
 
 [ $? -eq 0 ] && {
 	echo "download packages success.">>$INSTALL_LOG
@@ -598,7 +602,7 @@ cd $INSTALL_PATH
 }
 
 PHP54_INST(){
-##Install PHP 5.3 ###################
+##Install PHP 5.4 ###################
 ln -s /usr/lib64/libjpeg.so /usr/lib/
 ln -s /usr/lib64/libpng.so /usr/lib/
 cd $INSTALL_PATH
