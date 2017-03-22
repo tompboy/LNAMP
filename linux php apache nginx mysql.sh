@@ -70,6 +70,7 @@ menu(){
 cat <<EOF
 1. Install PHP 5.2.17
 2. Install PHP 5.3.29
+3. Install PHP 5.4.45
 EOF
 }
 menu
@@ -201,7 +202,8 @@ wget -c http://archive.apache.org/dist/httpd/httpd-2.2.32.tar.bz2 &&\
 wget -c http://archive.apache.org/dist/httpd/httpd-2.4.25.tar.bz2 &&\
 wget -c http://archive.apache.org/dist/apr/apr-1.5.2.tar.bz2 &&\
 wget -c http://archive.apache.org/dist/apr/apr-util-1.5.4.tar.bz2 &&\
-wget -c http://downloads.zend.com/guard/5.5.0/ZendGuardLoader-php-5.3-linux-glibc23-x86_64.tar.gz
+wget -c http://downloads.zend.com/guard/5.5.0/ZendGuardLoader-php-5.3-linux-glibc23-x86_64.tar.gz &&\
+wget -c http://cn2.php.net/distributions/php-5.4.45.tar.bz2
 
 [ $? -eq 0 ] && {
 	echo "download packages success.">>$INSTALL_LOG
@@ -584,6 +586,46 @@ cd $INSTALL_PATH
 	sed -i 's/;request_terminate_timeout = 0/request_terminate_timeout = 30s/g' /usr/local/php/etc/php-fpm.conf
 	sed -i 's/;pid = run\/php-fpm.pid/pid = run\/php-fpm.pid/g' /usr/local/php/etc/php-fpm.conf
 	touch /$INSTALL_PATH/php53.lock
+	echo "PHP installed success">>$INSTALL_LOG
+	} || {
+		echo "PHP installed failed">>$INSTALL_LOG
+		exit 58
+		}
+	}|| {
+		echo "PHP download failed">>$INSTALL_LOG
+		exit 56
+		}
+}
+
+PHP54_INST(){
+##Install PHP 5.3 ###################
+ln -s /usr/lib64/libjpeg.so /usr/lib/
+ln -s /usr/lib64/libpng.so /usr/lib/
+cd $INSTALL_PATH
+[ -f php-5.4.45.tar.bz2 ] && [ ! -e php54.lock ] && {
+	tar jxvf php-5.4.45.tar.bz2
+	cd php-5.4.45/
+	./configure --prefix=/usr/local/php --with-mysql=/usr/local/mysql --enable-fpm --with-freetype-dir=/usr/local/freetype --with-jpeg-dir=/usr/local/jpeg --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql
+	make && make install
+[ $? -eq 0 ] && {
+	cp php.ini-production /usr/local/php/lib/php.ini
+	sed -i 's/short_open_tag = Off/short_open_tag = On/g' /usr/local/php/lib/php.ini
+	#mkdir /etc/php
+	#ln -s /usr/local/php/lib/php.ini /etc/php
+	#ln -s /usr/local/php/etc/php-fpm.conf /etc/php
+	cd /usr/local/php/etc/
+	cp php-fpm.conf.default php-fpm.conf
+	sed -i 's/user = nobody/user = '$USER_WEB'/g' /usr/local/php/etc/php-fpm.conf
+	sed -i 's/group = nobody/group = '$USER_WEB'/g' /usr/local/php/etc/php-fpm.conf
+	sed -i 's/;rlimit_files = 1024/rlimit_files = 10240/g' /usr/local/php/etc/php-fpm.conf
+	sed -i 's/;listen.allowed_clients = 127.0.0.1/listen.allowed_clients = 127.0.0.1/g' /usr/local/php/etc/php-fpm.conf
+	sed -i 's/pm = dynamic/pm = static/g' /usr/local/php/etc/php-fpm.conf
+	sed -i 's/pm.max_children = 5/pm.max_children = 100/g' /usr/local/php/etc/php-fpm.conf
+	sed -i 's/;pm.max_requests = 500/pm.max_requests = 5000/g' /usr/local/php/etc/php-fpm.conf
+	sed -i 's/;pm.status_path = \/pmstatus/pm.status_path = \/pmstatus/g' /usr/local/php/etc/php-fpm.conf
+	sed -i 's/;request_terminate_timeout = 0/request_terminate_timeout = 30s/g' /usr/local/php/etc/php-fpm.conf
+	sed -i 's/;pid = run\/php-fpm.pid/pid = run\/php-fpm.pid/g' /usr/local/php/etc/php-fpm.conf
+	touch /$INSTALL_PATH/php54.lock
 	echo "PHP installed success">>$INSTALL_LOG
 	} || {
 		echo "PHP installed failed">>$INSTALL_LOG
