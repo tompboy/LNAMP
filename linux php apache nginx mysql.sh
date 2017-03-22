@@ -44,6 +44,16 @@ read -p "Please input the user you want to conncet mysql." Mysql_USER
 #Mysql普通用户密码-password for normal user
 read -p "Please input the Mysql user's password." Myuser_PSWD
 
+#Mysql server
+menu(){
+cat <<EOF
+1. Install Mysql 5.5
+2. Install Mysql 5.6
+EOF
+}
+menu
+read -p "Please input which web server you want to install.." Mysql_INST
+
 #Menu Web server
 menu(){
 cat <<EOF
@@ -239,7 +249,7 @@ EOF
 	}
 }
 
-My55_INST(){
+My56_INST(){
 ##Install MySQL 5.6 ################
 cd $INSTALL_PATH
 wget -c https://dev.mysql.com/get/Downloads/MySQL-5.6/mysql-5.6.35-linux-glibc2.5-x86_64.tar.gz
@@ -627,7 +637,21 @@ EOF
 CHK_SYS
 FTP_INST
 DOWN_SOFT
-My55_INST
+
+#Mysql
+case $Mysql_INST in{
+	1)
+	My55_INST
+	;;
+	
+	2)
+	My56_INST
+	;;
+	
+	*)
+	echo "Wrong input..."
+}
+esac
 
 #Web server
 case $WEB_INST in{
