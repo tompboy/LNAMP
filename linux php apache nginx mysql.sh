@@ -726,6 +726,10 @@ case $PHP_INST in{
 	PHP53_INST
 	;;
 	
+	3)
+	PHP54_INST
+	;;
+	
 	*)
 	echo "Wrong input..."
 }
