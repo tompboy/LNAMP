@@ -266,10 +266,14 @@ wget -c https://dev.mysql.com/get/Downloads/MySQL-5.6/mysql-5.6.35-linux-glibc2.
 	cp -r mysql-5.6.35-linux-glibc2.5-x86_64 /usr/local/mysql
 	cd /usr/local/mysql
 	rm -f /etc/my.cnf
-	cp /usr/local/mysql/support-files/my-medium.cnf /etc/my.cnf
-	cat >>/etc/my.cnf<<EOF
-	max_connections = 500
-	wait_timeout = 30
+cat >>/etc/my.cnf<<EOF
+[mysqld]
+datadir = /usr/local/mysql/data
+basedir = /usr/local/mysql
+port = 3306
+server_id = 1
+max_connections = 500
+wait_timeout = 30
 EOF
 	scripts/mysql_install_db --user=mysql
 	/usr/local/mysql/support-files/mysql.server start
