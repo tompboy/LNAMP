@@ -708,7 +708,7 @@ FTP_INST
 DOWN_SOFT
 
 #Mysql
-case $Mysql_INST in{
+case $Mysql_INST in
 	1)
 	My55_INST
 	;;
@@ -716,11 +716,11 @@ case $Mysql_INST in{
 	2)
 	My56_INST
 	;;
-}
+
 esac
 
 #Web server
-case $WEB_INST in{
+case $WEB_INST in
 	1)
 	APA22_INST
 	;;
@@ -733,13 +733,12 @@ case $WEB_INST in{
 	NGX_INST
 	;;
 
-}
 esac
 
 FGP_INST
 
 #Php
-case $PHP_INST in{
+case $PHP_INST in
 	1)
 	PHP52_INST
 	;;
@@ -752,7 +751,6 @@ case $PHP_INST in{
 	PHP54_INST
 	;;
 
-}
 esac
 
 ZOPT_INST
