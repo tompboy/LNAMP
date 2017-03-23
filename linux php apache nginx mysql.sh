@@ -343,11 +343,11 @@ server_id = 1
 max_connections = 500
 wait_timeout = 30
 EOF
-	scripts/mysql_install_db --user=mysql
+	bin/mysqld --initialize --user=mysql
 	/usr/local/mysql/support-files/mysql.server start
 [ $? -eq 0 ] && {
-	#创建root用户密码
-	/usr/local/mysql/bin/mysqladmin -u root password $Mysql_PSWD
+	#重设root用户密码
+	/usr/local/mysql/bin/mysql -u root -p$Mysql_PSWD -e "alter user root password '$Mysql_PSWD';"
 	#创建数据库
 	/usr/local/mysql/bin/mysql -u root -p$Mysql_PSWD -e "create database $Mysql_DBname default charset utf8;"
 	#赋普通用户权
