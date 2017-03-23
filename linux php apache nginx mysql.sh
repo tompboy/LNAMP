@@ -7,7 +7,8 @@
 # Desc:Install nginx-1.10 php-5.2,gd2,freetype2,mysql-5.5 on linux Centos6, for ruiqi soft..
 # Add: php5.3 Apache...and on Centos7..2017-03-17
 # Add: php5.4,mysql 5.6...2017-03-22
-# Version:V 0.5
+# Add: php7,mysql 5.7...2017-03-23
+# Version:V 0.6
 
 
 ##预定义变量-Predefined variables
@@ -50,13 +51,14 @@ menu(){
 cat <<EOF
 1. Install Mysql 5.5
 2. Install Mysql 5.6
+3. Install Mysql 5.7
 EOF
 }
 menu
 read -p "Please input which web server you want to install.." Mysql_INST
 
-if [[ $Mysql_INST != [1-2] ]]; then
-echo "Input error, please input the correct num[1-2].."
+if [[ $Mysql_INST != [1-3] ]]; then
+echo "Input error, please input the correct num[1-3].."
 else
 break
 fi
@@ -715,6 +717,10 @@ case $Mysql_INST in
 	
 	2)
 	My56_INST
+	;;
+	
+	3)
+	My57_INST
 	;;
 
 esac
