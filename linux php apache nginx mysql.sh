@@ -323,6 +323,47 @@ EOF
 }
 
 
+My57_INST(){
+##Install MySQL 5.7 ################
+cd $INSTALL_PATH
+wget -c https://dev.mysql.com/get/Downloads/MySQL-5.7/mysql-5.7.17-linux-glibc2.5-x86_64.tar.gz
+[ -f mysql-5.7.17-linux-glibc2.5-x86_64.tar.gz ] && [ ! -e Mysql57.lock ]{
+	userdel -r mysql
+	useradd mysql
+	tar zxvf mysql-5.7.17-linux-glibc2.5-x86_64.tar.gz
+	cp -r mysql-5.7.17-linux-glibc2.5-x86_64 /usr/local/mysql
+	cd /usr/local/mysql
+	rm -f /etc/my.cnf
+cat >>/etc/my.cnf<<EOF
+[mysqld]
+datadir = /usr/local/mysql/data
+basedir = /usr/local/mysql
+port = 3306
+server_id = 1
+max_connections = 500
+wait_timeout = 30
+EOF
+	scripts/mysql_install_db --user=mysql
+	/usr/local/mysql/support-files/mysql.server start
+[ $? -eq 0 ] && {
+	#创建root用户密码
+	/usr/local/mysql/bin/mysqladmin -u root password $Mysql_PSWD
+	#创建数据库
+	/usr/local/mysql/bin/mysql -u root -p$Mysql_PSWD -e "create database $Mysql_DBname default charset utf8;"
+	#赋普通用户权
+	/usr/local/mysql/bin/mysql -u root -p$Mysql_PSWD -e "grant all on $Mysql_DBname.* to $Mysql_USER@'127.0.0.1' identified by '$Myuser_PSWD';"
+	#刷新权限
+	/usr/local/mysql/bin/mysql -u root -p$Mysql_PSWD -e "flush privileges;"
+	touch $INSTALL_PATH/Mysql57.lock
+	echo "Mysql installed successful.">>$INSTALL_LOG
+	} || {
+		echo "Mysql installed failed.">>$INSTALL_LOG
+		exit 5
+		}
+	}
+}
+
+
 
 APA22_INST(){
 ##Install apache2.2 #####################
