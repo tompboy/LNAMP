@@ -45,6 +45,7 @@ read -p "Please input the user you want to conncet mysql." Mysql_USER
 read -p "Please input the Mysql user's password." Myuser_PSWD
 
 #Mysql server
+while :; do
 menu(){
 cat <<EOF
 1. Install Mysql 5.5
@@ -54,18 +55,34 @@ EOF
 menu
 read -p "Please input which web server you want to install.." Mysql_INST
 
+if [[ $Mysql_INST != [1-2] ]]; then
+echo "Input error, please input the correct num[1-2].."
+else
+break
+fi
+done
+
 #Menu Web server
+while :; do
 menu(){
 cat <<EOF
-1. Install Apache 2.4
-2. Install Apache 2.2
+1. Install Apache 2.2
+2. Install Apache 2.4
 3. Install Nginx
 EOF
 }
 menu
 read -p "Please input which web server you want to install.." WEB_INST
 
+if [[ $WEB_INST != [1-3] ]]; then
+echo "Input error, please input the correct num[1-3].."
+else
+break
+fi
+done
+
 #Menu PHP
+while :; do
 menu(){
 cat <<EOF
 1. Install PHP 5.2.17
@@ -73,11 +90,19 @@ cat <<EOF
 3. Install PHP 5.4.45
 4. Install PHP 5.5.38
 5. Install PHP 5.6.30
+6. Install PHP 7.0.17
+7. Install PHP 7.1.3
 EOF
 }
 menu
 read -p "Please input which PHP you want to install.." PHP_INST
 
+if [[ $PHP_INST != [1-7] ]]; then
+echo "Input error, please input the correct num[1-7].."
+else
+break
+fi
+done
 
 
 CHK_SYS(){
@@ -691,28 +716,23 @@ case $Mysql_INST in{
 	2)
 	My56_INST
 	;;
-	
-	*)
-	echo "Wrong input..."
 }
 esac
 
 #Web server
 case $WEB_INST in{
 	1)
-	APA24_INST
+	APA22_INST
 	;;
 	
 	2)
-	APA22_INST
+	APA24_INST
 	;;
 	
 	3)
 	NGX_INST
 	;;
-	
-	*)
-	echo "Wrong input..."
+
 }
 esac
 
@@ -731,9 +751,7 @@ case $PHP_INST in{
 	3)
 	PHP54_INST
 	;;
-	
-	*)
-	echo "Wrong input..."
+
 }
 esac
 
