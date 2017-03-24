@@ -18,6 +18,10 @@ DATE_INST=`date +%Y-%m-%d-%H-%M`
 #安装日志文件-Instlal log
 INSTALL_LOG=/tmp/install_log$DATE_INST
 
+#green color
+GREEN_COLOR='\E[1;32m'
+RES='\E[0m'
+
 #源码安装包下载目录-Source packages download dir
 INSTALL_PATH=/data
 mkdir -p $INSTALL_PATH
@@ -28,30 +32,44 @@ RL=`uname -r|awk -F "." '{print $1}'`
 
 #网站用户-user who run the web server
 #USER_WEB=""
-read -p "Please input the user you want to run the web server." USER_WEB
+clear
+echo "###################################################################"
+echo -e "########### ${GREEN_COLOR}This script will install Mysql,Apache,Nginx$RES ###########"
+echo -e "###########  ${GREEN_COLOR}Php, zend, Ftp..Thank you for use... $RES      ###########"
+echo "###################################################################"
+echo -e "\n"
+echo -e "\n"
+
+read -p "Please input the user you want to run the web server. " USER_WEB
+echo -e "\n"
 
 #用户密码-the password for the user
-read -p "Please input the user's password." USER_PSWD
+read -p "Please input the user's password. " USER_PSWD
+echo -e "\n"
 
 #Mysql root 密码-the password for mysql root
-read -p "Please input the Mysql root's password." Mysql_PSWD
+read -p "Please input the Mysql root's password. " Mysql_PSWD
+echo -e "\n"
 
 #新建Mysql数据库名-the database name
-read -p "Please input the database name you want to create." Mysql_DBname
+read -p "Please input the database name you want to create. " Mysql_DBname
+echo -e "\n"
 
 #Mysql普通用户名-normal user for mysql
-read -p "Please input the user you want to conncet mysql." Mysql_USER
+read -p "Please input the user you want to conncet mysql. " Mysql_USER
+echo -e "\n"
 
 #Mysql普通用户密码-password for normal user
-read -p "Please input the Mysql user's password." Myuser_PSWD
+read -p "Please input the Mysql user's password. " Myuser_PSWD
+echo -e "\n"
 
 #Mysql server
 while :; do
 menu(){
 cat <<EOF
-######################
-#######  Mysql  ######
-######################
+#################################
+#######  ${GREEN_COLOR}Mysql$RES  ######
+#################################
 1. Install Mysql 5.5
 2. Install Mysql 5.6
 3. Install Mysql 5.7
@@ -59,7 +77,7 @@ EOF
 }
 menu
 read -p "Please input which web server you want to install.." Mysql_INST
-
+echo -e "\n"
 if [[ $Mysql_INST != [1-3] ]]; then
 echo "Input error, please input the correct num[1-3].."
 else
@@ -71,9 +89,9 @@ done
 while :; do
 menu(){
 cat <<EOF
-###########################
-#######  WEB server  ######
-###########################
+######################################
+#######  ${GREEN_COLOR}WEB server$RES ######
+######################################
 1. Install Apache 2.2
 2. Install Apache 2.4
 3. Install Nginx
@@ -81,7 +99,7 @@ EOF
 }
 menu
 read -p "Please input which web server you want to install.." WEB_INST
-
+echo -e "\n"
 if [[ $WEB_INST != [1-3] ]]; then
 echo "Input error, please input the correct num[1-3].."
 else
@@ -93,9 +111,9 @@ done
 while :; do
 menu(){
 cat <<EOF
-####################
-#######  PHP  ######
-####################
+############################################
+########  ${GREEN_COLOR}PHP$RES  #######
+############################################
 1. Install PHP 5.2.17
 2. Install PHP 5.3.29
 3. Install PHP 5.4.45
@@ -107,7 +125,7 @@ EOF
 }
 menu
 read -p "Please input which PHP you want to install.." PHP_INST
-
+echo -e "\n"
 if [[ $PHP_INST != [1-7] ]]; then
 echo "Input error, please input the correct num[1-7].."
 else
@@ -282,6 +300,8 @@ EOF
 	/usr/local/mysql/bin/mysql -u root -p$Mysql_PSWD -e "grant all on $Mysql_DBname.* to $Mysql_USER@'127.0.0.1' identified by '$Myuser_PSWD';"
 	#刷新权限
 	/usr/local/mysql/bin/mysql -u root -p$Mysql_PSWD -e "flush privileges;"
+	cp /usr/local/mysql/support-files/mysql.server /etc/init.d/mysqld
+	service mysqld stop
 	touch $INSTALL_PATH/Mysql55_INST.lock
 	echo "Mysql installed successful.">>$INSTALL_LOG
 	} || {
@@ -322,6 +342,8 @@ EOF
 	/usr/local/mysql/bin/mysql -u root -p$Mysql_PSWD -e "grant all on $Mysql_DBname.* to $Mysql_USER@'127.0.0.1' identified by '$Myuser_PSWD';"
 	#刷新权限
 	/usr/local/mysql/bin/mysql -u root -p$Mysql_PSWD -e "flush privileges;"
+	cp /usr/local/mysql/support-files/mysql.server /etc/init.d/mysqld
+	service mysqld stop
 	touch $INSTALL_PATH/Mysql56_INST.lock
 	echo "Mysql installed successful.">>$INSTALL_LOG
 	} || {
@@ -351,7 +373,7 @@ server_id = 1
 max_connections = 500
 wait_timeout = 30
 EOF
-	bin/mysqld --initialize --user=mysql &>/tmp/mysqlinstall{$DATE_INST}.log
+	bin/mysqld --initialize --user=mysql &>/tmp/mysqlinstall${DATE_INST}.log
 	/usr/local/mysql/support-files/mysql.server start
 [ $? -eq 0 ] && {
 	LPASD=`cat /tmp/mysqlinstall{$DATE_INST}.log|grep root@localhost|awk -F":" '{print $4}'|sed s/[[:space:]]//g`
@@ -363,6 +385,8 @@ EOF
 	/usr/local/mysql/bin/mysql -u root -p$Mysql_PSWD -e "grant all on $Mysql_DBname.* to $Mysql_USER@'127.0.0.1' identified by '$Myuser_PSWD';"
 	#刷新权限
 	/usr/local/mysql/bin/mysql -u root -p$Mysql_PSWD -e "flush privileges;"
+	cp /usr/local/mysql/support-files/mysql.server /etc/init.d/mysqld
+	service mysqld stop
 	touch $INSTALL_PATH/Mysql57_INST.lock
 	echo "Mysql installed successful.">>$INSTALL_LOG
 	} || {
@@ -605,6 +629,9 @@ cd $INSTALL_PATH
 	cp sapi/cgi/fpm/php-fpm /etc/init.d/
 	chmod +x /etc/init.d/php-fpm
 	sed -i 's/short_open_tag = Off/short_open_tag = On/g' /usr/local/php/lib/php.ini
+	sed -i '/Unix group /a<value name=\"group\">www<\/value>' /usr/local/php/etc/php-fpm.conf
+	sed -i '/Unix user /a<value name=\"user\">www<\/value>' /usr/local/php/etc/php-fpm.conf
+	service php-fpm start
 	#mkdir /etc/php
 	#ln -s /usr/local/php/lib/php.ini /etc/php
 	#ln -s /usr/local/php/etc/php-fpm.conf /etc/php
@@ -662,6 +689,7 @@ cd $INSTALL_PATH
 [ -f php-5.4.45.tar.bz2 ] && [ ! -e PHP54_INST.lock ] && {
 	tar jxvf php-5.4.45.tar.bz2
 	cd php-5.4.45/
+	
 	./configure --prefix=/usr/local/php --with-mysql=/usr/local/mysql --enable-fpm --with-freetype-dir=/usr/local/freetype --with-jpeg-dir=/usr/local/jpeg --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql
 	make && make install
 [ $? -eq 0 ] && {
@@ -797,7 +825,7 @@ cat > /etc/rc.d/init.d/nginx <<EOF
 EOF
 chmod 700 /etc/rc.d/init.d/nginx
 ln -s /etc/rc.d/init.d/nginx /etc/rc.d/rc3.d/S60nginx
-[ $? -eq 0 ] && echo "Nginx script installed success">>$INSTALL_LOG || {
+[ -e /etc/rc.d/rc3.d/S60nginx ] && echo "Nginx script installed success">>$INSTALL_LOG || {
 	echo "Nginx script installed failed">>$INSTALL_LOG
 	exit 75
 	}
@@ -809,7 +837,7 @@ cat > /etc/rc.d/init.d/mysql <<EOF
 EOF
 chmod 700 /etc/rc.d/init.d/mysql
 ln -s /etc/rc.d/init.d/mysql /etc/rc3.d/S60mysql
-[ $? -eq 0 ] && echo "Mysql script installed success">>$INSTALL_LOG || {
+[ -e /etc/rc3.d/S60mysql ] && echo "Mysql script installed success">>$INSTALL_LOG || {
 	echo "Mysql script installed failed">>$INSTALL_LOG
 	exit 76
 	}
@@ -830,22 +858,38 @@ service iptables save
 ###########
 echo "#####################"
 #网站用户-web server's running user
-echo "The user you want to run the web server. is $USER_WEB"
+echo -e "The user you want to run the web server. is: ${GREEN_COLOR}$USER_WEB$RES"
 
 #用户密码-user password
-echo "The user's password. is $USER_PSWD "
+echo -e "The user's password. is: ${GREEN_COLOR}$USER_PSWD$RES"
 
 #Mysql root 密码-mysql root's passwd
-echo  "The Mysql root's password. is $Mysql_PSWD"
+echo  -e "The Mysql root's password. is: ${GREEN_COLOR}$Mysql_PSWD$RES"
 
 #新建Mysql数据库名-website database name 
-echo  "The database name you want to create. is $Mysql_DBname"
+echo  -e "The database name you want to create. is: ${GREEN_COLOR}$Mysql_DBname$RES"
 
 #Mysql普通用户名-normal mysql user
-echo  "The user you want to conncet mysql. is $Mysql_USER"
+echo  -e "The user you want to conncet mysql. is: ${GREEN_COLOR}$Mysql_USER$RES"
 
 #Mysql普通用户密码-password for normal user
-echo  "The Mysql user's password. is $Myuser_PSWD"
+echo  -e "The Mysql user's password. is: ${GREEN_COLOR}$Myuser_PSWD$RES"
+
+#start mysql
+service mysqld start
+
+#start php
+if [ $PHP_INST = 1 ]; then
+	service php-fpm start
+else
+	/usr/local/php/sbin/php-fpm
+fi
+
+#Add to system environment
+echo "export PATH=/usr/local/apache/bin:/usr/local/nginx/sbin:/usr/local/php/sbin:/usr/local/mysql/bin:$PATH">>/etc/profile
+source /etc/profile
+
+
 
 DATE_INST=`date +%Y-%m-%d-%H:%M`
 echo "Install finished at $DATE_INST."
