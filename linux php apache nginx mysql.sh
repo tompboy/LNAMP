@@ -215,7 +215,7 @@ file libxml2 libxml2-devel curl curl-devel libjpeg libjpeg-devel libtool libpng 
 libpng-devel wget libaio* vim libmcrypt libmcrypt-devel mcrypt mhash openssl openssl-devel|| exit 39
 
 echo "Downloading packages..">>$INSTALL_LOG
-wget -c http://dev.mysql.com/get/Downloads/MySQL-5.5/mysql-5.5.53-linux2.6-x86_64.tar.gz &&\
+
 wget -c http://nginx.org/download/nginx-1.10.2.tar.gz &&\
 wget -c https://ftp.pcre.org/pub/pcre/pcre-8.40.tar.bz2 &&\
 wget -c http://zlib.net/fossils/zlib-1.2.11.tar.gz &&\
@@ -250,6 +250,7 @@ wget -c http://cn2.php.net/distributions/php-5.6.30.tar.bz2
 My55_INST(){
 ##Install MySQL 5.5 ################
 cd $INSTALL_PATH
+wget -c http://dev.mysql.com/get/Downloads/MySQL-5.5/mysql-5.5.53-linux2.6-x86_64.tar.gz
 [ -f mysql-5.5.53-linux2.6-x86_64.tar.gz ] && [ ! -e Mysql55.lock ]{
 	userdel -r mysql
 	useradd mysql
