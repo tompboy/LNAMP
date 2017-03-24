@@ -343,11 +343,12 @@ server_id = 1
 max_connections = 500
 wait_timeout = 30
 EOF
-	bin/mysqld --initialize --user=mysql
+	bin/mysqld --initialize --user=mysql &>/tmp/mysqlinstall{$DATE_INST}.log
 	/usr/local/mysql/support-files/mysql.server start
 [ $? -eq 0 ] && {
+	LPASD=`cat /tmp/mysqlinstall{$DATE_INST}.log|grep root@localhost|awk -F":" '{print $4}'|sed s/[[:space:]]//g`
 	#重设root用户密码
-	/usr/local/mysql/bin/mysql -u root -p$Mysql_PSWD -e "alter user root password '$Mysql_PSWD';"
+	/usr/local/mysql/bin/mysql -u root -p$LPASD -e "alter user root password '$Mysql_PSWD';"
 	#创建数据库
 	/usr/local/mysql/bin/mysql -u root -p$Mysql_PSWD -e "create database $Mysql_DBname default charset utf8;"
 	#赋普通用户权
