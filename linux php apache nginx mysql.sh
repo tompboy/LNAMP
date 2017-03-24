@@ -49,8 +49,9 @@ read -p "Please input the Mysql user's password." Myuser_PSWD
 while :; do
 menu(){
 cat <<EOF
-####################
+######################
 #######  Mysql  ######
+######################
 1. Install Mysql 5.5
 2. Install Mysql 5.6
 3. Install Mysql 5.7
@@ -72,6 +73,7 @@ menu(){
 cat <<EOF
 ###########################
 #######  WEB server  ######
+###########################
 1. Install Apache 2.2
 2. Install Apache 2.4
 3. Install Nginx
@@ -93,6 +95,7 @@ menu(){
 cat <<EOF
 ####################
 #######  PHP  ######
+####################
 1. Install PHP 5.2.17
 2. Install PHP 5.3.29
 3. Install PHP 5.4.45
@@ -154,15 +157,17 @@ net.ipv4.tcp_tw_recycle = 1
 EOF
 sysctl -p
 
-cat >>/etc/security/limits.conf<<EOF
-*       soft    nofile  65535
-*       hard    nofile  65535
-EOF
+
 
 
 [ $RL = 2 ] && echo "*       hard    nproc  65535" >>/etc/security/limits.d/90-nproc.conf && sed -i 's/1024/65535/g' /etc/security/limits.d/90-nproc.conf
 
 [ $RL = 3 ] && echo "*       hard    nproc  65535" >> /etc/security/limits.d/20-nproc.conf && sed -i 's/4096/65535/g' /etc/security/limits.d/20-nproc.conf
+
+cat >>/etc/security/limits.conf<<EOF
+*       soft    nofile  65535
+*       hard    nofile  65535
+EOF
 
 [ $? -eq 0 ] && {
 	echo "Optimize system successful">>$INSTALL_LOG
@@ -183,7 +188,10 @@ yum install -y vsftpd
 	sed -i 's/anonymous_enable=YES/anonymous_enable=NO/g' /etc/vsftpd/vsftpd.conf
 	sed -i 's/#chroot_local_user=YES/chroot_local_user=YES/g' /etc/vsftpd/vsftpd.conf
 	service vsftpd start
-[ `netstat -anp|grep vsftpd|wc -l` -gt 0 ] && echo "Vsftpd installed success.">>$INSTALL_LOG || echo "Vsftpd installed failed.">>$INSTALL_LOG; exit 2
+[ `netstat -anp|grep vsftpd|wc -l` -gt 0 ] && echo "Vsftpd installed success.">>$INSTALL_LOG || { 
+	echo "Vsftpd installed failed.">>$INSTALL_LOG
+	exit 2
+	}
 }|| {
 	echo "vsftpd download failed">>$INSTALL_LOG
 	exit 1
@@ -193,7 +201,10 @@ useradd -s /sbin/nologin $USER_WEB && echo "$USER_PSWD" |passwd --stdin $USER_WE
 [ $? -eq 0 ] && {
 	echo "user $USER_WEB created success">>$INSTALL_LOG
 	touch $INSTALL_PATH/FTP_INST.lock
-	} || echo "user $USER_WEB created failed">>$INSTALL_LOG; exit 96
+	} || {
+	echo "user $USER_WEB created failed">>$INSTALL_LOG
+	exit 96
+		}
 }
 }
 
