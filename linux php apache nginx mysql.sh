@@ -49,6 +49,8 @@ read -p "Please input the Mysql user's password." Myuser_PSWD
 while :; do
 menu(){
 cat <<EOF
+####################
+#######  Mysql  ######
 1. Install Mysql 5.5
 2. Install Mysql 5.6
 3. Install Mysql 5.7
@@ -68,6 +70,8 @@ done
 while :; do
 menu(){
 cat <<EOF
+###########################
+#######  WEB server  ######
 1. Install Apache 2.2
 2. Install Apache 2.4
 3. Install Nginx
@@ -87,6 +91,8 @@ done
 while :; do
 menu(){
 cat <<EOF
+####################
+#######  PHP  ######
 1. Install PHP 5.2.17
 2. Install PHP 5.3.29
 3. Install PHP 5.4.45
@@ -143,7 +149,6 @@ net.ipv4.tcp_fin_timeout = 30
 net.ipv4.tcp_window_scaling = 0
 # Turn off the tcp_sack
 net.ipv4.tcp_sack = 0
-
 net.ipv4.tcp_tw_reuse = 1
 net.ipv4.tcp_tw_recycle = 1
 EOF
@@ -157,7 +162,7 @@ EOF
 
 [ $RL = 2 ] && echo "*       hard    nproc  65535" >>/etc/security/limits.d/90-nproc.conf && sed -i 's/1024/65535/g' /etc/security/limits.d/90-nproc.conf
 
-[ $RL = 3 ] && echo "*       hard    nproc  65535" >> /etc/security/limits.d/20-nproc.conf && sed -i 's/4096/65535/g' /etc/security/limits.d/90-nproc.conf
+[ $RL = 3 ] && echo "*       hard    nproc  65535" >> /etc/security/limits.d/20-nproc.conf && sed -i 's/4096/65535/g' /etc/security/limits.d/20-nproc.conf
 
 [ $? -eq 0 ] && {
 	echo "Optimize system successful">>$INSTALL_LOG
@@ -174,30 +179,22 @@ cd $INSTALL_PATH
 [ ! -e FTP_INST.lock ] && {
 ##Install FTP，建立用户，并设置密码
 yum install -y vsftpd
-[ $? -eq 0 ] &&
-{
+[ $? -eq 0 ] && {
 	sed -i 's/anonymous_enable=YES/anonymous_enable=NO/g' /etc/vsftpd/vsftpd.conf
 	sed -i 's/#chroot_local_user=YES/chroot_local_user=YES/g' /etc/vsftpd/vsftpd.conf
 	service vsftpd start
-[ `netstat -anp|grep vsftpd|wc -l` -gt 0 ] && echo "Vsftpd installed success.">>$INSTALL_LOG || {
-	echo "Vsftpd installed failed.">>$INSTALL_LOG
-	exit 2
-}
+[ `netstat -anp|grep vsftpd|wc -l` -gt 0 ] && echo "Vsftpd installed success.">>$INSTALL_LOG || echo "Vsftpd installed failed.">>$INSTALL_LOG; exit 2
 }|| {
 	echo "vsftpd download failed">>$INSTALL_LOG
 	exit 1
 	}
 
-#建立用户,并设置密码
 useradd -s /sbin/nologin $USER_WEB && echo "$USER_PSWD" |passwd --stdin $USER_WEB
-[ $? -eq 0 ] && echo {
-	"user $USER_WEB created success">>$INSTALL_LOG
+[ $? -eq 0 ] && {
+	echo "user $USER_WEB created success">>$INSTALL_LOG
 	touch $INSTALL_PATH/FTP_INST.lock
-	} || {
-	echo "user $USER_WEB created failed">>$INSTALL_LOG
-	exit 96
-		}
-	}
+	} || echo "user $USER_WEB created failed">>$INSTALL_LOG; exit 96
+}
 }
 
 DOWN_SOFT(){
@@ -206,13 +203,13 @@ cd $INSTALL_PATH
 #安装依赖包\下载安装源码包-download the source packages and depended packages
 #epel
 
-[ ! -e DOWN_soft.lock ] && {
+[ ! -e DOWN_SOFT.lock ] && {
 [ $RL = 2 ] && rpm -Uvh https://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
 [ $RL = 3 ] && rpm -Uvh https://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-9.noarch.rpm
 
 [ $? -eq 0 ] && yum -y install kernel-devel rpm-build patch make gcc gcc-c++ flex bison \
 file libxml2 libxml2-devel curl curl-devel libjpeg libjpeg-devel libtool libpng \
-libpng-devel wget libaio* vim libmcrypt libmcrypt-devel mcrypt mhash openssl openssl-devel|| exit 39
+libpng-devel wget libaio* vim libmcrypt libmcrypt-devel mcrypt mhash openssl openssl-devel libtool-ltdl-devel|| exit 39
 
 echo "Downloading packages..">>$INSTALL_LOG
 
@@ -238,7 +235,7 @@ wget -c http://cn2.php.net/distributions/php-5.6.30.tar.bz2
 
 [ $? -eq 0 ] && {
 	echo "download packages success.">>$INSTALL_LOG
-	touch $INSTALL_PATH/DOWN_soft.lock
+	touch $INSTALL_PATH/DOWN_SOFT.lock
 	} || {
 	echo "download packages failed."
 	echo "download packages failed.">>$INSTALL_LOG
@@ -247,11 +244,11 @@ wget -c http://cn2.php.net/distributions/php-5.6.30.tar.bz2
 	}
 }
 
-My55_INST(){
+Mysql55_INST(){
 ##Install MySQL 5.5 ################
 cd $INSTALL_PATH
 wget -c http://dev.mysql.com/get/Downloads/MySQL-5.5/mysql-5.5.53-linux2.6-x86_64.tar.gz
-[ -f mysql-5.5.53-linux2.6-x86_64.tar.gz ] && [ ! -e Mysql55.lock ]{
+[ -f mysql-5.5.53-linux2.6-x86_64.tar.gz ] && [ ! -e Mysql55_INST.lock ] && {
 	userdel -r mysql
 	useradd mysql
 	tar zxvf mysql-5.5.53-linux2.6-x86_64.tar.gz
@@ -274,7 +271,7 @@ EOF
 	/usr/local/mysql/bin/mysql -u root -p$Mysql_PSWD -e "grant all on $Mysql_DBname.* to $Mysql_USER@'127.0.0.1' identified by '$Myuser_PSWD';"
 	#刷新权限
 	/usr/local/mysql/bin/mysql -u root -p$Mysql_PSWD -e "flush privileges;"
-	touch $INSTALL_PATH/Mysql55.lock
+	touch $INSTALL_PATH/Mysql55_INST.lock
 	echo "Mysql installed successful.">>$INSTALL_LOG
 	} || {
 		echo "Mysql installed failed.">>$INSTALL_LOG
@@ -283,11 +280,11 @@ EOF
 	}
 }
 
-My56_INST(){
+Mysql56_INST(){
 ##Install MySQL 5.6 ################
 cd $INSTALL_PATH
 wget -c https://dev.mysql.com/get/Downloads/MySQL-5.6/mysql-5.6.35-linux-glibc2.5-x86_64.tar.gz
-[ -f mysql-5.6.35-linux-glibc2.5-x86_64.tar.gz ] && [ ! -e Mysql56.lock ]{
+[ -f mysql-5.6.35-linux-glibc2.5-x86_64.tar.gz ] && [ ! -e Mysql56_INST.lock ] && {
 	userdel -r mysql
 	useradd mysql
 	tar zxvf mysql-5.6.35-linux-glibc2.5-x86_64.tar.gz
@@ -314,7 +311,7 @@ EOF
 	/usr/local/mysql/bin/mysql -u root -p$Mysql_PSWD -e "grant all on $Mysql_DBname.* to $Mysql_USER@'127.0.0.1' identified by '$Myuser_PSWD';"
 	#刷新权限
 	/usr/local/mysql/bin/mysql -u root -p$Mysql_PSWD -e "flush privileges;"
-	touch $INSTALL_PATH/Mysql56.lock
+	touch $INSTALL_PATH/Mysql56_INST.lock
 	echo "Mysql installed successful.">>$INSTALL_LOG
 	} || {
 		echo "Mysql installed failed.">>$INSTALL_LOG
@@ -323,12 +320,11 @@ EOF
 	}
 }
 
-
-My57_INST(){
+Mysql57_INST(){
 ##Install MySQL 5.7 ################
 cd $INSTALL_PATH
 wget -c https://dev.mysql.com/get/Downloads/MySQL-5.7/mysql-5.7.17-linux-glibc2.5-x86_64.tar.gz
-[ -f mysql-5.7.17-linux-glibc2.5-x86_64.tar.gz ] && [ ! -e Mysql57.lock ]{
+[ -f mysql-5.7.17-linux-glibc2.5-x86_64.tar.gz ] && [ ! -e Mysql57_INST.lock ] && {
 	userdel -r mysql
 	useradd mysql
 	tar zxvf mysql-5.7.17-linux-glibc2.5-x86_64.tar.gz
@@ -356,7 +352,7 @@ EOF
 	/usr/local/mysql/bin/mysql -u root -p$Mysql_PSWD -e "grant all on $Mysql_DBname.* to $Mysql_USER@'127.0.0.1' identified by '$Myuser_PSWD';"
 	#刷新权限
 	/usr/local/mysql/bin/mysql -u root -p$Mysql_PSWD -e "flush privileges;"
-	touch $INSTALL_PATH/Mysql57.lock
+	touch $INSTALL_PATH/Mysql57_INST.lock
 	echo "Mysql installed successful.">>$INSTALL_LOG
 	} || {
 		echo "Mysql installed failed.">>$INSTALL_LOG
@@ -364,8 +360,6 @@ EOF
 		}
 	}
 }
-
-
 
 APA22_INST(){
 ##Install apache2.2 #####################
@@ -389,7 +383,6 @@ sed -i 's/CustomLog "logs\/access_log" common/CustomLog "\|\/usr\/local\/apache\
 
 cat >>/usr/local/apache/conf/httpd.conf<<EOF
 NameVirtualHost *:80
-
 <VirtualHost *:80>
 DocumentRoot "/home/rong1net3"
 ServerName www.rong1.net
@@ -398,18 +391,14 @@ Order allow,deny
 Allow from all
 </Directory>
 </VirtualHost>
-
 AddType application/x-httpd-php .php     
 AddType application/x-httpd-php-source .phps
-
 ExtendedStatus On
 <location /apstatus>
 SetHandler server-status
 Order Allow,Deny
 Allow from all
 </location>
-
-
 <IfModule mpm_prefork_module>
     StartServers          5
     MinSpareServers       5
@@ -418,13 +407,11 @@ Allow from all
     MaxClients          2000
     MaxRequestsPerChild   15000
 </IfModule>
-
 #压缩级别
 DeflateCompressionLevel 9
 SetOutputFilter DEFLATE
 AddOutputFilterByType DEFLATE text/html text/plain text/xml application/x-javascript application/x-httpd-php
 AddOutputFilter DEFLATE js css
-
 EOF
 touch $INSTALL_PATH/APA22_INST.lock
 echo "apache2.2 installed success...">>$INSTALL_LOG
@@ -441,7 +428,7 @@ echo "apache2.2 installed success...">>$INSTALL_LOG
 APA24_INST(){
 ##Install apache 2.4 #####################
 cd $INSTALL_PATH
-[ -f httpd-2.4.25.tar.bz2 ] && [ ! -e apa24_inst.lock ] && {
+[ -f httpd-2.4.25.tar.bz2 ] && [ ! -e APA24_INST.lock ] && {
 tar jxvf apr-1.5.2.tar.bz2
 cd apr-1.5.2
 ./configure --prefix=/usr/local/apr && make && make install
@@ -450,8 +437,8 @@ tar jxvf apr-util-1.5.4.tar.bz2
 cd apr-util-1.5.4
 ./configure --prefix=/usr/local/apr-util --with-apr=/usr/local/apr/bin/apr-1-config && make && make install
 cd $INSTALL_PATH
-tar zxvf pcre-8.35.tar.gz
-cd pcre-8.35
+tar jxvf pcre-8.40.tar.bz2
+cd pcre-8.40
 ./configure --prefix=/usr/local/pcre && make && make install
 
 cd $INSTALL_PATH
@@ -472,7 +459,6 @@ sed -i 's/CustomLog "logs\/access_log" common/CustomLog "\|\/usr\/local\/apache\
 #AddType application/x-httpd-php-source .phps
 
 cat >>/usr/local/apache/conf/httpd.conf<<EOF
-
 <VirtualHost *:80>
 DocumentRoot "/home/rong1net3"
 ServerName www.rong1.net
@@ -481,17 +467,13 @@ AllowOverride All
 Require all granted
 </Directory>
 </VirtualHost>
-
 AddType application/x-httpd-php .php     
 AddType application/x-httpd-php-source .phps
-
 ExtendedStatus On
 <location /apstatus>
 SetHandler server-status
 Require all granted
 </location>
-
-
 <IfModule mpm_event_module>
     StartServers             3
     MinSpareThreads         75
@@ -501,16 +483,14 @@ Require all granted
     MaxRequestWorkers      500
     MaxConnectionsPerChild   8000
 </IfModule>
-
 LoadModule deflate_module modules/mod_deflate.so
 LoadModule filter_module modules/mod_filter.so
 DeflateCompressionLevel 9
 SetOutputFilter DEFLATE
 AddOutputFilterByType DEFLATE text/html text/plain text/xml application/x-javascript application/x-httpd-php
 AddOutputFilter DEFLATE js css
-
 EOF
-touch $INSTALL_PATH/apa24_inst.lock
+touch $INSTALL_PATH/APA24_INST.lock
 echo "apache2.4 installed success...">>$INSTALL_LOG
 } || {
 	echo "apache2.4 installed failed...">>$INSTALL_LOG
@@ -525,8 +505,8 @@ echo "apache2.4 installed success...">>$INSTALL_LOG
 NGX_INST(){
 ##Install nginx################
 cd $INSTALL_PATH
-[ -f pcre-8.40.tar.gz ] && [ -f zlib-1.2.11.tar.gz ] && [ -f nginx-1.10.2.tar.gz ] && [ ! -e NGX_INST.lock ] && {
-	tar zxvf pcre-8.40.tar.gz
+[ -f pcre-8.40.tar.bz2 ] && [ -f zlib-1.2.11.tar.gz ] && [ -f nginx-1.10.2.tar.gz ] && [ ! -e NGX_INST.lock ] && {
+	tar zxvf pcre-8.40.tar.bz2
 	tar zxvf zlib-1.2.11.tar.gz
 	tar zxvf nginx-1.10.2.tar.gz
 	cd nginx-1.10.2
@@ -564,10 +544,7 @@ cd $INSTALL_PATH
 		echo "jpeg installed failed.">>$INSTALL_LOG
 		exit 63
 		}
-} || {
-		echo "jpeg download failed.">>$INSTALL_LOG
-		exit 65
-		}
+}
 
 
 
@@ -583,10 +560,7 @@ cd $INSTALL_PATH
 	echo "freetype installed failed.">>$INSTALL_LOG
 	exit 69
 	}
-	} || {
-		echo "freetype download failed.">>$INSTALL_LOG
-		exit 68
-		}
+}
 
 ##Install GD lib###############
 cd $INSTALL_PATH
@@ -596,14 +570,11 @@ cd $INSTALL_PATH
 	cd gd-2.0.33
 	./configure --prefix=/usr/local/gd2 --with-png --with-freetype-dir=/usr/local/freetype --with-jpeg-dir=/usr/local/jpeg
 	make && make install
-[ $? -eq 0 ] && echo "gd lib installed success">>$INSTALL_LOG || {
+[ $? -eq 0 ] && echo "gd lib installed success">>$INSTALL_LOG; touch $INSTALL_PATH/FGP_INST.lock || {
 	echo "gd lib installed failed.">>$INSTALL_LOG
 	exit 60
 	}
-	} || {
-		echo "gd lib download failed.">>$INSTALL_LOG
-		exit 59
-		}
+	}
 }
 
 PHP52_INST(){
@@ -640,7 +611,7 @@ PHP53_INST(){
 ln -s /usr/lib64/libjpeg.so /usr/lib/
 ln -s /usr/lib64/libpng.so /usr/lib/
 cd $INSTALL_PATH
-[ -f php-5.3.29.tar.bz2 ] && [ ! -e php53.lock ] && {
+[ -f php-5.3.29.tar.bz2 ] && [ ! -e PHP53_INST.lock ] && {
 	tar jxvf php-5.3.29.tar.bz2
 	cd php-5.3.29/
 	./configure --prefix=/usr/local/php --with-mysql=/usr/local/mysql --enable-fpm --with-freetype-dir=/usr/local/freetype --with-jpeg-dir=/usr/local/jpeg --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql
@@ -663,7 +634,7 @@ cd $INSTALL_PATH
 	sed -i 's/;pm.status_path = \/pmstatus/pm.status_path = \/pmstatus/g' /usr/local/php/etc/php-fpm.conf
 	sed -i 's/;request_terminate_timeout = 0/request_terminate_timeout = 30s/g' /usr/local/php/etc/php-fpm.conf
 	sed -i 's/;pid = run\/php-fpm.pid/pid = run\/php-fpm.pid/g' /usr/local/php/etc/php-fpm.conf
-	touch /$INSTALL_PATH/php53.lock
+	touch /$INSTALL_PATH/PHP53_INST.lock
 	echo "PHP installed success">>$INSTALL_LOG
 	} || {
 		echo "PHP installed failed">>$INSTALL_LOG
@@ -677,7 +648,7 @@ PHP54_INST(){
 ln -s /usr/lib64/libjpeg.so /usr/lib/
 ln -s /usr/lib64/libpng.so /usr/lib/
 cd $INSTALL_PATH
-[ -f php-5.4.45.tar.bz2 ] && [ ! -e php54.lock ] && {
+[ -f php-5.4.45.tar.bz2 ] && [ ! -e PHP54_INST.lock ] && {
 	tar jxvf php-5.4.45.tar.bz2
 	cd php-5.4.45/
 	./configure --prefix=/usr/local/php --with-mysql=/usr/local/mysql --enable-fpm --with-freetype-dir=/usr/local/freetype --with-jpeg-dir=/usr/local/jpeg --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql
@@ -700,7 +671,7 @@ cd $INSTALL_PATH
 	sed -i 's/;pm.status_path = \/pmstatus/pm.status_path = \/pmstatus/g' /usr/local/php/etc/php-fpm.conf
 	sed -i 's/;request_terminate_timeout = 0/request_terminate_timeout = 30s/g' /usr/local/php/etc/php-fpm.conf
 	sed -i 's/;pid = run\/php-fpm.pid/pid = run\/php-fpm.pid/g' /usr/local/php/etc/php-fpm.conf
-	touch /$INSTALL_PATH/php54.lock
+	touch /$INSTALL_PATH/PHP54_INST.lock
 	echo "PHP installed success">>$INSTALL_LOG
 	} || {
 		echo "PHP installed failed">>$INSTALL_LOG
@@ -731,7 +702,7 @@ EOF
 ZendGL_INST(){
 ##Install Zend Guard Loader##################
 cd $INSTALL_PATH
-[ -f ZendGuardLoader-php-5.3-linux-glibc23-x86_64.tar.gz ] && [ $PHP_INST = 2 ] && [ ! -e ZendGL.lock ] && {
+[ -f ZendGuardLoader-php-5.3-linux-glibc23-x86_64.tar.gz ] && [ $PHP_INST = 2 ] && [ ! -e ZendGL_INST.lock ] && {
 	mkdir -p /usr/local/php/include/php/ext/zend
 	tar zxvf ZendGuardLoader-php-5.3-linux-glibc23-x86_64.tar.gz
 	cp ZendGuardLoader-php-5.3-linux-glibc23-x86_64/php-5.3.x/ZendGuardLoader.so /usr/local/php/include/php/ext/zend/ZendGuardLoader.so
@@ -743,27 +714,27 @@ zend_loader.disable_licensing=0
 zend_loader.obfuscation_level_support=3
 ##########################
 EOF
-	touch $INSTALL_PATH/ZendGL.lock
+	touch $INSTALL_PATH/ZendGL_INST.lock
 	echo "Zend Guard Loader installed success">>$INSTALL_LOG
 	}
 }
 
-CHK_SYS
-FTP_INST
-DOWN_SOFT
+[ ! -e $INSTALL_PATH/CHK_SYS.lock ] && CHK_SYS
+[ ! -e $INSTALL_PATH/FTP_INST.lock ] && FTP_INST
+[ ! -e $INSTALL_PATH/DOWN_SOFT.lock ] && DOWN_SOFT
 
 #Mysql
 case $Mysql_INST in
 	1)
-	My55_INST
+	[ ! -e $INSTALL_PATH/Mysql55_INST.lock ] && Mysql55_INST
 	;;
 	
 	2)
-	My56_INST
+	[ ! -e $INSTALL_PATH/Mysql56_INST.lock ] && Mysql56_INST
 	;;
 	
 	3)
-	My57_INST
+	[ ! -e $INSTALL_PATH/Mysql57_INST.lock ] && Mysql57_INST
 	;;
 
 esac
@@ -771,39 +742,39 @@ esac
 #Web server
 case $WEB_INST in
 	1)
-	APA22_INST
+	[ ! -e $INSTALL_PATH/APA22_INST.lock ] && APA22_INST
 	;;
 	
 	2)
-	APA24_INST
+	[ ! -e $INSTALL_PATH/APA24_INST.lock ] && APA24_INST
 	;;
 	
 	3)
-	NGX_INST
+	[ ! -e $INSTALL_PATH/NGX_INST.lock ] && NGX_INST
 	;;
 
 esac
 
-FGP_INST
+[ ! -e $INSTALL_PATH/FGP_INST.lock ] && FGP_INST
 
 #Php
 case $PHP_INST in
 	1)
-	PHP52_INST
+	[ ! -e $INSTALL_PATH/PHP52_INST.lock ] && PHP52_INST
 	;;
 	
 	2)
-	PHP53_INST
+	[ ! -e $INSTALL_PATH/PHP53_INST.lock ] && PHP53_INST
 	;;
 	
 	3)
-	PHP54_INST
+	[ ! -e $INSTALL_PATH/PHP54_INST.lock ] && PHP54_INST
 	;;
 
 esac
 
-ZOPT_INST
-ZendGL_INST
+[ ! -e $INSTALL_PATH/ZOPT_INST.lock ] && ZOPT_INST
+[ ! -e $INSTALL_PATH/ZendGL_INST.lock ] && ZendGL_INST
 
 
 #ADD to system on boot
