@@ -258,8 +258,7 @@ wget -c http://archive.apache.org/dist/httpd/httpd-2.2.32.tar.bz2 &&\
 wget -c http://archive.apache.org/dist/httpd/httpd-2.4.25.tar.bz2 &&\
 wget -c http://archive.apache.org/dist/apr/apr-1.5.2.tar.bz2 &&\
 wget -c http://archive.apache.org/dist/apr/apr-util-1.5.4.tar.bz2 &&\
-wget -c http://downloads.zend.com/guard/5.5.0/ZendGuardLoader-php-5.3-linux-glibc23-x86_64.tar.gz &&\
-wget -c http://cn2.php.net/distributions/php-5.4.45.tar.bz2
+wget -c http://downloads.zend.com/guard/5.5.0/ZendGuardLoader-php-5.3-linux-glibc23-x86_64.tar.gz
 
 [ $? -eq 0 ] && {
 	echo "download packages success.">>$INSTALL_LOG
@@ -618,26 +617,36 @@ ln -s /usr/lib64/libpng.so /usr/lib/
 cd $INSTALL_PATH
 [ -f php-5.2.17.tar.bz2 ] && [ -f php-5.2.17-fpm-0.5.14.diff.gz ] && [ ! -e PHP52_INST.lock ] && {
 	tar jxvf php-5.2.17.tar.bz2
-	gzip -cd php-5.2.17-fpm-0.5.14.diff.gz | patch -d php-5.2.17 -p1
+
 	cd php-5.2.17/
 	patch -p0 -b < ../php-5.x.x.patch
 	if [ $WEB_INST =3 ]; then 
+	gzip -cd php-5.2.17-fpm-0.5.14.diff.gz | patch -d php-5.2.17 -p1
 	./configure --prefix=/usr/local/php --with-mysql=/usr/local/mysql --enable-fastcgi --enable-fpm --with-freetype-dir=/usr/local/freetype --with-jpeg-dir=/usr/local/jpeg --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd
-	else
-	./configure --prefix=/usr/local/php --with-mysql=/usr/local/mysql --with-apxs2=/usr/local/apache/bin/apxs --with-freetype-dir=/usr/local/freetype --with-jpeg-dir=/usr/local/jpeg --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd
-	fi
 	make && make install
 [ $? -eq 0 ] && {
 	cp php.ini-recommended /usr/local/php/lib/php.ini
+	sed -i 's/short_open_tag = Off/short_open_tag = On/g' /usr/local/php/lib/php.ini
 	cp sapi/cgi/fpm/php-fpm /etc/init.d/
 	chmod +x /etc/init.d/php-fpm
-	sed -i 's/short_open_tag = Off/short_open_tag = On/g' /usr/local/php/lib/php.ini
 	sed -i '/Unix group /a<value name=\"group\">www<\/value>' /usr/local/php/etc/php-fpm.conf
 	sed -i '/Unix user /a<value name=\"user\">www<\/value>' /usr/local/php/etc/php-fpm.conf
 	service php-fpm start
-	#mkdir /etc/php
-	#ln -s /usr/local/php/lib/php.ini /etc/php
-	#ln -s /usr/local/php/etc/php-fpm.conf /etc/php
+	[ $? -eq 0 ] && {
+			touch $INSTALL_PATH/PHP52_INST.lock
+			echo "PHP installed success">>$INSTALL_LOG
+	} || {
+			echo "PHP installed failed">>$INSTALL_LOG
+			exit 58
+		}
+	}
+	else
+	./configure --prefix=/usr/local/php --with-mysql=/usr/local/mysql --with-apxs2=/usr/local/apache/bin/apxs --with-freetype-dir=/usr/local/freetype --with-jpeg-dir=/usr/local/jpeg --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd
+	make && make install
+[ $? -eq 0 ] && {
+	cp php.ini-recommended /usr/local/php/lib/php.ini
+	sed -i 's/short_open_tag = Off/short_open_tag = On/g' /usr/local/php/lib/php.ini
+	[ $? -eq 0 ] && {
 	touch $INSTALL_PATH/PHP52_INST.lock
 	echo "PHP installed success">>$INSTALL_LOG
 	} || {
@@ -645,6 +654,7 @@ cd $INSTALL_PATH
 		exit 58
 		}
 	}
+	fi
 }
 
 PHP53_INST(){
@@ -693,6 +703,7 @@ PHP54_INST(){
 ln -s /usr/lib64/libjpeg.so /usr/lib/
 ln -s /usr/lib64/libpng.so /usr/lib/
 cd $INSTALL_PATH
+wget -c http://cn2.php.net/distributions/php-5.4.45.tar.bz2
 [ -f php-5.4.45.tar.bz2 ] && [ ! -e PHP54_INST.lock ] && {
 	tar jxvf php-5.4.45.tar.bz2
 	cd php-5.4.45/
