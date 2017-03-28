@@ -9,7 +9,8 @@
 # Add: php5.4,mysql 5.6...2017-03-22
 # Add: php7,mysql 5.7...2017-03-23
 # Debug: Fix some mistakes..2017-03-27
-# Version:V 0.8
+# Add: support on Ubuntu 16...2017-03-28
+# Version:V 0.9
 
 
 ##预定义变量-Predefined variables
@@ -247,7 +248,7 @@ if [ $RL = 2 -o $RL = 3 ]; then
 else
 	[ $RL = 4 ] && {
 	apt-get update &&\
-	apt-get -y install automake patch make gcc flex bison file libxml2 libxml2-dev libjpeg-dev libpng-dev curl libtool wget libaio-dev vim mcrypt openssl libssl-dev zlib1g zlib1g-dev libfreetype6 libfreetype6-dev libjpeg62 libjpeg62-dev libcurl4-gnutls-dev libmcrypt-dev libtool-bin &&\
+	apt-get -y install automake patch make gcc flex bison file libxml2 libxml2-dev libjpeg-dev libpng-dev curl libtool wget libaio-dev vim mcrypt openssl libssl-dev zlib1g zlib1g-dev libfreetype6 libfreetype6-dev libjpeg-dev libcurl4-gnutls-dev libmcrypt-dev libtool-bin &&\
 	ln -s /usr/lib/x86_64-linux-gnu/libssl.so /usr/lib
 }
 fi
@@ -1072,6 +1073,7 @@ esac
 #ADD to system on boot
 ##/etc/rcS.d
 if [ $WEB_INST = 3 ]; then
+	if [ $RL = 2 -o $RL = 3 ]; then
 cat > /etc/rc.d/init.d/nginx <<EOF
 #!/bin/bash
 #Start web service ON BOOT
@@ -1083,20 +1085,48 @@ EOF
 			echo "Nginx script installed failed">>$INSTALL_LOG
 			exit 75
 			}
+	else
+cat > /etc/init.d/nginx <<EOF
+#!/bin/bash
+#Start web service ON BOOT
+/usr/local/nginx/sbin/nginx
+EOF
+		chmod 700 /etc/init.d/nginx
+		ln -s /etc/init.d/nginx /etc/rcS.d/S60nginx
+		[ -e /etc/rcS.d/S60nginx ] && echo "Nginx script installed success">>$INSTALL_LOG || {
+			echo "Nginx script installed failed">>$INSTALL_LOG
+			exit 75
+			}
+	fi
 else
+	if [ $RL = 2 -o $RL = 3 ]; then
 cat > /etc/rc.d/init.d/httpd <<EOF
 #!/bin/bash
 #Start web service ON BOOT
 /usr/local/apache/bin/apachectl -k start
 EOF
 		chmod 700 /etc/rc.d/init.d/httpd
-		ln -s /etc/rc.d/init.d/httpd /etc/rc.d/rc3.d/S60httpd
-		[ -e /etc/rc.d/rc3.d/S60httpd ] && echo "Apache script installed success">>$INSTALL_LOG || {
+		ln -s /etc/rc.d/init.d/httpd /etc/rcS.d/S60httpd
+		[ -e /etc/rcS.d/S60httpd ] && echo "Apache script installed success">>$INSTALL_LOG || {
 			echo "Apache script installed failed">>$INSTALL_LOG
 			exit 75
 			}
+	else
+cat > /etc/init.d/httpd <<EOF
+#!/bin/bash
+#Start web service ON BOOT
+/usr/local/apache/bin/apachectl -k start
+EOF
+		chmod 700 /etc/init.d/httpd
+		ln -s /etc/init.d/httpd /etc/rcS.d/S60httpd
+		[ -e /etc/rcS.d/S60httpd ] && echo "Apache script installed success">>$INSTALL_LOG || {
+			echo "Apache script installed failed">>$INSTALL_LOG
+			exit 75
+			}
+	fi
 fi
 
+[ $RL = 2 -o $RL = 3 ] && {
 cat > /etc/rc.d/init.d/mysqld <<EOF
 #!/bin/bash
 #Start mysql service ON BOOT
@@ -1108,6 +1138,20 @@ ln -s /etc/rc.d/init.d/mysqld /etc/rc3.d/S60mysqld
 	echo "Mysql script installed failed">>$INSTALL_LOG
 	exit 76
 	}
+} || {
+cat > /etc/init.d/mysqld <<EOF
+#!/bin/bash
+#Start mysql service ON BOOT
+/usr/local/mysql/support-files/mysql.server start
+EOF
+	chmod 700 /etc/init.d/mysqld
+	ln -s /etc/init.d/mysqld /etc/rcS.d/S60mysqld
+[ -e /etc/rcS.d/S60mysqld ] && echo "Mysql script installed success">>$INSTALL_LOG || {
+	echo "Mysql script installed failed">>$INSTALL_LOG
+	exit 76
+	}
+}
+
 
 #iptables
 iptables -I INPUT -m state --state NEW -m tcp -p tcp --dport 22 -j ACCEPT
