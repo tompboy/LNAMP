@@ -185,6 +185,8 @@ sysctl -p
 cat >>/etc/security/limits.conf<<EOF
 *       soft    nofile  65535
 *       hard    nofile  65535
+*       soft    nproc  65535
+*       hard    nproc  65535
 EOF
 
 [ $? -eq 0 ] && {
@@ -201,21 +203,24 @@ FTP_INST(){
 cd $INSTALL_PATH
 [ ! -e FTP_INST.lock ] && {
 ##Install FTP，建立用户，并设置密码
-yum install -y vsftpd
-[ $? -eq 0 ] && {
+if [ $RL = 2 -o $RL = 3 ]; then
+	yum install -y vsftpd
+	[ $? -eq 0 ] && {
 	sed -i 's/anonymous_enable=YES/anonymous_enable=NO/g' /etc/vsftpd/vsftpd.conf
 	sed -i 's/#chroot_local_user=YES/chroot_local_user=YES/g' /etc/vsftpd/vsftpd.conf
+	}
+else
+	apt-get -y install vsftpd
+	
+	sed -i 's/#chroot_local_user=YES/chroot_local_user=YES/g' /etc/vsftpd.conf
+fi
 	service vsftpd start
 [ `netstat -anp|grep vsftpd|wc -l` -gt 0 ] && echo "Vsftpd installed success.">>$INSTALL_LOG || { 
 	echo "Vsftpd installed failed.">>$INSTALL_LOG
 	exit 2
 	}
-}|| {
-	echo "vsftpd download failed">>$INSTALL_LOG
-	exit 1
-	}
 
-useradd -s /sbin/nologin $USER_WEB && echo "$USER_PSWD" |passwd --stdin $USER_WEB
+useradd -s /sbin/nologin $USER_WEB && echo "$USER_WEB:$USER_PSWD"|chpasswd
 [ $? -eq 0 ] && {
 	echo "user $USER_WEB created success">>$INSTALL_LOG
 	touch $INSTALL_PATH/FTP_INST.lock
@@ -226,31 +231,33 @@ useradd -s /sbin/nologin $USER_WEB && echo "$USER_PSWD" |passwd --stdin $USER_WE
 }
 }
 
+
 DOWN_SOFT(){
 cd $INSTALL_PATH
 #安装依赖包\下载安装源码包-download the source packages and depended packages
 #epel
 [ ! -e DOWN_SOFT.lock ] && {
-[ $RL = 2 ] && rpm -Uvh https://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
-[ $RL = 3 ] && rpm -Uvh https://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-9.noarch.rpm
-rpm -qa|grep epel-release
-[ $? -eq 0 ] && yum -y install kernel-devel rpm-build patch make gcc gcc-c++ flex bison \
-file libxml2 libxml2-devel curl curl-devel libjpeg libjpeg-devel libtool libpng \
-libpng-devel wget libaio* vim libmcrypt libmcrypt-devel mcrypt mhash openssl openssl-devel libtool-ltdl-devel|| exit 39
-
+if [ $RL = 2 -o $RL = 3 ]; then
+	[ $RL = 2 ] && rpm -Uvh https://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
+	[ $RL = 3 ] && rpm -Uvh https://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-9.noarch.rpm
+	rpm -qa|grep epel-release
+	[ $? -eq 0 ] && yum -y install kernel-devel rpm-build patch make gcc gcc-c++ flex bison \
+	file libxml2 libxml2-devel curl curl-devel libjpeg libjpeg-devel libtool libpng \
+	libpng-devel wget libaio* vim libmcrypt libmcrypt-devel mcrypt mhash openssl openssl-devel libtool-ltdl-devel|| exit 39
+else
+	[ $RL = 4 ] && {
+	apt-get update &&\
+	apt-get -y install automake patch make gcc flex bison file libxml2 libxml2-dev libjpeg-dev libpng-dev curl libtool wget libaio-dev vim mcrypt openssl libssl-dev zlib1g zlib1g-dev libfreetype6 libfreetype6-dev libjpeg62 libjpeg62-dev libcurl4-gnutls-dev libmcrypt-dev libtool-bin &&\
+	ln -s /usr/lib/x86_64-linux-gnu/libssl.so /usr/lib
+}
+fi
 echo "Downloading packages..">>$INSTALL_LOG
 wget -c http://nginx.org/download/nginx-1.10.2.tar.gz &&\
 wget -c https://ftp.pcre.org/pub/pcre/pcre-8.40.tar.bz2 &&\
 wget -c http://zlib.net/fossils/zlib-1.2.11.tar.gz &&\
-wget -c http://down1.chinaunix.net/distfiles/jpegsrc.v6b.tar.gz &&\
-wget -c http://down1.chinaunix.net/distfiles/freetype-2.4.8.tar.bz2 &&\
-wget -c http://down1.chinaunix.net/distfiles/gd-2.0.33.tar.gz &&\
 wget -c http://down1.chinaunix.net/distfiles/ZendOptimizer-3.3.9-linux-glibc23-x86_64.tar.gz &&\
 wget -c https://mail.gnome.org/archives/xml/2012-August/txtbgxGXAvz4N.txt && mv txtbgxGXAvz4N.txt patch-5.x.x.patch &&\
 wget -c http://archive.apache.org/dist/httpd/httpd-2.2.32.tar.bz2 &&\
-wget -c http://archive.apache.org/dist/httpd/httpd-2.4.25.tar.bz2 &&\
-wget -c http://archive.apache.org/dist/apr/apr-1.5.2.tar.bz2 &&\
-wget -c http://archive.apache.org/dist/apr/apr-util-1.5.4.tar.bz2 &&\
 wget -c http://downloads.zend.com/guard/5.5.0/ZendGuardLoader-php-5.3-linux-glibc23-x86_64.tar.gz
 [ $? -eq 0 ] && {
 	echo "download packages success.">>$INSTALL_LOG
@@ -453,7 +460,10 @@ echo "apache2.2 installed success...">>$INSTALL_LOG
 APA24_INST(){
 ##Install apache 2.4 #####################
 cd $INSTALL_PATH
-[ -f httpd-2.4.25.tar.bz2 ] && [ ! -e APA24_INST.lock ] && {
+wget -c http://archive.apache.org/dist/httpd/httpd-2.4.25.tar.bz2 &&\
+wget -c http://archive.apache.org/dist/apr/apr-1.5.2.tar.bz2 &&\
+wget -c http://archive.apache.org/dist/apr/apr-util-1.5.4.tar.bz2
+[ -f apr-1.5.2.tar.bz2 ] && [ -f apr-util-1.5.4.tar.bz2 ] && [ -f httpd-2.4.25.tar.bz2 ] && [ ! -e APA24_INST.lock ] && {
 tar jxvf apr-1.5.2.tar.bz2
 cd apr-1.5.2
 ./configure --prefix=/usr/local/apr && make && make install
@@ -551,7 +561,9 @@ cd $INSTALL_PATH
 FGP_INST(){
 ##Install jpeg##################
 cd $INSTALL_PATH
-
+wget -c http://down1.chinaunix.net/distfiles/jpegsrc.v6b.tar.gz &&\
+wget -c http://down1.chinaunix.net/distfiles/freetype-2.4.8.tar.bz2 &&\
+wget -c http://down1.chinaunix.net/distfiles/gd-2.0.33.tar.gz
 [ -f jpegsrc.v6b.tar.gz ] && {
 	tar -xzvf jpegsrc.v6b.tar.gz
 	cd jpeg-6b/
@@ -689,6 +701,7 @@ wget -c http://cn2.php.net/distributions/php-5.3.29.tar.bz2
 		[ $? -eq 0 ] && {
 		cp php.ini-production /usr/local/php/lib/php.ini
 		sed -i 's/short_open_tag = Off/short_open_tag = On/g' /usr/local/php/lib/php.ini
+		[ $RL = 4 ] && libtool --finish /data/php-5.3.29/libs
 		touch /$INSTALL_PATH/PHP53_INST.lock
 		echo "PHP installed success">>$INSTALL_LOG
 		} || {
@@ -1019,7 +1032,7 @@ case $WEB_INST in
 
 esac
 
-[ ! -e $INSTALL_PATH/FGP_INST.lock ] && FGP_INST
+[ ! -e $INSTALL_PATH/FGP_INST.lock ] && [ $RL != 4 ] && FGP_INST
 
 #Php
 case $PHP_INST in
@@ -1057,6 +1070,7 @@ esac
 [ ! -e $INSTALL_PATH/ZendGL_INST.lock ] && ZendGL_INST
 
 #ADD to system on boot
+##/etc/rcS.d
 if [ $WEB_INST = 3 ]; then
 cat > /etc/rc.d/init.d/nginx <<EOF
 #!/bin/bash
