@@ -8,8 +8,8 @@
 # Add: php5.3 Apache...and on Centos7..2017-03-17
 # Add: php5.4,mysql 5.6...2017-03-22
 # Add: php7,mysql 5.7...2017-03-23
-# debug some mistakes..2017-03-27
-# Version:V 0.6
+# Debug: Fix some mistakes..2017-03-27
+# Version:V 0.8
 
 
 ##预定义变量-Predefined variables
@@ -69,7 +69,7 @@ while :; do
 menu(){
 cat <<EOF
 #################################
-#######  Mysql  ######
+#######  Mysql  #################
 #################################
 1. Install Mysql 5.5
 2. Install Mysql 5.6
@@ -80,9 +80,9 @@ menu
 read -p "Please input which web server you want to install.." Mysql_INST
 echo -e "\n"
 if [[ $Mysql_INST != [1-3] ]]; then
-echo "Input error, please input the correct num[1-3].."
+	echo "Input error, please input the correct num[1-3].."
 else
-break
+	break
 fi
 done
 
@@ -91,7 +91,7 @@ while :; do
 menu(){
 cat <<EOF
 ######################################
-#######  WEB server ######
+#######  WEB server ##################
 ######################################
 1. Install Apache 2.2
 2. Install Apache 2.4
@@ -102,9 +102,9 @@ menu
 read -p "Please input which web server you want to install.." WEB_INST
 echo -e "\n"
 if [[ $WEB_INST != [1-3] ]]; then
-echo "Input error, please input the correct num[1-3].."
+	echo "Input error, please input the correct num[1-3].."
 else
-break
+	break
 fi
 done
 
@@ -113,7 +113,7 @@ while :; do
 menu(){
 cat <<EOF
 ############################################
-########  PHP  #######
+########  PHP  #############################
 ############################################
 1. Install PHP 5.2.17
 2. Install PHP 5.3.29
@@ -128,12 +128,11 @@ menu
 read -p "Please input which PHP you want to install.." PHP_INST
 echo -e "\n"
 if [[ $PHP_INST != [1-7] ]]; then
-echo "Input error, please input the correct num[1-7].."
+	echo "Input error, please input the correct num[1-7].."
 else
-break
+	break
 fi
 done
-
 
 CHK_SYS(){
 cd $INSTALL_PATH
@@ -228,11 +227,9 @@ useradd -s /sbin/nologin $USER_WEB && echo "$USER_PSWD" |passwd --stdin $USER_WE
 }
 
 DOWN_SOFT(){
-
 cd $INSTALL_PATH
 #安装依赖包\下载安装源码包-download the source packages and depended packages
 #epel
-
 [ ! -e DOWN_SOFT.lock ] && {
 [ $RL = 2 ] && rpm -Uvh https://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
 [ $RL = 3 ] && rpm -Uvh https://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-9.noarch.rpm
@@ -242,24 +239,19 @@ file libxml2 libxml2-devel curl curl-devel libjpeg libjpeg-devel libtool libpng 
 libpng-devel wget libaio* vim libmcrypt libmcrypt-devel mcrypt mhash openssl openssl-devel libtool-ltdl-devel|| exit 39
 
 echo "Downloading packages..">>$INSTALL_LOG
-
 wget -c http://nginx.org/download/nginx-1.10.2.tar.gz &&\
 wget -c https://ftp.pcre.org/pub/pcre/pcre-8.40.tar.bz2 &&\
 wget -c http://zlib.net/fossils/zlib-1.2.11.tar.gz &&\
 wget -c http://down1.chinaunix.net/distfiles/jpegsrc.v6b.tar.gz &&\
 wget -c http://down1.chinaunix.net/distfiles/freetype-2.4.8.tar.bz2 &&\
 wget -c http://down1.chinaunix.net/distfiles/gd-2.0.33.tar.gz &&\
-wget -c http://down1.chinaunix.net/distfiles/php-5.2.17.tar.bz2 &&\
-wget -c http://php-fpm.org/downloads/php-5.2.17-fpm-0.5.14.diff.gz &&\
 wget -c http://down1.chinaunix.net/distfiles/ZendOptimizer-3.3.9-linux-glibc23-x86_64.tar.gz &&\
 wget -c https://mail.gnome.org/archives/xml/2012-August/txtbgxGXAvz4N.txt && mv txtbgxGXAvz4N.txt patch-5.x.x.patch &&\
-wget -c http://cn2.php.net/distributions/php-5.3.29.tar.bz2 &&\
 wget -c http://archive.apache.org/dist/httpd/httpd-2.2.32.tar.bz2 &&\
 wget -c http://archive.apache.org/dist/httpd/httpd-2.4.25.tar.bz2 &&\
 wget -c http://archive.apache.org/dist/apr/apr-1.5.2.tar.bz2 &&\
 wget -c http://archive.apache.org/dist/apr/apr-util-1.5.4.tar.bz2 &&\
 wget -c http://downloads.zend.com/guard/5.5.0/ZendGuardLoader-php-5.3-linux-glibc23-x86_64.tar.gz
-
 [ $? -eq 0 ] && {
 	echo "download packages success.">>$INSTALL_LOG
 	touch $INSTALL_PATH/DOWN_SOFT.lock
@@ -417,9 +409,9 @@ sed -i 's/CustomLog "logs\/access_log" common/CustomLog "\|\/usr\/local\/apache\
 cat >>/usr/local/apache/conf/httpd.conf<<EOF
 NameVirtualHost *:80
 <VirtualHost *:80>
-DocumentRoot "/home/rong1net3"
-ServerName www.rong1.net
-<Directory /home/rong1net3>
+DocumentRoot "/home/www"
+ServerName www.www.net
+<Directory /home/www>
 Order allow,deny
 Allow from all
 </Directory>
@@ -493,9 +485,9 @@ sed -i 's/CustomLog "logs\/access_log" common/CustomLog "\|\/usr\/local\/apache\
 
 cat >>/usr/local/apache/conf/httpd.conf<<EOF
 <VirtualHost *:80>
-DocumentRoot "/home/rong1net3"
-ServerName www.rong1.net
-<Directory /home/rong1net3>
+DocumentRoot "/home/www"
+ServerName www.www.net
+<Directory /home/www>
 AllowOverride All
 Require all granted
 </Directory>
@@ -615,46 +607,48 @@ PHP52_INST(){
 ln -s /usr/lib64/libjpeg.so /usr/lib/
 ln -s /usr/lib64/libpng.so /usr/lib/
 cd $INSTALL_PATH
+wget -c http://down1.chinaunix.net/distfiles/php-5.2.17.tar.bz2 &&\
+wget -c http://php-fpm.org/downloads/php-5.2.17-fpm-0.5.14.diff.gz
 [ -f php-5.2.17.tar.bz2 ] && [ -f php-5.2.17-fpm-0.5.14.diff.gz ] && [ ! -e PHP52_INST.lock ] && {
 	tar jxvf php-5.2.17.tar.bz2
-
 	cd php-5.2.17/
 	patch -p0 -b < ../php-5.x.x.patch
 	if [ $WEB_INST =3 ]; then 
-	gzip -cd php-5.2.17-fpm-0.5.14.diff.gz | patch -d php-5.2.17 -p1
-	./configure --prefix=/usr/local/php --with-mysql=/usr/local/mysql --enable-fastcgi --enable-fpm --with-freetype-dir=/usr/local/freetype --with-jpeg-dir=/usr/local/jpeg --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd
-	make && make install
-[ $? -eq 0 ] && {
-	cp php.ini-recommended /usr/local/php/lib/php.ini
-	sed -i 's/short_open_tag = Off/short_open_tag = On/g' /usr/local/php/lib/php.ini
-	cp sapi/cgi/fpm/php-fpm /etc/init.d/
-	chmod +x /etc/init.d/php-fpm
-	sed -i '/Unix group /a<value name=\"group\">www<\/value>' /usr/local/php/etc/php-fpm.conf
-	sed -i '/Unix user /a<value name=\"user\">www<\/value>' /usr/local/php/etc/php-fpm.conf
-	service php-fpm start
-	[ $? -eq 0 ] && {
-			touch $INSTALL_PATH/PHP52_INST.lock
-			echo "PHP installed success">>$INSTALL_LOG
-	} || {
+		gzip -cd php-5.2.17-fpm-0.5.14.diff.gz | patch -d php-5.2.17 -p1
+		./configure --prefix=/usr/local/php --with-mysql=/usr/local/mysql --enable-fastcgi --enable-fpm --with-freetype-dir=/usr/local/freetype --with-jpeg-dir=/usr/local/jpeg --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd
+		make && make install
+		[ $? -eq 0 ] && {
+		cp php.ini-recommended /usr/local/php/lib/php.ini
+		sed -i 's/short_open_tag = Off/short_open_tag = On/g' /usr/local/php/lib/php.ini
+		cp sapi/cgi/fpm/php-fpm /etc/init.d/
+		chmod +x /etc/init.d/php-fpm
+		sed -i '/Unix group /a<value name=\"group\">www<\/value>' /usr/local/php/etc/php-fpm.conf
+		sed -i '/Unix user /a<value name=\"user\">www<\/value>' /usr/local/php/etc/php-fpm.conf
+		service php-fpm start
+		[ $? -eq 0 ] && {
+				touch $INSTALL_PATH/PHP52_INST.lock
+				echo "PHP installed success">>$INSTALL_LOG
+		} || {
+				echo "PHP installed failed">>$INSTALL_LOG
+				exit 58
+			}
+		}
+	else
+		./configure --prefix=/usr/local/php --with-mysql=/usr/local/mysql --with-apxs2=/usr/local/apache/bin/apxs --with-freetype-dir=/usr/local/freetype --with-jpeg-dir=/usr/local/jpeg --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd
+		make && make install
+		[ $? -eq 0 ] && {
+		cp php.ini-recommended /usr/local/php/lib/php.ini
+		sed -i 's/short_open_tag = Off/short_open_tag = On/g' /usr/local/php/lib/php.ini
+		[ $? -eq 0 ] && {
+				touch $INSTALL_PATH/PHP52_INST.lock
+				echo "PHP installed success">>$INSTALL_LOG
+		} || {
 			echo "PHP installed failed">>$INSTALL_LOG
 			exit 58
+			}
 		}
-	}
-	else
-	./configure --prefix=/usr/local/php --with-mysql=/usr/local/mysql --with-apxs2=/usr/local/apache/bin/apxs --with-freetype-dir=/usr/local/freetype --with-jpeg-dir=/usr/local/jpeg --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd
-	make && make install
-[ $? -eq 0 ] && {
-	cp php.ini-recommended /usr/local/php/lib/php.ini
-	sed -i 's/short_open_tag = Off/short_open_tag = On/g' /usr/local/php/lib/php.ini
-	[ $? -eq 0 ] && {
-	touch $INSTALL_PATH/PHP52_INST.lock
-	echo "PHP installed success">>$INSTALL_LOG
-	} || {
-		echo "PHP installed failed">>$INSTALL_LOG
-		exit 58
-		}
-	}
 	fi
+	}
 }
 
 PHP53_INST(){
@@ -662,39 +656,46 @@ PHP53_INST(){
 ln -s /usr/lib64/libjpeg.so /usr/lib/
 ln -s /usr/lib64/libpng.so /usr/lib/
 cd $INSTALL_PATH
+wget -c http://cn2.php.net/distributions/php-5.3.29.tar.bz2
 [ -f php-5.3.29.tar.bz2 ] && [ ! -e PHP53_INST.lock ] && {
 	tar jxvf php-5.3.29.tar.bz2
 	cd php-5.3.29/
 	if [ $WEB_INST =3 ]; then
-	./configure --prefix=/usr/local/php --with-mysql=/usr/local/mysql --enable-fpm --with-freetype-dir=/usr/local/freetype --with-jpeg-dir=/usr/local/jpeg --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql
+		./configure --prefix=/usr/local/php --with-mysql=/usr/local/mysql --enable-fpm --with-freetype-dir=/usr/local/freetype --with-jpeg-dir=/usr/local/jpeg --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql
+		[ $? -eq 0 ] && {
+		cp php.ini-production /usr/local/php/lib/php.ini
+		sed -i 's/short_open_tag = Off/short_open_tag = On/g' /usr/local/php/lib/php.ini
+		cd /usr/local/php/etc/
+		cp php-fpm.conf.default php-fpm.conf
+		sed -i 's/user = nobody/user = '$USER_WEB'/g' /usr/local/php/etc/php-fpm.conf
+		sed -i 's/group = nobody/group = '$USER_WEB'/g' /usr/local/php/etc/php-fpm.conf
+		sed -i 's/;rlimit_files = 1024/rlimit_files = 10240/g' /usr/local/php/etc/php-fpm.conf
+		sed -i 's/;listen.allowed_clients = 127.0.0.1/listen.allowed_clients = 127.0.0.1/g' /usr/local/php/etc/php-fpm.conf
+		sed -i 's/pm = dynamic/pm = static/g' /usr/local/php/etc/php-fpm.conf
+		sed -i 's/pm.max_children = 5/pm.max_children = 100/g' /usr/local/php/etc/php-fpm.conf
+		sed -i 's/;pm.max_requests = 500/pm.max_requests = 5000/g' /usr/local/php/etc/php-fpm.conf
+		sed -i 's/;pm.status_path = \/pmstatus/pm.status_path = \/pmstatus/g' /usr/local/php/etc/php-fpm.conf
+		sed -i 's/;request_terminate_timeout = 0/request_terminate_timeout = 30s/g' /usr/local/php/etc/php-fpm.conf
+		sed -i 's/;pid = run\/php-fpm.pid/pid = run\/php-fpm.pid/g' /usr/local/php/etc/php-fpm.conf
+		touch /$INSTALL_PATH/PHP53_INST.lock
+		echo "PHP installed success">>$INSTALL_LOG
+		} || {
+			echo "PHP installed failed">>$INSTALL_LOG
+			exit 58
+			}
 	else
-	./configure --prefix=/usr/local/php --with-mysql=/usr/local/mysql --with-apxs2=/usr/local/apache/bin/apxs --with-freetype-dir=/usr/local/freetype --with-jpeg-dir=/usr/local/jpeg --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql
+		./configure --prefix=/usr/local/php --with-mysql=/usr/local/mysql --with-apxs2=/usr/local/apache/bin/apxs --with-freetype-dir=/usr/local/freetype --with-jpeg-dir=/usr/local/jpeg --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql
+		make && make install
+		[ $? -eq 0 ] && {
+		cp php.ini-production /usr/local/php/lib/php.ini
+		sed -i 's/short_open_tag = Off/short_open_tag = On/g' /usr/local/php/lib/php.ini
+		touch /$INSTALL_PATH/PHP53_INST.lock
+		echo "PHP installed success">>$INSTALL_LOG
+		} || {
+			echo "PHP installed failed">>$INSTALL_LOG
+			exit 58
+			}
 	fi
-	make && make install
-[ $? -eq 0 ] && {
-	cp php.ini-production /usr/local/php/lib/php.ini
-	sed -i 's/short_open_tag = Off/short_open_tag = On/g' /usr/local/php/lib/php.ini
-	#mkdir /etc/php
-	#ln -s /usr/local/php/lib/php.ini /etc/php
-	#ln -s /usr/local/php/etc/php-fpm.conf /etc/php
-	cd /usr/local/php/etc/
-	cp php-fpm.conf.default php-fpm.conf
-	sed -i 's/user = nobody/user = '$USER_WEB'/g' /usr/local/php/etc/php-fpm.conf
-	sed -i 's/group = nobody/group = '$USER_WEB'/g' /usr/local/php/etc/php-fpm.conf
-	sed -i 's/;rlimit_files = 1024/rlimit_files = 10240/g' /usr/local/php/etc/php-fpm.conf
-	sed -i 's/;listen.allowed_clients = 127.0.0.1/listen.allowed_clients = 127.0.0.1/g' /usr/local/php/etc/php-fpm.conf
-	sed -i 's/pm = dynamic/pm = static/g' /usr/local/php/etc/php-fpm.conf
-	sed -i 's/pm.max_children = 5/pm.max_children = 100/g' /usr/local/php/etc/php-fpm.conf
-	sed -i 's/;pm.max_requests = 500/pm.max_requests = 5000/g' /usr/local/php/etc/php-fpm.conf
-	sed -i 's/;pm.status_path = \/pmstatus/pm.status_path = \/pmstatus/g' /usr/local/php/etc/php-fpm.conf
-	sed -i 's/;request_terminate_timeout = 0/request_terminate_timeout = 30s/g' /usr/local/php/etc/php-fpm.conf
-	sed -i 's/;pid = run\/php-fpm.pid/pid = run\/php-fpm.pid/g' /usr/local/php/etc/php-fpm.conf
-	touch /$INSTALL_PATH/PHP53_INST.lock
-	echo "PHP installed success">>$INSTALL_LOG
-	} || {
-		echo "PHP installed failed">>$INSTALL_LOG
-		exit 58
-		}
 	}
 }
 
@@ -708,35 +709,42 @@ wget -c http://cn2.php.net/distributions/php-5.4.45.tar.bz2
 	tar jxvf php-5.4.45.tar.bz2
 	cd php-5.4.45/
 	if [ $WEB_INST =3 ]; then
-	./configure --prefix=/usr/local/php --with-mysql=/usr/local/mysql --enable-fpm --with-freetype-dir=/usr/local/freetype --with-jpeg-dir=/usr/local/jpeg --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql
+		./configure --prefix=/usr/local/php --with-mysql=/usr/local/mysql --enable-fpm --with-freetype-dir=/usr/local/freetype --with-jpeg-dir=/usr/local/jpeg --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql
+		make && make install
+		[ $? -eq 0 ] && {
+		cp php.ini-production /usr/local/php/lib/php.ini
+		sed -i 's/short_open_tag = Off/short_open_tag = On/g' /usr/local/php/lib/php.ini
+		cd /usr/local/php/etc/
+		cp php-fpm.conf.default php-fpm.conf
+		sed -i 's/user = nobody/user = '$USER_WEB'/g' /usr/local/php/etc/php-fpm.conf
+		sed -i 's/group = nobody/group = '$USER_WEB'/g' /usr/local/php/etc/php-fpm.conf
+		sed -i 's/;rlimit_files = 1024/rlimit_files = 10240/g' /usr/local/php/etc/php-fpm.conf
+		sed -i 's/;listen.allowed_clients = 127.0.0.1/listen.allowed_clients = 127.0.0.1/g' /usr/local/php/etc/php-fpm.conf
+		sed -i 's/pm = dynamic/pm = static/g' /usr/local/php/etc/php-fpm.conf
+		sed -i 's/pm.max_children = 5/pm.max_children = 100/g' /usr/local/php/etc/php-fpm.conf
+		sed -i 's/;pm.max_requests = 500/pm.max_requests = 5000/g' /usr/local/php/etc/php-fpm.conf
+		sed -i 's/;pm.status_path = \/pmstatus/pm.status_path = \/pmstatus/g' /usr/local/php/etc/php-fpm.conf
+		sed -i 's/;request_terminate_timeout = 0/request_terminate_timeout = 30s/g' /usr/local/php/etc/php-fpm.conf
+		sed -i 's/;pid = run\/php-fpm.pid/pid = run\/php-fpm.pid/g' /usr/local/php/etc/php-fpm.conf
+		touch /$INSTALL_PATH/PHP54_INST.lock
+		echo "PHP installed success">>$INSTALL_LOG
+		} || {
+			echo "PHP installed failed">>$INSTALL_LOG
+			exit 58
+			}
 	else
-	./configure --prefix=/usr/local/php --with-mysql=/usr/local/mysql --with-apxs2=/usr/local/apache/bin/apxs --with-freetype-dir=/usr/local/freetype --with-jpeg-dir=/usr/local/jpeg --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql
+		./configure --prefix=/usr/local/php --with-mysql=/usr/local/mysql --with-apxs2=/usr/local/apache/bin/apxs --with-freetype-dir=/usr/local/freetype --with-jpeg-dir=/usr/local/jpeg --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql
+		make && make install
+		[ $? -eq 0 ] && {
+		cp php.ini-production /usr/local/php/lib/php.ini
+		sed -i 's/short_open_tag = Off/short_open_tag = On/g' /usr/local/php/lib/php.ini
+		touch /$INSTALL_PATH/PHP54_INST.lock
+		echo "PHP installed success">>$INSTALL_LOG
+		} || {
+			echo "PHP installed failed">>$INSTALL_LOG
+			exit 58
+			}
 	fi
-	make && make install
-[ $? -eq 0 ] && {
-	cp php.ini-production /usr/local/php/lib/php.ini
-	sed -i 's/short_open_tag = Off/short_open_tag = On/g' /usr/local/php/lib/php.ini
-	#mkdir /etc/php
-	#ln -s /usr/local/php/lib/php.ini /etc/php
-	#ln -s /usr/local/php/etc/php-fpm.conf /etc/php
-	cd /usr/local/php/etc/
-	cp php-fpm.conf.default php-fpm.conf
-	sed -i 's/user = nobody/user = '$USER_WEB'/g' /usr/local/php/etc/php-fpm.conf
-	sed -i 's/group = nobody/group = '$USER_WEB'/g' /usr/local/php/etc/php-fpm.conf
-	sed -i 's/;rlimit_files = 1024/rlimit_files = 10240/g' /usr/local/php/etc/php-fpm.conf
-	sed -i 's/;listen.allowed_clients = 127.0.0.1/listen.allowed_clients = 127.0.0.1/g' /usr/local/php/etc/php-fpm.conf
-	sed -i 's/pm = dynamic/pm = static/g' /usr/local/php/etc/php-fpm.conf
-	sed -i 's/pm.max_children = 5/pm.max_children = 100/g' /usr/local/php/etc/php-fpm.conf
-	sed -i 's/;pm.max_requests = 500/pm.max_requests = 5000/g' /usr/local/php/etc/php-fpm.conf
-	sed -i 's/;pm.status_path = \/pmstatus/pm.status_path = \/pmstatus/g' /usr/local/php/etc/php-fpm.conf
-	sed -i 's/;request_terminate_timeout = 0/request_terminate_timeout = 30s/g' /usr/local/php/etc/php-fpm.conf
-	sed -i 's/;pid = run\/php-fpm.pid/pid = run\/php-fpm.pid/g' /usr/local/php/etc/php-fpm.conf
-	touch /$INSTALL_PATH/PHP54_INST.lock
-	echo "PHP installed success">>$INSTALL_LOG
-	} || {
-		echo "PHP installed failed">>$INSTALL_LOG
-		exit 58
-		}
 	}
 }
 
@@ -750,35 +758,42 @@ wget -c http://cn2.php.net/distributions/php-5.5.38.tar.bz2
 	tar jxvf php-5.5.38.tar.bz2
 	cd php-5.5.38/
 	if [ $WEB_INST =3 ]; then
-	./configure --prefix=/usr/local/php --with-mysql=/usr/local/mysql --enable-fpm --with-freetype-dir=/usr/local/freetype --with-jpeg-dir=/usr/local/jpeg --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql
+		./configure --prefix=/usr/local/php --with-mysql=/usr/local/mysql --enable-fpm --with-freetype-dir=/usr/local/freetype --with-jpeg-dir=/usr/local/jpeg --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql
+		make && make install
+		[ $? -eq 0 ] && {
+		cp php.ini-production /usr/local/php/lib/php.ini
+		sed -i 's/short_open_tag = Off/short_open_tag = On/g' /usr/local/php/lib/php.ini
+		cd /usr/local/php/etc/
+		cp php-fpm.conf.default php-fpm.conf
+		sed -i 's/user = nobody/user = '$USER_WEB'/g' /usr/local/php/etc/php-fpm.conf
+		sed -i 's/group = nobody/group = '$USER_WEB'/g' /usr/local/php/etc/php-fpm.conf
+		sed -i 's/;rlimit_files = 1024/rlimit_files = 10240/g' /usr/local/php/etc/php-fpm.conf
+		sed -i 's/;listen.allowed_clients = 127.0.0.1/listen.allowed_clients = 127.0.0.1/g' /usr/local/php/etc/php-fpm.conf
+		sed -i 's/pm = dynamic/pm = static/g' /usr/local/php/etc/php-fpm.conf
+		sed -i 's/pm.max_children = 5/pm.max_children = 100/g' /usr/local/php/etc/php-fpm.conf
+		sed -i 's/;pm.max_requests = 500/pm.max_requests = 5000/g' /usr/local/php/etc/php-fpm.conf
+		sed -i 's/;pm.status_path = \/pmstatus/pm.status_path = \/pmstatus/g' /usr/local/php/etc/php-fpm.conf
+		sed -i 's/;request_terminate_timeout = 0/request_terminate_timeout = 30s/g' /usr/local/php/etc/php-fpm.conf
+		sed -i 's/;pid = run\/php-fpm.pid/pid = run\/php-fpm.pid/g' /usr/local/php/etc/php-fpm.conf
+		touch /$INSTALL_PATH/PHP55_INST.lock
+		echo "PHP installed success">>$INSTALL_LOG
+		} || {
+			echo "PHP installed failed">>$INSTALL_LOG
+			exit 58
+			}
 	else
-	./configure --prefix=/usr/local/php --with-mysql=/usr/local/mysql --with-apxs2=/usr/local/apache/bin/apxs --with-freetype-dir=/usr/local/freetype --with-jpeg-dir=/usr/local/jpeg --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql
+		./configure --prefix=/usr/local/php --with-mysql=/usr/local/mysql --with-apxs2=/usr/local/apache/bin/apxs --with-freetype-dir=/usr/local/freetype --with-jpeg-dir=/usr/local/jpeg --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql
+		make && make install
+		[ $? -eq 0 ] && {
+		cp php.ini-production /usr/local/php/lib/php.ini
+		sed -i 's/short_open_tag = Off/short_open_tag = On/g' /usr/local/php/lib/php.ini
+		touch /$INSTALL_PATH/PHP55_INST.lock
+		echo "PHP installed success">>$INSTALL_LOG
+		} || {
+			echo "PHP installed failed">>$INSTALL_LOG
+			exit 58
+			}
 	fi
-	make && make install
-[ $? -eq 0 ] && {
-	cp php.ini-production /usr/local/php/lib/php.ini
-	sed -i 's/short_open_tag = Off/short_open_tag = On/g' /usr/local/php/lib/php.ini
-	#mkdir /etc/php
-	#ln -s /usr/local/php/lib/php.ini /etc/php
-	#ln -s /usr/local/php/etc/php-fpm.conf /etc/php
-	cd /usr/local/php/etc/
-	cp php-fpm.conf.default php-fpm.conf
-	sed -i 's/user = nobody/user = '$USER_WEB'/g' /usr/local/php/etc/php-fpm.conf
-	sed -i 's/group = nobody/group = '$USER_WEB'/g' /usr/local/php/etc/php-fpm.conf
-	sed -i 's/;rlimit_files = 1024/rlimit_files = 10240/g' /usr/local/php/etc/php-fpm.conf
-	sed -i 's/;listen.allowed_clients = 127.0.0.1/listen.allowed_clients = 127.0.0.1/g' /usr/local/php/etc/php-fpm.conf
-	sed -i 's/pm = dynamic/pm = static/g' /usr/local/php/etc/php-fpm.conf
-	sed -i 's/pm.max_children = 5/pm.max_children = 100/g' /usr/local/php/etc/php-fpm.conf
-	sed -i 's/;pm.max_requests = 500/pm.max_requests = 5000/g' /usr/local/php/etc/php-fpm.conf
-	sed -i 's/;pm.status_path = \/pmstatus/pm.status_path = \/pmstatus/g' /usr/local/php/etc/php-fpm.conf
-	sed -i 's/;request_terminate_timeout = 0/request_terminate_timeout = 30s/g' /usr/local/php/etc/php-fpm.conf
-	sed -i 's/;pid = run\/php-fpm.pid/pid = run\/php-fpm.pid/g' /usr/local/php/etc/php-fpm.conf
-	touch /$INSTALL_PATH/PHP55_INST.lock
-	echo "PHP installed success">>$INSTALL_LOG
-	} || {
-		echo "PHP installed failed">>$INSTALL_LOG
-		exit 58
-		}
 	}
 }
 
@@ -792,35 +807,42 @@ wget -c http://cn2.php.net/distributions/php-5.6.30.tar.bz2
 	tar jxvf php-5.6.30.tar.bz2
 	cd php-5.6.30/
 	if [ $WEB_INST =3 ]; then
-	./configure --prefix=/usr/local/php --with-mysql=/usr/local/mysql --enable-fpm --with-freetype-dir=/usr/local/freetype --with-jpeg-dir=/usr/local/jpeg --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql
+		./configure --prefix=/usr/local/php --with-mysql=/usr/local/mysql --enable-fpm --with-freetype-dir=/usr/local/freetype --with-jpeg-dir=/usr/local/jpeg --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql
+		make && make install
+		[ $? -eq 0 ] && {
+		cp php.ini-production /usr/local/php/lib/php.ini
+		sed -i 's/short_open_tag = Off/short_open_tag = On/g' /usr/local/php/lib/php.ini
+		cd /usr/local/php/etc/
+		cp php-fpm.conf.default php-fpm.conf
+		sed -i 's/user = nobody/user = '$USER_WEB'/g' /usr/local/php/etc/php-fpm.conf
+		sed -i 's/group = nobody/group = '$USER_WEB'/g' /usr/local/php/etc/php-fpm.conf
+		sed -i 's/;rlimit_files = 1024/rlimit_files = 10240/g' /usr/local/php/etc/php-fpm.conf
+		sed -i 's/;listen.allowed_clients = 127.0.0.1/listen.allowed_clients = 127.0.0.1/g' /usr/local/php/etc/php-fpm.conf
+		sed -i 's/pm = dynamic/pm = static/g' /usr/local/php/etc/php-fpm.conf
+		sed -i 's/pm.max_children = 5/pm.max_children = 100/g' /usr/local/php/etc/php-fpm.conf
+		sed -i 's/;pm.max_requests = 500/pm.max_requests = 5000/g' /usr/local/php/etc/php-fpm.conf
+		sed -i 's/;pm.status_path = \/pmstatus/pm.status_path = \/pmstatus/g' /usr/local/php/etc/php-fpm.conf
+		sed -i 's/;request_terminate_timeout = 0/request_terminate_timeout = 30s/g' /usr/local/php/etc/php-fpm.conf
+		sed -i 's/;pid = run\/php-fpm.pid/pid = run\/php-fpm.pid/g' /usr/local/php/etc/php-fpm.conf
+		touch /$INSTALL_PATH/PHP56_INST.lock
+		echo "PHP installed success">>$INSTALL_LOG
+		} || {
+			echo "PHP installed failed">>$INSTALL_LOG
+			exit 58
+			}
 	else
-	./configure --prefix=/usr/local/php --with-mysql=/usr/local/mysql --with-apxs2=/usr/local/apache/bin/apxs --with-freetype-dir=/usr/local/freetype --with-jpeg-dir=/usr/local/jpeg --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql
+		./configure --prefix=/usr/local/php --with-mysql=/usr/local/mysql --with-apxs2=/usr/local/apache/bin/apxs --with-freetype-dir=/usr/local/freetype --with-jpeg-dir=/usr/local/jpeg --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql
+		make && make install
+		[ $? -eq 0 ] && {
+		cp php.ini-production /usr/local/php/lib/php.ini
+		sed -i 's/short_open_tag = Off/short_open_tag = On/g' /usr/local/php/lib/php.ini
+		touch /$INSTALL_PATH/PHP56_INST.lock
+		echo "PHP installed success">>$INSTALL_LOG
+		} || {
+			echo "PHP installed failed">>$INSTALL_LOG
+			exit 58
+			}
 	fi
-	make && make install
-[ $? -eq 0 ] && {
-	cp php.ini-production /usr/local/php/lib/php.ini
-	sed -i 's/short_open_tag = Off/short_open_tag = On/g' /usr/local/php/lib/php.ini
-	#mkdir /etc/php
-	#ln -s /usr/local/php/lib/php.ini /etc/php
-	#ln -s /usr/local/php/etc/php-fpm.conf /etc/php
-	cd /usr/local/php/etc/
-	cp php-fpm.conf.default php-fpm.conf
-	sed -i 's/user = nobody/user = '$USER_WEB'/g' /usr/local/php/etc/php-fpm.conf
-	sed -i 's/group = nobody/group = '$USER_WEB'/g' /usr/local/php/etc/php-fpm.conf
-	sed -i 's/;rlimit_files = 1024/rlimit_files = 10240/g' /usr/local/php/etc/php-fpm.conf
-	sed -i 's/;listen.allowed_clients = 127.0.0.1/listen.allowed_clients = 127.0.0.1/g' /usr/local/php/etc/php-fpm.conf
-	sed -i 's/pm = dynamic/pm = static/g' /usr/local/php/etc/php-fpm.conf
-	sed -i 's/pm.max_children = 5/pm.max_children = 100/g' /usr/local/php/etc/php-fpm.conf
-	sed -i 's/;pm.max_requests = 500/pm.max_requests = 5000/g' /usr/local/php/etc/php-fpm.conf
-	sed -i 's/;pm.status_path = \/pmstatus/pm.status_path = \/pmstatus/g' /usr/local/php/etc/php-fpm.conf
-	sed -i 's/;request_terminate_timeout = 0/request_terminate_timeout = 30s/g' /usr/local/php/etc/php-fpm.conf
-	sed -i 's/;pid = run\/php-fpm.pid/pid = run\/php-fpm.pid/g' /usr/local/php/etc/php-fpm.conf
-	touch /$INSTALL_PATH/PHP56_INST.lock
-	echo "PHP installed success">>$INSTALL_LOG
-	} || {
-		echo "PHP installed failed">>$INSTALL_LOG
-		exit 58
-		}
 	}
 }
 
@@ -834,35 +856,42 @@ wget -c http://cn2.php.net/distributions/php-7.0.17.tar.bz2
 	tar jxvf php-7.0.17.tar.bz2
 	cd php-7.0.17/
 	if [ $WEB_INST =3 ]; then
-	./configure --prefix=/usr/local/php --with-mysql=/usr/local/mysql --enable-fpm --with-freetype-dir=/usr/local/freetype --with-jpeg-dir=/usr/local/jpeg --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql
+		./configure --prefix=/usr/local/php --with-mysql=/usr/local/mysql --enable-fpm --with-freetype-dir=/usr/local/freetype --with-jpeg-dir=/usr/local/jpeg --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql
+		make && make install
+		[ $? -eq 0 ] && {
+		cp php.ini-production /usr/local/php/lib/php.ini
+		sed -i 's/short_open_tag = Off/short_open_tag = On/g' /usr/local/php/lib/php.ini
+		cd /usr/local/php/etc/
+		cp php-fpm.conf.default php-fpm.conf
+		sed -i 's/user = nobody/user = '$USER_WEB'/g' /usr/local/php/etc/php-fpm.conf
+		sed -i 's/group = nobody/group = '$USER_WEB'/g' /usr/local/php/etc/php-fpm.conf
+		sed -i 's/;rlimit_files = 1024/rlimit_files = 10240/g' /usr/local/php/etc/php-fpm.conf
+		sed -i 's/;listen.allowed_clients = 127.0.0.1/listen.allowed_clients = 127.0.0.1/g' /usr/local/php/etc/php-fpm.conf
+		sed -i 's/pm = dynamic/pm = static/g' /usr/local/php/etc/php-fpm.conf
+		sed -i 's/pm.max_children = 5/pm.max_children = 100/g' /usr/local/php/etc/php-fpm.conf
+		sed -i 's/;pm.max_requests = 500/pm.max_requests = 5000/g' /usr/local/php/etc/php-fpm.conf
+		sed -i 's/;pm.status_path = \/pmstatus/pm.status_path = \/pmstatus/g' /usr/local/php/etc/php-fpm.conf
+		sed -i 's/;request_terminate_timeout = 0/request_terminate_timeout = 30s/g' /usr/local/php/etc/php-fpm.conf
+		sed -i 's/;pid = run\/php-fpm.pid/pid = run\/php-fpm.pid/g' /usr/local/php/etc/php-fpm.conf
+		touch /$INSTALL_PATH/PHP70_INST.lock
+		echo "PHP installed success">>$INSTALL_LOG
+		} || {
+			echo "PHP installed failed">>$INSTALL_LOG
+			exit 58
+			}
 	else
-	./configure --prefix=/usr/local/php --with-mysql=/usr/local/mysql --with-apxs2=/usr/local/apache/bin/apxs --with-freetype-dir=/usr/local/freetype --with-jpeg-dir=/usr/local/jpeg --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql
+		./configure --prefix=/usr/local/php --with-mysql=/usr/local/mysql --with-apxs2=/usr/local/apache/bin/apxs --with-freetype-dir=/usr/local/freetype --with-jpeg-dir=/usr/local/jpeg --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql
+		make && make install
+		[ $? -eq 0 ] && {
+		cp php.ini-production /usr/local/php/lib/php.ini
+		sed -i 's/short_open_tag = Off/short_open_tag = On/g' /usr/local/php/lib/php.ini
+		touch /$INSTALL_PATH/PHP70_INST.lock
+		echo "PHP installed success">>$INSTALL_LOG
+		} || {
+			echo "PHP installed failed">>$INSTALL_LOG
+			exit 58
+			}
 	fi
-	make && make install
-[ $? -eq 0 ] && {
-	cp php.ini-production /usr/local/php/lib/php.ini
-	sed -i 's/short_open_tag = Off/short_open_tag = On/g' /usr/local/php/lib/php.ini
-	#mkdir /etc/php
-	#ln -s /usr/local/php/lib/php.ini /etc/php
-	#ln -s /usr/local/php/etc/php-fpm.conf /etc/php
-	cd /usr/local/php/etc/
-	cp php-fpm.conf.default php-fpm.conf
-	sed -i 's/user = nobody/user = '$USER_WEB'/g' /usr/local/php/etc/php-fpm.conf
-	sed -i 's/group = nobody/group = '$USER_WEB'/g' /usr/local/php/etc/php-fpm.conf
-	sed -i 's/;rlimit_files = 1024/rlimit_files = 10240/g' /usr/local/php/etc/php-fpm.conf
-	sed -i 's/;listen.allowed_clients = 127.0.0.1/listen.allowed_clients = 127.0.0.1/g' /usr/local/php/etc/php-fpm.conf
-	sed -i 's/pm = dynamic/pm = static/g' /usr/local/php/etc/php-fpm.conf
-	sed -i 's/pm.max_children = 5/pm.max_children = 100/g' /usr/local/php/etc/php-fpm.conf
-	sed -i 's/;pm.max_requests = 500/pm.max_requests = 5000/g' /usr/local/php/etc/php-fpm.conf
-	sed -i 's/;pm.status_path = \/pmstatus/pm.status_path = \/pmstatus/g' /usr/local/php/etc/php-fpm.conf
-	sed -i 's/;request_terminate_timeout = 0/request_terminate_timeout = 30s/g' /usr/local/php/etc/php-fpm.conf
-	sed -i 's/;pid = run\/php-fpm.pid/pid = run\/php-fpm.pid/g' /usr/local/php/etc/php-fpm.conf
-	touch /$INSTALL_PATH/PHP70_INST.lock
-	echo "PHP installed success">>$INSTALL_LOG
-	} || {
-		echo "PHP installed failed">>$INSTALL_LOG
-		exit 58
-		}
 	}
 }
 
@@ -876,38 +905,44 @@ wget -c http://cn2.php.net/distributions/php-7.1.3.tar.bz2
 	tar jxvf php-7.1.3.tar.bz2
 	cd php-7.1.3/
 	if [ $WEB_INST =3 ]; then
-	./configure --prefix=/usr/local/php --with-mysql=/usr/local/mysql --enable-fpm --with-freetype-dir=/usr/local/freetype --with-jpeg-dir=/usr/local/jpeg --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql
+		./configure --prefix=/usr/local/php --with-mysql=/usr/local/mysql --enable-fpm --with-freetype-dir=/usr/local/freetype --with-jpeg-dir=/usr/local/jpeg --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql
+		make && make install
+		[ $? -eq 0 ] && {
+		cp php.ini-production /usr/local/php/lib/php.ini
+		sed -i 's/short_open_tag = Off/short_open_tag = On/g' /usr/local/php/lib/php.ini
+		cd /usr/local/php/etc/
+		cp php-fpm.conf.default php-fpm.conf
+		sed -i 's/user = nobody/user = '$USER_WEB'/g' /usr/local/php/etc/php-fpm.conf
+		sed -i 's/group = nobody/group = '$USER_WEB'/g' /usr/local/php/etc/php-fpm.conf
+		sed -i 's/;rlimit_files = 1024/rlimit_files = 10240/g' /usr/local/php/etc/php-fpm.conf
+		sed -i 's/;listen.allowed_clients = 127.0.0.1/listen.allowed_clients = 127.0.0.1/g' /usr/local/php/etc/php-fpm.conf
+		sed -i 's/pm = dynamic/pm = static/g' /usr/local/php/etc/php-fpm.conf
+		sed -i 's/pm.max_children = 5/pm.max_children = 100/g' /usr/local/php/etc/php-fpm.conf
+		sed -i 's/;pm.max_requests = 500/pm.max_requests = 5000/g' /usr/local/php/etc/php-fpm.conf
+		sed -i 's/;pm.status_path = \/pmstatus/pm.status_path = \/pmstatus/g' /usr/local/php/etc/php-fpm.conf
+		sed -i 's/;request_terminate_timeout = 0/request_terminate_timeout = 30s/g' /usr/local/php/etc/php-fpm.conf
+		sed -i 's/;pid = run\/php-fpm.pid/pid = run\/php-fpm.pid/g' /usr/local/php/etc/php-fpm.conf
+		touch /$INSTALL_PATH/PHP71_INST.lock
+		echo "PHP installed success">>$INSTALL_LOG
+		} || {
+			echo "PHP installed failed">>$INSTALL_LOG
+			exit 58
+			}
 	else
-	./configure --prefix=/usr/local/php --with-mysql=/usr/local/mysql --with-apxs2=/usr/local/apache/bin/apxs --with-freetype-dir=/usr/local/freetype --with-jpeg-dir=/usr/local/jpeg --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql
+		./configure --prefix=/usr/local/php --with-mysql=/usr/local/mysql --with-apxs2=/usr/local/apache/bin/apxs --with-freetype-dir=/usr/local/freetype --with-jpeg-dir=/usr/local/jpeg --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql
+		make && make install
+		[ $? -eq 0 ] && {
+		cp php.ini-production /usr/local/php/lib/php.ini
+		sed -i 's/short_open_tag = Off/short_open_tag = On/g' /usr/local/php/lib/php.ini
+		touch /$INSTALL_PATH/PHP71_INST.lock
+		echo "PHP installed success">>$INSTALL_LOG
+		} || {
+			echo "PHP installed failed">>$INSTALL_LOG
+			exit 58
+			}
 	fi
-	make && make install
-[ $? -eq 0 ] && {
-	cp php.ini-production /usr/local/php/lib/php.ini
-	sed -i 's/short_open_tag = Off/short_open_tag = On/g' /usr/local/php/lib/php.ini
-	#mkdir /etc/php
-	#ln -s /usr/local/php/lib/php.ini /etc/php
-	#ln -s /usr/local/php/etc/php-fpm.conf /etc/php
-	cd /usr/local/php/etc/
-	cp php-fpm.conf.default php-fpm.conf
-	sed -i 's/user = nobody/user = '$USER_WEB'/g' /usr/local/php/etc/php-fpm.conf
-	sed -i 's/group = nobody/group = '$USER_WEB'/g' /usr/local/php/etc/php-fpm.conf
-	sed -i 's/;rlimit_files = 1024/rlimit_files = 10240/g' /usr/local/php/etc/php-fpm.conf
-	sed -i 's/;listen.allowed_clients = 127.0.0.1/listen.allowed_clients = 127.0.0.1/g' /usr/local/php/etc/php-fpm.conf
-	sed -i 's/pm = dynamic/pm = static/g' /usr/local/php/etc/php-fpm.conf
-	sed -i 's/pm.max_children = 5/pm.max_children = 100/g' /usr/local/php/etc/php-fpm.conf
-	sed -i 's/;pm.max_requests = 500/pm.max_requests = 5000/g' /usr/local/php/etc/php-fpm.conf
-	sed -i 's/;pm.status_path = \/pmstatus/pm.status_path = \/pmstatus/g' /usr/local/php/etc/php-fpm.conf
-	sed -i 's/;request_terminate_timeout = 0/request_terminate_timeout = 30s/g' /usr/local/php/etc/php-fpm.conf
-	sed -i 's/;pid = run\/php-fpm.pid/pid = run\/php-fpm.pid/g' /usr/local/php/etc/php-fpm.conf
-	touch /$INSTALL_PATH/PHP71_INST.lock
-	echo "PHP installed success">>$INSTALL_LOG
-	} || {
-		echo "PHP installed failed">>$INSTALL_LOG
-		exit 58
-		}
 	}
 }
-
 
 ZOPT_INST(){
 ##Install ZendOptimizer##################
@@ -1021,45 +1056,53 @@ esac
 [ ! -e $INSTALL_PATH/ZOPT_INST.lock ] && ZOPT_INST
 [ ! -e $INSTALL_PATH/ZendGL_INST.lock ] && ZendGL_INST
 
-
 #ADD to system on boot
-
+if [ $WEB_INST = 3 ]; then
 cat > /etc/rc.d/init.d/nginx <<EOF
 #!/bin/bash
-#Start httpd service
+#Start web service ON BOOT
 /usr/local/nginx/sbin/nginx
 EOF
-chmod 700 /etc/rc.d/init.d/nginx
-ln -s /etc/rc.d/init.d/nginx /etc/rc.d/rc3.d/S60nginx
-[ -e /etc/rc.d/rc3.d/S60nginx ] && echo "Nginx script installed success">>$INSTALL_LOG || {
-	echo "Nginx script installed failed">>$INSTALL_LOG
-	exit 75
-	}
-
-cat > /etc/rc.d/init.d/mysql <<EOF
+		chmod 700 /etc/rc.d/init.d/nginx
+		ln -s /etc/rc.d/init.d/nginx /etc/rc.d/rc3.d/S60nginx
+		[ -e /etc/rc.d/rc3.d/S60nginx ] && echo "Nginx script installed success">>$INSTALL_LOG || {
+			echo "Nginx script installed failed">>$INSTALL_LOG
+			exit 75
+			}
+else
+cat > /etc/rc.d/init.d/httpd <<EOF
 #!/bin/bash
-#Start mysql service
+#Start web service ON BOOT
+/usr/local/apache/bin/apachectl -k start
+EOF
+		chmod 700 /etc/rc.d/init.d/httpd
+		ln -s /etc/rc.d/init.d/httpd /etc/rc.d/rc3.d/S60httpd
+		[ -e /etc/rc.d/rc3.d/S60httpd ] && echo "Apache script installed success">>$INSTALL_LOG || {
+			echo "Apache script installed failed">>$INSTALL_LOG
+			exit 75
+			}
+fi
+
+cat > /etc/rc.d/init.d/mysqld <<EOF
+#!/bin/bash
+#Start mysql service ON BOOT
 /usr/local/mysql/support-files/mysql.server start
 EOF
-chmod 700 /etc/rc.d/init.d/mysql
-ln -s /etc/rc.d/init.d/mysql /etc/rc3.d/S60mysql
+chmod 700 /etc/rc.d/init.d/mysqld
+ln -s /etc/rc.d/init.d/mysqld /etc/rc3.d/S60mysqld
 [ -e /etc/rc3.d/S60mysql ] && echo "Mysql script installed success">>$INSTALL_LOG || {
 	echo "Mysql script installed failed">>$INSTALL_LOG
 	exit 76
 	}
 
 #iptables
-
 iptables -I INPUT -m state --state NEW -m tcp -p tcp --dport 22 -j ACCEPT
 iptables -I INPUT -m state --state NEW -m tcp -p tcp --dport 21 -j ACCEPT
 iptables -I INPUT -m state --state NEW -m tcp -p tcp --dport 80 -j ACCEPT
-
 iptables -A OUTPUT -m state --state NEW -m tcp -p tcp --dport 80 -j ACCEPT
 iptables -A OUTPUT -m state --state NEW -m tcp -p tcp --dport 53 -j ACCEPT
 iptables -A OUTPUT -m state --state NEW -m udp -p udp --dport 53 -j ACCEPT
-
 service iptables save
-
 
 ###########
 echo "#####################"
@@ -1085,17 +1128,15 @@ echo  -e "The Mysql user's password. is: ${GREEN_COLOR}$Myuser_PSWD$RES"
 service mysqld start
 
 #start php
-if [ $PHP_INST = 1 ]; then
+if [ $PHP_INST = 1 -a $WEB_INST = 3 ]; then
 	service php-fpm start
 else
-	/usr/local/php/sbin/php-fpm
+	[ $WEB_INST = 3 ] && /usr/local/php/sbin/php-fpm
 fi
 
 #Add to system environment
 echo "export PATH=/usr/local/apache/bin:/usr/local/nginx/sbin:/usr/local/php/sbin:/usr/local/mysql/bin:$PATH">>/etc/profile
 source /etc/profile
-
-
 
 DATE_INST=`date +%Y-%m-%d-%H:%M`
 echo "Install finished at $DATE_INST."
