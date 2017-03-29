@@ -374,7 +374,7 @@ server_id = 1
 max_connections = 500
 wait_timeout = 30
 EOF
-	bin/mysqld --initialize --user=mysql &>/tmp/mysqlinstall${DATE_INST}.log
+	bin/mysqld --initialize --user=mysql &>/tmp/mysqlinstall{$DATE_INST}.log
 	/usr/local/mysql/support-files/mysql.server start
 [ $? -eq 0 ] && {
 	LPASD=`cat /tmp/mysqlinstall{$DATE_INST}.log|grep root@localhost|awk -F":" '{print $4}'|sed s/[[:space:]]//g`
