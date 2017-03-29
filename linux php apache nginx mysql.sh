@@ -4,10 +4,10 @@
 # QQ:360254363/pboy@sina.cn
 # E-mail:cylcjy009@gmail.com
 # Website:www.pboy8.top pboy8.taobao.com
-# Desc:Install nginx-1.10 php-5.2,gd2,freetype2,mysql-5.5 on linux Centos6, for ruiqi soft..
+# Desc:Install nginx-1.10, php-5.2, gd2, freetype2, mysql-5.5 on linux Centos6, for ruiqi soft..
 # Add: php5.3, Apache2 ...and on Centos7..2017-03-17
-# Add: php5.4,mysql 5.6...2017-03-22
-# Add: php7,mysql 5.7...2017-03-23
+# Add: php5.4, mysql 5.6...2017-03-22
+# Add: php7, mysql 5.7...2017-03-23
 # Debug: Fix some mistakes..2017-03-27
 # Add: support on Ubuntu 16...2017-03-28
 # Project home: https://github.com/tompboy/LNAMP
@@ -33,39 +33,31 @@ mkdir -p $INSTALL_PATH
 
 #内核大版本-kernel version
 RL=`uname -r|awk -F "." '{print $1}'`
-#USER_WEB=www
 
 #网站用户-user who run the web server
-#USER_WEB=""
+USER_WEB=www
+
+#用户密码-the password for the user
+USER_PSWD=`echo $(date +%t%N)$RANDOM|md5sum|cut -c 2-11`
+
+#Mysql root 密码-the password for mysql root
+Mysql_PSWD=`echo $(date +%t%N)$RANDOM|md5sum|cut -c 2-11`
+
+#新建Mysql数据库名-the database name
+Mysql_DBname=wwwdb
+
+#Mysql普通用户名-normal user for mysql
+Mysql_USER=wwwdbuser
+
+#Mysql普通用户随机10位数密码-password for normal user, random 10 chars
+Myuser_PSWD=`echo $(date +%t%N)$RANDOM|md5sum|cut -c 2-11`
+
 clear
 echo "###################################################################"
 echo -e "########### ${GREEN_COLOR}This script will install Mysql,Apache,Nginx$RES ###########"
 echo -e "###########  ${GREEN_COLOR}Php, zend, Ftp..Thank you for use... $RES      ###########"
 echo "###################################################################"
 echo -e "\n"
-echo -e "\n"
-
-read -p "Please input the user you want to run the web server. " USER_WEB
-echo -e "\n"
-
-#用户密码-the password for the user
-read -p "Please input the user's password. " USER_PSWD
-echo -e "\n"
-
-#Mysql root 密码-the password for mysql root
-read -p "Please input the Mysql root's password. " Mysql_PSWD
-echo -e "\n"
-
-#新建Mysql数据库名-the database name
-read -p "Please input the database name you want to create. " Mysql_DBname
-echo -e "\n"
-
-#Mysql普通用户名-normal user for mysql
-read -p "Please input the user you want to conncet mysql. " Mysql_USER
-echo -e "\n"
-
-#Mysql普通用户密码-password for normal user
-read -p "Please input the Mysql user's password. " Myuser_PSWD
 echo -e "\n"
 
 #Mysql server
@@ -164,6 +156,7 @@ echo "#######END4">>$INSTALL_LOG
 
 echo "文件读写/disk read write info">>$INSTALL_LOG
 time dd if=/dev/zero of=/tmp/1.gz count=100 bs=10M >> $INSTALL_LOG 2>&1
+rm -f /tmp/1.gz
 echo "#######END5">>$INSTALL_LOG
 
 ##系统参数优化-optimize the system
@@ -215,7 +208,8 @@ if [ $RL = 2 -o $RL = 3 ]; then
 	}
 else
 	apt-get -y install vsftpd
-	
+	sed -i 's/#write_enable=YES/write_enable=YES/g' /etc/vsftpd.conf
+	sed -i 's/#local_umask=022/local_umask=022/g' /etc/vsftpd.conf
 	sed -i 's/#chroot_local_user=YES/chroot_local_user=YES/g' /etc/vsftpd.conf
 fi
 	service vsftpd start
@@ -259,10 +253,8 @@ echo "Downloading packages..">>$INSTALL_LOG
 wget -c http://nginx.org/download/nginx-1.10.2.tar.gz &&\
 wget -c https://ftp.pcre.org/pub/pcre/pcre-8.40.tar.bz2 &&\
 wget -c http://zlib.net/fossils/zlib-1.2.11.tar.gz &&\
-wget -c http://down1.chinaunix.net/distfiles/ZendOptimizer-3.3.9-linux-glibc23-x86_64.tar.gz &&\
 wget -c https://mail.gnome.org/archives/xml/2012-August/txtbgxGXAvz4N.txt && mv txtbgxGXAvz4N.txt patch-5.x.x.patch &&\
-wget -c http://archive.apache.org/dist/httpd/httpd-2.2.32.tar.bz2 &&\
-wget -c http://downloads.zend.com/guard/5.5.0/ZendGuardLoader-php-5.3-linux-glibc23-x86_64.tar.gz
+wget -c http://archive.apache.org/dist/httpd/httpd-2.2.32.tar.bz2
 [ $? -eq 0 ] && {
 	echo "download packages success.">>$INSTALL_LOG
 	touch $INSTALL_PATH/DOWN_SOFT.lock
@@ -964,6 +956,7 @@ wget -c http://cn2.php.net/distributions/php-7.1.3.tar.bz2
 ZOPT_INST(){
 ##Install ZendOptimizer##################
 cd $INSTALL_PATH
+wget -c http://down1.chinaunix.net/distfiles/ZendOptimizer-3.3.9-linux-glibc23-x86_64.tar.gz
 [ -f ZendOptimizer-3.3.9-linux-glibc23-x86_64.tar.gz ] && [ $PHP_INST = 1 ] && [ ! -e ZOPT_INST.lock ] && {
 	mkdir -p /usr/local/php/include/php/ext/zend
 	tar zxvf ZendOptimizer-3.3.9-linux-glibc23-x86_64.tar.gz
@@ -975,7 +968,7 @@ zend_extension="/usr/local/php/include/php/ext/zend/ZendOptimizer.so"
 ##########################
 EOF
 	php-fpm
-	echo "Zend installed success">>$INSTALL_LOG
+	echo "Zend installed Optimizer success">>$INSTALL_LOG
 	touch $INSTALL_PATH/ZOPT_INST.lock
 	}
 }
@@ -983,6 +976,7 @@ EOF
 ZendGL_INST(){
 ##Install Zend Guard Loader##################
 cd $INSTALL_PATH
+wget -c http://downloads.zend.com/guard/5.5.0/ZendGuardLoader-php-5.3-linux-glibc23-x86_64.tar.gz
 [ -f ZendGuardLoader-php-5.3-linux-glibc23-x86_64.tar.gz ] && [ $PHP_INST = 2 ] && [ ! -e ZendGL_INST.lock ] && {
 	mkdir -p /usr/local/php/include/php/ext/zend
 	tar zxvf ZendGuardLoader-php-5.3-linux-glibc23-x86_64.tar.gz
