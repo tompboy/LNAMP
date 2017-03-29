@@ -5,13 +5,16 @@
 # E-mail:cylcjy009@gmail.com
 # Website:www.pboy8.top pboy8.taobao.com
 # Desc:Install nginx-1.10 php-5.2,gd2,freetype2,mysql-5.5 on linux Centos6, for ruiqi soft..
-# Add: php5.3 Apache...and on Centos7..2017-03-17
+# Add: php5.3, Apache2 ...and on Centos7..2017-03-17
 # Add: php5.4,mysql 5.6...2017-03-22
 # Add: php7,mysql 5.7...2017-03-23
 # Debug: Fix some mistakes..2017-03-27
 # Add: support on Ubuntu 16...2017-03-28
+# Project home: https://github.com/tompboy/LNAMP
 # Version:V 0.9
 
+
+[ `id -u` != 0 ] && { echo "Error: You must run this script $0 with root..."; exit 9; }
 
 ##预定义变量-Predefined variables
 #时间-date-time
