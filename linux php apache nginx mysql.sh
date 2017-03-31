@@ -39,9 +39,11 @@ USER_WEB=www
 
 #用户密码-the password for the user
 USER_PSWD=`echo $(date +%t%N)$RANDOM|md5sum|cut -c 2-11`
+echo -e "The user's password. is: $USER_PSWD">>$INSTALL_LOG
 
 #Mysql root 密码-the password for mysql root
 Mysql_PSWD=`echo $(date +%t%N)$RANDOM|md5sum|cut -c 2-11`
+echo -e "The Mysql root's password. is: $Mysql_PSWD">>$INSTALL_LOG
 
 #新建Mysql数据库名-the database name
 Mysql_DBname=wwwdb
@@ -51,6 +53,8 @@ Mysql_USER=wwwdbuser
 
 #Mysql普通用户随机10位数密码-password for normal user, random 10 chars
 Myuser_PSWD=`echo $(date +%t%N)$RANDOM|md5sum|cut -c 2-11`
+echo -e "The Mysql user's password. is: $Myuser_PSWD">>$INSTALL_LOG
+
 
 clear
 echo "###################################################################"
@@ -241,7 +245,7 @@ if [ $RL = 2 -o $RL = 3 ]; then
 	rpm -qa|grep epel-release
 	[ $? -eq 0 ] && yum -y install kernel-devel rpm-build patch make gcc gcc-c++ flex bison \
 	file libxml2 libxml2-devel curl curl-devel libjpeg libjpeg-devel libtool libpng \
-	libpng-devel wget libaio* vim libmcrypt libmcrypt-devel mcrypt mhash openssl openssl-devel libtool-ltdl-devel|| exit 39
+	libpng-devel wget libaio* vim libmcrypt libmcrypt-devel mcrypt mhash openssl openssl-devel libtool-ltdl-devel  freetype freetype-devel || exit 39
 else
 	[ $RL = 4 ] && {
 	apt-get update &&\
@@ -406,11 +410,12 @@ sed -i 's/Group daemon/Group '$USER_WEB'/g' /usr/local/apache/conf/httpd.conf
 sed -i 's/DirectoryIndex index.html/DirectoryIndex index.php/g'/usr/local/apache/conf/httpd.conf
 sed -i 's/ErrorLog "logs\/error_log"/ErrorLog "\|\/usr\/local\/apache\/bin\/rotatelogs \/usr\/local\/apache\/logs\/error_%Y_%m_%d.log 86400 480"/g' /usr/local/apache/conf/httpd.conf
 sed -i 's/CustomLog "logs\/access_log" common/CustomLog "\|\/usr\/local\/apache\/bin\/rotatelogs \/usr\/local\/apache\/logs\/access_%Y_%m_%d.log 86400 480" combined/g' /usr/local/apache/conf/httpd.conf
-#AddType application/x-httpd-php .php     
-#AddType application/x-httpd-php-source .phps
+
 
 cat >>/usr/local/apache/conf/httpd.conf<<EOF
+
 NameVirtualHost *:80
+
 <VirtualHost *:80>
 DocumentRoot "/home/www"
 ServerName www.www.net
@@ -419,14 +424,18 @@ Order allow,deny
 Allow from all
 </Directory>
 </VirtualHost>
+
 AddType application/x-httpd-php .php     
 AddType application/x-httpd-php-source .phps
+
 ExtendedStatus On
+
 <location /apstatus>
 SetHandler server-status
 Order Allow,Deny
 Allow from all
 </location>
+
 <IfModule mpm_prefork_module>
     StartServers          5
     MinSpareServers       5
@@ -435,7 +444,9 @@ Allow from all
     MaxClients          2000
     MaxRequestsPerChild   15000
 </IfModule>
+
 #压缩级别
+
 DeflateCompressionLevel 9
 SetOutputFilter DEFLATE
 AddOutputFilterByType DEFLATE text/html text/plain text/xml application/x-javascript application/x-httpd-php
@@ -486,10 +497,10 @@ sed -i 's/Group daemon/Group '$USER_WEB'/g' /usr/local/apache/conf/httpd.conf
 sed -i 's/DirectoryIndex index.html/DirectoryIndex index.php/g'/usr/local/apache/conf/httpd.conf
 sed -i 's/ErrorLog "logs\/error_log"/ErrorLog "\|\/usr\/local\/apache\/bin\/rotatelogs \/usr\/local\/apache\/logs\/error_%Y_%m_%d.log 86400 480"/g' /usr/local/apache/conf/httpd.conf
 sed -i 's/CustomLog "logs\/access_log" common/CustomLog "\|\/usr\/local\/apache\/bin\/rotatelogs \/usr\/local\/apache\/logs\/access_%Y_%m_%d.log 86400 480" combined/g' /usr/local/apache/conf/httpd.conf
-#AddType application/x-httpd-php .php     
-#AddType application/x-httpd-php-source .phps
+
 
 cat >>/usr/local/apache/conf/httpd.conf<<EOF
+
 <VirtualHost *:80>
 DocumentRoot "/home/www"
 ServerName www.www.net
@@ -498,13 +509,17 @@ AllowOverride All
 Require all granted
 </Directory>
 </VirtualHost>
+
 AddType application/x-httpd-php .php     
 AddType application/x-httpd-php-source .phps
+
 ExtendedStatus On
+
 <location /apstatus>
 SetHandler server-status
 Require all granted
 </location>
+
 <IfModule mpm_event_module>
     StartServers             3
     MinSpareThreads         75
@@ -514,8 +529,10 @@ Require all granted
     MaxRequestWorkers      500
     MaxConnectionsPerChild   8000
 </IfModule>
+
 LoadModule deflate_module modules/mod_deflate.so
 LoadModule filter_module modules/mod_filter.so
+
 DeflateCompressionLevel 9
 SetOutputFilter DEFLATE
 AddOutputFilterByType DEFLATE text/html text/plain text/xml application/x-javascript application/x-httpd-php
@@ -742,7 +759,7 @@ wget -c http://cn2.php.net/distributions/php-5.4.45.tar.bz2
 			exit 58
 			}
 	else
-		./configure --prefix=/usr/local/php --with-mysql=/usr/local/mysql --with-apxs2=/usr/local/apache/bin/apxs --with-freetype-dir=/usr/local/freetype --with-jpeg-dir=/usr/local/jpeg --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql
+		./configure --prefix=/usr/local/php --with-mysql=/usr/local/mysql --with-apxs2=/usr/local/apache/bin/apxs --with-freetype-dir=/usr/local/freetype --with-jpeg-dir=/usr/local/jpeg --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql --enable-bcmath --enable-sockets --with-gettext
 		make && make install
 		[ $? -eq 0 ] && {
 		cp php.ini-production /usr/local/php/lib/php.ini
@@ -1103,8 +1120,8 @@ cat > /etc/rc.d/init.d/httpd <<EOF
 /usr/local/apache/bin/apachectl -k start
 EOF
 		chmod 700 /etc/rc.d/init.d/httpd
-		ln -s /etc/rc.d/init.d/httpd /etc/rcS.d/S60httpd
-		[ -e /etc/rcS.d/S60httpd ] && echo "Apache script installed success">>$INSTALL_LOG || {
+		ln -s /etc/rc.d/init.d/httpd /etc/rc.d/rc3.d/S60httpd
+		[ -e /etc/rc.d/rc3.d/S60httpd ] && echo "Apache script installed success">>$INSTALL_LOG || {
 			echo "Apache script installed failed">>$INSTALL_LOG
 			exit 75
 			}
@@ -1131,7 +1148,7 @@ cat > /etc/rc.d/init.d/mysqld <<EOF
 EOF
 chmod 700 /etc/rc.d/init.d/mysqld
 ln -s /etc/rc.d/init.d/mysqld /etc/rc3.d/S60mysqld
-[ -e /etc/rc3.d/S60mysql ] && echo "Mysql script installed success">>$INSTALL_LOG || {
+[ -e /etc/rc3.d/S60mysqld ] && echo "Mysql script installed success">>$INSTALL_LOG || {
 	echo "Mysql script installed failed">>$INSTALL_LOG
 	exit 76
 	}
@@ -1159,26 +1176,6 @@ iptables -A OUTPUT -m state --state NEW -m tcp -p tcp --dport 53 -j ACCEPT
 iptables -A OUTPUT -m state --state NEW -m udp -p udp --dport 53 -j ACCEPT
 service iptables save
 
-###########
-echo "#####################"
-#网站用户-web server's running user
-echo -e "The user you want to run the web server. is: ${GREEN_COLOR}$USER_WEB$RES"
-
-#用户密码-user password
-echo -e "The user's password. is: ${GREEN_COLOR}$USER_PSWD$RES"
-
-#Mysql root 密码-mysql root's passwd
-echo  -e "The Mysql root's password. is: ${GREEN_COLOR}$Mysql_PSWD$RES"
-
-#新建Mysql数据库名-website database name 
-echo  -e "The database name you want to create. is: ${GREEN_COLOR}$Mysql_DBname$RES"
-
-#Mysql普通用户名-normal mysql user
-echo  -e "The user you want to conncet mysql. is: ${GREEN_COLOR}$Mysql_USER$RES"
-
-#Mysql普通用户密码-password for normal user
-echo  -e "The Mysql user's password. is: ${GREEN_COLOR}$Myuser_PSWD$RES"
-
 #start mysql
 service mysqld start
 
@@ -1193,9 +1190,38 @@ fi
 echo "export PATH=/usr/local/apache/bin:/usr/local/nginx/sbin:/usr/local/php/sbin:/usr/local/mysql/bin:$PATH">>/etc/profile
 source /etc/profile
 
+###########
+echo "#####################"
+#网站用户-web server's running user
+echo -e "The user you want to run the web server. is: ${GREEN_COLOR}$USER_WEB$RES"
+echo -e "The user you want to run the web server. is: $USER_WEB">>$INSTALL_LOG
+
+#用户密码-user password
+echo -e "The user's password. is: ${GREEN_COLOR}$USER_PSWD$RES"
+echo -e "The user's password. is: $USER_PSWD">>$INSTALL_LOG
+
+#Mysql root 密码-mysql root's passwd
+echo -e "The Mysql root's password. is: ${GREEN_COLOR}$Mysql_PSWD$RES"
+echo -e "The Mysql root's password. is: $Mysql_PSWD">>$INSTALL_LOG
+
+#新建Mysql数据库名-website database name 
+echo -e "The database name you want to create. is: ${GREEN_COLOR}$Mysql_DBname$RES"
+echo -e "The database name you want to create. is: $Mysql_DBname">>$INSTALL_LOG
+
+#Mysql普通用户名-normal mysql user
+echo -e "The user you want to conncet mysql. is: ${GREEN_COLOR}$Mysql_USER$RES"
+echo -e "The user you want to conncet mysql. is: $Mysql_USER">>$INSTALL_LOG
+
+#Mysql普通用户密码-password for normal user
+echo -e "The Mysql user's password. is: ${GREEN_COLOR}$Myuser_PSWD$RES"
+echo -e "The Mysql user's password. is: $Myuser_PSWD">>$INSTALL_LOG
+echo -e "\n"
+
+
 DATE_INST=`date +%Y-%m-%d-%H:%M`
 echo "Install finished at $DATE_INST."
 echo "#####################END"
 echo "Install finished at $DATE_INST.">>$INSTALL_LOG
+echo -e "${GREEN_COLOR}You can find these important info in $INSTALL_LOG..$RES"
 echo "#####################END">>$INSTALL_LOG
 exit 0
