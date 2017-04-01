@@ -245,7 +245,7 @@ if [ $RL = 2 -o $RL = 3 ]; then
 	rpm -qa|grep epel-release
 	[ $? -eq 0 ] && yum -y install kernel-devel rpm-build patch make gcc gcc-c++ flex bison \
 	file libxml2 libxml2-devel curl curl-devel libjpeg libjpeg-devel libtool libpng \
-	libpng-devel wget libaio* vim libmcrypt libmcrypt-devel mcrypt mhash openssl openssl-devel libtool-ltdl-devel  freetype freetype-devel || exit 39
+	libpng-devel wget libaio* vim libmcrypt libmcrypt-devel mcrypt mhash openssl openssl-devel libtool-ltdl-devel  freetype freetype-devel gd-devel|| exit 39
 else
 	[ $RL = 4 ] && {
 	apt-get update &&\
@@ -414,19 +414,21 @@ sed -i 's/CustomLog "logs\/access_log" common/CustomLog "\|\/usr\/local\/apache\
 
 cat >>/usr/local/apache/conf/httpd.conf<<EOF
 
+AddType application/x-httpd-php .php     
+AddType application/x-httpd-php-source .phps
+
 NameVirtualHost *:80
 
 <VirtualHost *:80>
 DocumentRoot "/home/www"
 ServerName www.www.net
 <Directory /home/www>
+DirectoryIndex index.php index.html
 Order allow,deny
 Allow from all
 </Directory>
 </VirtualHost>
 
-AddType application/x-httpd-php .php     
-AddType application/x-httpd-php-source .phps
 
 ExtendedStatus On
 
@@ -453,9 +455,9 @@ AddOutputFilterByType DEFLATE text/html text/plain text/xml application/x-javasc
 AddOutputFilter DEFLATE js css
 EOF
 touch $INSTALL_PATH/APA22_INST.lock
-echo "apache2.2 installed success...">>$INSTALL_LOG
+echo "Apache2.2 installed success...">>$INSTALL_LOG
 } || {
-	echo "apache2.2 installed failed...">>$INSTALL_LOG
+	echo "Apache2.2 installed failed...">>$INSTALL_LOG
 	exit 998
 	}
 }
@@ -501,17 +503,19 @@ sed -i 's/CustomLog "logs\/access_log" common/CustomLog "\|\/usr\/local\/apache\
 
 cat >>/usr/local/apache/conf/httpd.conf<<EOF
 
+AddType application/x-httpd-php .php     
+AddType application/x-httpd-php-source .phps
+
 <VirtualHost *:80>
 DocumentRoot "/home/www"
 ServerName www.www.net
 <Directory /home/www>
+DirectoryIndex index.php index.html
 AllowOverride All
 Require all granted
 </Directory>
 </VirtualHost>
 
-AddType application/x-httpd-php .php     
-AddType application/x-httpd-php-source .phps
 
 ExtendedStatus On
 
@@ -539,9 +543,9 @@ AddOutputFilterByType DEFLATE text/html text/plain text/xml application/x-javasc
 AddOutputFilter DEFLATE js css
 EOF
 touch $INSTALL_PATH/APA24_INST.lock
-echo "apache2.4 installed success...">>$INSTALL_LOG
+echo "Apache2.4 installed success...">>$INSTALL_LOG
 } || {
-	echo "apache2.4 installed failed...">>$INSTALL_LOG
+	echo "Apache2.4 installed failed...">>$INSTALL_LOG
 	exit 998
 	}
 }
@@ -638,9 +642,9 @@ wget -c http://php-fpm.org/downloads/php-5.2.17-fpm-0.5.14.diff.gz
 	tar jxvf php-5.2.17.tar.bz2
 	cd php-5.2.17/
 	patch -p0 -b < ../php-5.x.x.patch
-	if [ $WEB_INST =3 ]; then 
+	if [ $WEB_INST = 3 ]; then 
 		gzip -cd php-5.2.17-fpm-0.5.14.diff.gz | patch -d php-5.2.17 -p1
-		./configure --prefix=/usr/local/php --with-mysql=/usr/local/mysql --enable-fastcgi --enable-fpm --with-freetype-dir=/usr/local/freetype --with-jpeg-dir=/usr/local/jpeg --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd
+		./configure --prefix=/usr/local/php --with-mysql=/usr/local/mysql --enable-fastcgi --enable-fpm --with-freetype-dir --with-jpeg-dir --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd
 		make && make install
 		[ $? -eq 0 ] && {
 		cp php.ini-recommended /usr/local/php/lib/php.ini
@@ -659,7 +663,7 @@ wget -c http://php-fpm.org/downloads/php-5.2.17-fpm-0.5.14.diff.gz
 			}
 		}
 	else
-		./configure --prefix=/usr/local/php --with-mysql=/usr/local/mysql --with-apxs2=/usr/local/apache/bin/apxs --with-freetype-dir=/usr/local/freetype --with-jpeg-dir=/usr/local/jpeg --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd
+		./configure --prefix=/usr/local/php --with-mysql=/usr/local/mysql --with-apxs2=/usr/local/apache/bin/apxs --with-freetype-dir --with-jpeg-dir --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd
 		make && make install
 		[ $? -eq 0 ] && {
 		cp php.ini-recommended /usr/local/php/lib/php.ini
@@ -685,8 +689,8 @@ wget -c http://cn2.php.net/distributions/php-5.3.29.tar.bz2
 [ -f php-5.3.29.tar.bz2 ] && [ ! -e PHP53_INST.lock ] && {
 	tar jxvf php-5.3.29.tar.bz2
 	cd php-5.3.29/
-	if [ $WEB_INST =3 ]; then
-		./configure --prefix=/usr/local/php --with-mysql=/usr/local/mysql --enable-fpm --with-freetype-dir=/usr/local/freetype --with-jpeg-dir=/usr/local/jpeg --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql
+	if [ $WEB_INST = 3 ]; then
+		./configure --prefix=/usr/local/php --with-mysql=/usr/local/mysql --enable-fpm --with-freetype-dir --with-jpeg-dir --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql
 		[ $? -eq 0 ] && {
 		cp php.ini-production /usr/local/php/lib/php.ini
 		sed -i 's/short_open_tag = Off/short_open_tag = On/g' /usr/local/php/lib/php.ini
@@ -709,7 +713,7 @@ wget -c http://cn2.php.net/distributions/php-5.3.29.tar.bz2
 			exit 58
 			}
 	else
-		./configure --prefix=/usr/local/php --with-mysql=/usr/local/mysql --with-apxs2=/usr/local/apache/bin/apxs --with-freetype-dir=/usr/local/freetype --with-jpeg-dir=/usr/local/jpeg --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql
+		./configure --prefix=/usr/local/php --with-mysql=/usr/local/mysql --with-apxs2=/usr/local/apache/bin/apxs --with-freetype-dir --with-jpeg-dir --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql
 		make && make install
 		[ $? -eq 0 ] && {
 		cp php.ini-production /usr/local/php/lib/php.ini
@@ -734,8 +738,8 @@ wget -c http://cn2.php.net/distributions/php-5.4.45.tar.bz2
 [ -f php-5.4.45.tar.bz2 ] && [ ! -e PHP54_INST.lock ] && {
 	tar jxvf php-5.4.45.tar.bz2
 	cd php-5.4.45/
-	if [ $WEB_INST =3 ]; then
-		./configure --prefix=/usr/local/php --with-mysql=/usr/local/mysql --enable-fpm --with-freetype-dir=/usr/local/freetype --with-jpeg-dir=/usr/local/jpeg --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql
+	if [ $WEB_INST = 3 ]; then
+		./configure --prefix=/usr/local/php --with-mysql=/usr/local/mysql --enable-fpm --with-freetype-dir --with-jpeg-dir --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql
 		make && make install
 		[ $? -eq 0 ] && {
 		cp php.ini-production /usr/local/php/lib/php.ini
@@ -759,7 +763,7 @@ wget -c http://cn2.php.net/distributions/php-5.4.45.tar.bz2
 			exit 58
 			}
 	else
-		./configure --prefix=/usr/local/php --with-mysql=/usr/local/mysql --with-apxs2=/usr/local/apache/bin/apxs --with-freetype-dir=/usr/local/freetype --with-jpeg-dir=/usr/local/jpeg --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql --enable-bcmath --enable-sockets --with-gettext
+		./configure --prefix=/usr/local/php --with-mysql=/usr/local/mysql --with-apxs2=/usr/local/apache/bin/apxs --with-freetype-dir --with-jpeg-dir --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql --enable-bcmath --enable-sockets --with-gettext
 		make && make install
 		[ $? -eq 0 ] && {
 		cp php.ini-production /usr/local/php/lib/php.ini
@@ -783,8 +787,8 @@ wget -c http://cn2.php.net/distributions/php-5.5.38.tar.bz2
 [ -f php-5.5.38.tar.bz2 ] && [ ! -e PHP55_INST.lock ] && {
 	tar jxvf php-5.5.38.tar.bz2
 	cd php-5.5.38/
-	if [ $WEB_INST =3 ]; then
-		./configure --prefix=/usr/local/php --with-mysql=/usr/local/mysql --enable-fpm --with-freetype-dir=/usr/local/freetype --with-jpeg-dir=/usr/local/jpeg --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql
+	if [ $WEB_INST = 3 ]; then
+		./configure --prefix=/usr/local/php --with-mysql=/usr/local/mysql --enable-fpm --with-freetype-dir --with-jpeg-dir --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql
 		make && make install
 		[ $? -eq 0 ] && {
 		cp php.ini-production /usr/local/php/lib/php.ini
@@ -808,7 +812,7 @@ wget -c http://cn2.php.net/distributions/php-5.5.38.tar.bz2
 			exit 58
 			}
 	else
-		./configure --prefix=/usr/local/php --with-mysql=/usr/local/mysql --with-apxs2=/usr/local/apache/bin/apxs --with-freetype-dir=/usr/local/freetype --with-jpeg-dir=/usr/local/jpeg --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql
+		./configure --prefix=/usr/local/php --with-mysql=/usr/local/mysql --with-apxs2=/usr/local/apache/bin/apxs --with-freetype-dir --with-jpeg-dir --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql
 		make && make install
 		[ $? -eq 0 ] && {
 		cp php.ini-production /usr/local/php/lib/php.ini
@@ -832,8 +836,8 @@ wget -c http://cn2.php.net/distributions/php-5.6.30.tar.bz2
 [ -f php-5.6.30.tar.bz2 ] && [ ! -e PHP56_INST.lock ] && {
 	tar jxvf php-5.6.30.tar.bz2
 	cd php-5.6.30/
-	if [ $WEB_INST =3 ]; then
-		./configure --prefix=/usr/local/php --with-mysql=/usr/local/mysql --enable-fpm --with-freetype-dir=/usr/local/freetype --with-jpeg-dir=/usr/local/jpeg --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql
+	if [ $WEB_INST = 3 ]; then
+		./configure --prefix=/usr/local/php --with-mysql=/usr/local/mysql --enable-fpm --with-freetype-dir --with-jpeg-dir --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql
 		make && make install
 		[ $? -eq 0 ] && {
 		cp php.ini-production /usr/local/php/lib/php.ini
@@ -857,7 +861,7 @@ wget -c http://cn2.php.net/distributions/php-5.6.30.tar.bz2
 			exit 58
 			}
 	else
-		./configure --prefix=/usr/local/php --with-mysql=/usr/local/mysql --with-apxs2=/usr/local/apache/bin/apxs --with-freetype-dir=/usr/local/freetype --with-jpeg-dir=/usr/local/jpeg --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql
+		./configure --prefix=/usr/local/php --with-mysql=/usr/local/mysql --with-apxs2=/usr/local/apache/bin/apxs --with-freetype-dir --with-jpeg-dir --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql
 		make && make install
 		[ $? -eq 0 ] && {
 		cp php.ini-production /usr/local/php/lib/php.ini
@@ -881,8 +885,8 @@ wget -c http://cn2.php.net/distributions/php-7.0.17.tar.bz2
 [ -f php-7.0.17.tar.bz2 ] && [ ! -e PHP70_INST.lock ] && {
 	tar jxvf php-7.0.17.tar.bz2
 	cd php-7.0.17/
-	if [ $WEB_INST =3 ]; then
-		./configure --prefix=/usr/local/php --with-mysql=/usr/local/mysql --enable-fpm --with-freetype-dir=/usr/local/freetype --with-jpeg-dir=/usr/local/jpeg --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql
+	if [ $WEB_INST = 3 ]; then
+		./configure --prefix=/usr/local/php --with-mysql=/usr/local/mysql --enable-fpm --with-freetype-dir --with-jpeg-dir --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql
 		make && make install
 		[ $? -eq 0 ] && {
 		cp php.ini-production /usr/local/php/lib/php.ini
@@ -906,7 +910,7 @@ wget -c http://cn2.php.net/distributions/php-7.0.17.tar.bz2
 			exit 58
 			}
 	else
-		./configure --prefix=/usr/local/php --with-mysql=/usr/local/mysql --with-apxs2=/usr/local/apache/bin/apxs --with-freetype-dir=/usr/local/freetype --with-jpeg-dir=/usr/local/jpeg --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql
+		./configure --prefix=/usr/local/php --with-mysql=/usr/local/mysql --with-apxs2=/usr/local/apache/bin/apxs --with-freetype-dir --with-jpeg-dir --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql
 		make && make install
 		[ $? -eq 0 ] && {
 		cp php.ini-production /usr/local/php/lib/php.ini
@@ -930,8 +934,8 @@ wget -c http://cn2.php.net/distributions/php-7.1.3.tar.bz2
 [ -f php-7.1.3.tar.bz2 ] && [ ! -e PHP71_INST.lock ] && {
 	tar jxvf php-7.1.3.tar.bz2
 	cd php-7.1.3/
-	if [ $WEB_INST =3 ]; then
-		./configure --prefix=/usr/local/php --with-mysql=/usr/local/mysql --enable-fpm --with-freetype-dir=/usr/local/freetype --with-jpeg-dir=/usr/local/jpeg --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql
+	if [ $WEB_INST = 3 ]; then
+		./configure --prefix=/usr/local/php --with-mysql=/usr/local/mysql --enable-fpm --with-freetype-dir --with-jpeg-dir --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql
 		make && make install
 		[ $? -eq 0 ] && {
 		cp php.ini-production /usr/local/php/lib/php.ini
@@ -955,7 +959,7 @@ wget -c http://cn2.php.net/distributions/php-7.1.3.tar.bz2
 			exit 58
 			}
 	else
-		./configure --prefix=/usr/local/php --with-mysql=/usr/local/mysql --with-apxs2=/usr/local/apache/bin/apxs --with-freetype-dir=/usr/local/freetype --with-jpeg-dir=/usr/local/jpeg --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql
+		./configure --prefix=/usr/local/php --with-mysql=/usr/local/mysql --with-apxs2=/usr/local/apache/bin/apxs --with-freetype-dir --with-jpeg-dir --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql
 		make && make install
 		[ $? -eq 0 ] && {
 		cp php.ini-production /usr/local/php/lib/php.ini
@@ -1047,7 +1051,7 @@ case $WEB_INST in
 
 esac
 
-[ ! -e $INSTALL_PATH/FGP_INST.lock ] && [ $RL != 4 ] && FGP_INST
+#[ ! -e $INSTALL_PATH/FGP_INST.lock ] && [ $RL != 4 ] && FGP_INST
 
 #Php
 case $PHP_INST in
@@ -1224,4 +1228,3 @@ echo "#####################END"
 echo "Install finished at $DATE_INST.">>$INSTALL_LOG
 echo -e "${GREEN_COLOR}You can find these important info in $INSTALL_LOG..$RES"
 echo "#####################END">>$INSTALL_LOG
-exit 0
