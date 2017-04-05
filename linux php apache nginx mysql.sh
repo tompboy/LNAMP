@@ -10,6 +10,7 @@
 # Add: php7, mysql 5.7...2017-03-23
 # Debug: Fix some mistakes..2017-03-27
 # Add: support on Ubuntu 16...2017-03-28
+# Debug: Fix some mistakes..2017-04-05
 # Project home: https://github.com/tompboy/LNAMP
 # Version:V 0.9
 
@@ -558,7 +559,7 @@ NGX_INST(){
 ##Install nginx################
 cd $INSTALL_PATH
 [ -f pcre-8.40.tar.bz2 ] && [ -f zlib-1.2.11.tar.gz ] && [ -f nginx-1.10.2.tar.gz ] && [ ! -e NGX_INST.lock ] && {
-	tar zxvf pcre-8.40.tar.bz2
+	tar jxvf pcre-8.40.tar.bz2
 	tar zxvf zlib-1.2.11.tar.gz
 	tar zxvf nginx-1.10.2.tar.gz
 	cd nginx-1.10.2
