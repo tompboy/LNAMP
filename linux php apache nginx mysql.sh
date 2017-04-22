@@ -11,8 +11,9 @@
 # Debug: Fix some mistakes..2017-03-27
 # Add: support on Ubuntu 16...2017-03-28
 # Debug: Fix some mistakes..2017-04-05
+# Debug: Fix some mistakes..2017-04-22
 # Project home: https://github.com/tompboy/LNAMP
-# Version:V 0.9
+# Version:V 0.10
 
 
 [ `id -u` != 0 ] && { echo "Error: You must run this script $0 with root..."; exit 9; }
@@ -258,7 +259,7 @@ echo "Downloading packages..">>$INSTALL_LOG
 wget -c http://nginx.org/download/nginx-1.10.2.tar.gz &&\
 wget -c https://ftp.pcre.org/pub/pcre/pcre-8.40.tar.bz2 &&\
 wget -c http://zlib.net/fossils/zlib-1.2.11.tar.gz &&\
-wget -c https://mail.gnome.org/archives/xml/2012-August/txtbgxGXAvz4N.txt && mv txtbgxGXAvz4N.txt patch-5.x.x.patch &&\
+wget -c https://mail.gnome.org/archives/xml/2012-August/txtbgxGXAvz4N.txt && mv txtbgxGXAvz4N.txt php-5.x.x.patch &&\
 wget -c http://archive.apache.org/dist/httpd/httpd-2.2.32.tar.bz2
 [ $? -eq 0 ] && {
 	echo "download packages success.">>$INSTALL_LOG
@@ -644,7 +645,7 @@ wget -c http://php-fpm.org/downloads/php-5.2.17-fpm-0.5.14.diff.gz
 	cd php-5.2.17/
 	patch -p0 -b < ../php-5.x.x.patch
 	if [ $WEB_INST = 3 ]; then 
-		gzip -cd php-5.2.17-fpm-0.5.14.diff.gz | patch -d php-5.2.17 -p1
+		gzip -cd /data/php-5.2.17-fpm-0.5.14.diff.gz | patch -d /data/php-5.2.17 -p1
 		./configure --prefix=/usr/local/php --with-mysql=/usr/local/mysql --enable-fastcgi --enable-fpm --with-freetype-dir --with-jpeg-dir --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd
 		make && make install
 		[ $? -eq 0 ] && {
