@@ -259,8 +259,7 @@ echo "Downloading packages..">>$INSTALL_LOG
 wget -c http://nginx.org/download/nginx-1.10.2.tar.gz &&\
 wget -c https://ftp.pcre.org/pub/pcre/pcre-8.40.tar.bz2 &&\
 wget -c http://zlib.net/fossils/zlib-1.2.11.tar.gz &&\
-wget -c https://mail.gnome.org/archives/xml/2012-August/txtbgxGXAvz4N.txt && mv txtbgxGXAvz4N.txt php-5.x.x.patch &&\
-wget -c http://archive.apache.org/dist/httpd/httpd-2.2.32.tar.bz2
+wget -c https://mail.gnome.org/archives/xml/2012-August/txtbgxGXAvz4N.txt && mv txtbgxGXAvz4N.txt php-5.x.x.patch
 [ $? -eq 0 ] && {
 	echo "download packages success.">>$INSTALL_LOG
 	touch $INSTALL_PATH/DOWN_SOFT.lock
@@ -398,6 +397,7 @@ EOF
 APA22_INST(){
 ##Install apache2.2 #####################
 cd $INSTALL_PATH
+wget -c http://archive.apache.org/dist/httpd/httpd-2.2.32.tar.bz2
 [ -f httpd-2.2.32.tar.bz2 ] && [ ! -e APA22_INST.lock ] && {
 tar -jxvf httpd-2.2.32.tar.bz2
 cd httpd-2.2.32
