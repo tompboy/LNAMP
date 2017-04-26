@@ -275,12 +275,12 @@ wget -c https://mail.gnome.org/archives/xml/2012-August/txtbgxGXAvz4N.txt && mv 
 Mysql55_INST(){
 ##Install MySQL 5.5 ################
 cd $INSTALL_PATH
-wget -c http://dev.mysql.com/get/Downloads/MySQL-5.5/mysql-5.5.53-linux2.6-x86_64.tar.gz
-[ -f mysql-5.5.53-linux2.6-x86_64.tar.gz ] && [ ! -e Mysql55_INST.lock ] && {
+wget -c http://dev.mysql.com/get/Downloads/MySQL-5.5/mysql-5.5.55-linux2.6-x86_64.tar.gz
+[ -f mysql-5.5.55-linux2.6-x86_64.tar.gz ] && [ ! -e Mysql55_INST.lock ] && {
 	userdel -r mysql
 	useradd mysql
-	tar zxvf mysql-5.5.53-linux2.6-x86_64.tar.gz
-	cp -r mysql-5.5.53-linux2.6-x86_64 /usr/local/mysql
+	tar zxvf mysql-5.5.55-linux2.6-x86_64.tar.gz
+	cp -r mysql-5.5.55-linux2.6-x86_64 /usr/local/mysql
 	cd /usr/local/mysql
 	rm -f /etc/my.cnf
 	cp /usr/local/mysql/support-files/my-medium.cnf /etc/my.cnf
