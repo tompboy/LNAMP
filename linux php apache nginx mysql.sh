@@ -12,6 +12,7 @@
 # Add: support on Ubuntu 16...2017-03-28
 # Debug: Fix some mistakes..2017-04-05
 # Debug: Fix some mistakes..2017-04-22
+# Debug: Fix some mistakes..2017-04-26
 # Project home: https://github.com/tompboy/LNAMP
 # Version:V 0.10
 
@@ -693,6 +694,7 @@ wget -c http://cn2.php.net/distributions/php-5.3.29.tar.bz2
 	cd php-5.3.29/
 	if [ $WEB_INST = 3 ]; then
 		./configure --prefix=/usr/local/php --with-mysql=/usr/local/mysql --enable-fpm --with-freetype-dir --with-jpeg-dir --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql
+		make && make install
 		[ $? -eq 0 ] && {
 		cp php.ini-production /usr/local/php/lib/php.ini
 		sed -i 's/short_open_tag = Off/short_open_tag = On/g' /usr/local/php/lib/php.ini
@@ -1185,7 +1187,7 @@ service iptables save
 #start mysql
 service mysqld start
 
-#start php
+#start php-fpm
 if [ $PHP_INST = 1 -a $WEB_INST = 3 ]; then
 	service php-fpm start
 else
