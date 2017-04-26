@@ -284,10 +284,8 @@ wget -c http://dev.mysql.com/get/Downloads/MySQL-5.5/mysql-5.5.53-linux2.6-x86_6
 	cd /usr/local/mysql
 	rm -f /etc/my.cnf
 	cp /usr/local/mysql/support-files/my-medium.cnf /etc/my.cnf
-	cat >>/etc/my.cnf<<EOF
-	max_connections = 500
-	wait_timeout = 30
-EOF
+	sed -i '/\[mysqld\]/amax_connections = 800' /etc/my.cnf
+	sed -i '/\[mysqld\]/await_timeout = 30' /etc/my.cnf
 	scripts/mysql_install_db --user=mysql
 	/usr/local/mysql/support-files/mysql.server start
 [ $? -eq 0 ] && {
