@@ -243,8 +243,8 @@ cd $INSTALL_PATH
 #epel
 [ ! -e DOWN_SOFT.lock ] && {
 if [ $RL = 2 -o $RL = 3 ]; then
-	[ $RL = 2 ] && rpm -Uvh https://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
-	[ $RL = 3 ] && rpm -Uvh https://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-9.noarch.rpm
+	[ $RL = 2 ] && rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-6.noarch.rpm
+	[ $RL = 3 ] && rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 	rpm -qa|grep epel-release
 	[ $? -eq 0 ] && yum -y install kernel-devel rpm-build patch make gcc gcc-c++ flex bison \
 	file libxml2 libxml2-devel curl curl-devel libjpeg libjpeg-devel libtool libpng \
