@@ -276,12 +276,12 @@ wget -c https://mail.gnome.org/archives/xml/2012-August/txtbgxGXAvz4N.txt && mv 
 Mysql55_INST(){
 ##Install MySQL 5.5 ################
 cd $INSTALL_PATH
-wget -c http://dev.mysql.com/get/Downloads/MySQL-5.5/mysql-5.5.55-linux2.6-x86_64.tar.gz
-[ -f mysql-5.5.55-linux2.6-x86_64.tar.gz ] && [ ! -e Mysql55_INST.lock ] && {
+wget -c https://dev.mysql.com/get/Downloads/MySQL-5.5/mysql-5.5.57-linux-glibc2.12-x86_64.tar.gz
+[ -f mysql-5.5.57-linux-glibc2.12-x86_64.tar.gz ] && [ ! -e Mysql55_INST.lock ] && {
 	userdel -r mysql
 	useradd mysql
-	tar zxvf mysql-5.5.55-linux2.6-x86_64.tar.gz
-	cp -r mysql-5.5.55-linux2.6-x86_64 /usr/local/mysql
+	tar zxvf mysql-5.5.57-linux-glibc2.12-x86_64.tar.gz
+	cp -r mysql-5.5.57-linux-glibc2.12-x86_64 /usr/local/mysql
 	cd /usr/local/mysql
 	rm -f /etc/my.cnf
 	cp /usr/local/mysql/support-files/my-medium.cnf /etc/my.cnf
@@ -312,12 +312,12 @@ wget -c http://dev.mysql.com/get/Downloads/MySQL-5.5/mysql-5.5.55-linux2.6-x86_6
 Mysql56_INST(){
 ##Install MySQL 5.6 ################
 cd $INSTALL_PATH
-wget -c https://dev.mysql.com/get/Downloads/MySQL-5.6/mysql-5.6.35-linux-glibc2.5-x86_64.tar.gz
-[ -f mysql-5.6.35-linux-glibc2.5-x86_64.tar.gz ] && [ ! -e Mysql56_INST.lock ] && {
+wget -c https://dev.mysql.com/get/Downloads/MySQL-5.6/mysql-5.6.37-linux-glibc2.12-x86_64.tar.gz
+[ -f mysql-5.6.37-linux-glibc2.12-x86_64.tar.gz ] && [ ! -e Mysql56_INST.lock ] && {
 	userdel -r mysql
 	useradd mysql
-	tar zxvf mysql-5.6.35-linux-glibc2.5-x86_64.tar.gz
-	cp -r mysql-5.6.35-linux-glibc2.5-x86_64 /usr/local/mysql
+	tar zxvf mysql-5.6.37-linux-glibc2.12-x86_64.tar.gz
+	cp -r mysql-5.6.37-linux-glibc2.12-x86_64 /usr/local/mysql
 	cd /usr/local/mysql
 	rm -f /etc/my.cnf
 cat >>/etc/my.cnf<<EOF
@@ -354,12 +354,12 @@ EOF
 Mysql57_INST(){
 ##Install MySQL 5.7 ################
 cd $INSTALL_PATH
-wget -c https://dev.mysql.com/get/Downloads/MySQL-5.7/mysql-5.7.17-linux-glibc2.5-x86_64.tar.gz
-[ -f mysql-5.7.17-linux-glibc2.5-x86_64.tar.gz ] && [ ! -e Mysql57_INST.lock ] && {
+wget -c https://dev.mysql.com/get/Downloads/MySQL-5.7/mysql-5.7.19-linux-glibc2.12-x86_64.tar.gz
+[ -f mysql-5.7.19-linux-glibc2.12-x86_64.tar.gz ] && [ ! -e Mysql57_INST.lock ] && {
 	userdel -r mysql
 	useradd mysql
-	tar zxvf mysql-5.7.17-linux-glibc2.5-x86_64.tar.gz
-	cp -r mysql-5.7.17-linux-glibc2.5-x86_64 /usr/local/mysql
+	tar zxvf mysql-5.7.19-linux-glibc2.12-x86_64.tar.gz
+	cp -r mysql-5.7.19-linux-glibc2.12-x86_64 /usr/local/mysql
 	cd /usr/local/mysql
 	rm -f /etc/my.cnf
 cat >>/etc/my.cnf<<EOF
