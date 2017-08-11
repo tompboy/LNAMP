@@ -79,12 +79,13 @@ cat <<EOF
 1. Install Mysql 5.5
 2. Install Mysql 5.6
 3. Install Mysql 5.7
+4. NOT install
 EOF
 }
 menu
 read -p "Please input which web server you want to install.." Mysql_INST
 echo -e "\n"
-if [[ $Mysql_INST != [1-3] ]]; then
+if [[ $Mysql_INST != [1-4] ]]; then
 	echo "Input error, please input the correct num[1-3].."
 else
 	break
@@ -101,12 +102,13 @@ cat <<EOF
 1. Install Apache 2.2
 2. Install Apache 2.4
 3. Install Nginx
+4. NOT install
 EOF
 }
 menu
 read -p "Please input which web server you want to install.." WEB_INST
 echo -e "\n"
-if [[ $WEB_INST != [1-3] ]]; then
+if [[ $WEB_INST != [1-4] ]]; then
 	echo "Input error, please input the correct num[1-3].."
 else
 	break
@@ -127,12 +129,13 @@ cat <<EOF
 5. Install PHP 5.6.30
 6. Install PHP 7.0.17
 7. Install PHP 7.1.3
+8. NOT install
 EOF
 }
 menu
 read -p "Please input which PHP you want to install.." PHP_INST
 echo -e "\n"
-if [[ $PHP_INST != [1-7] ]]; then
+if [[ $PHP_INST != [1-8] ]]; then
 	echo "Input error, please input the correct num[1-7].."
 else
 	break
