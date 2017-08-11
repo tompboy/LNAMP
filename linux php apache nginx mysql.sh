@@ -639,7 +639,7 @@ PHP52_INST(){
 ln -s /usr/lib64/libjpeg.so /usr/lib/
 ln -s /usr/lib64/libpng.so /usr/lib/
 cd $INSTALL_PATH
-wget -c http://down1.chinaunix.net/distfiles/php-5.2.17.tar.bz2 &&\
+wget -c museum.php.net/php5/php-5.2.17.tar.bz2 &&\
 wget -c http://php-fpm.org/downloads/php-5.2.17-fpm-0.5.14.diff.gz
 [ -f php-5.2.17.tar.bz2 ] && [ -f php-5.2.17-fpm-0.5.14.diff.gz ] && [ ! -e PHP52_INST.lock ] && {
 	tar jxvf php-5.2.17.tar.bz2
