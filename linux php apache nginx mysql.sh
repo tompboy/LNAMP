@@ -86,7 +86,7 @@ menu
 read -p "Please input which web server you want to install.." Mysql_INST
 echo -e "\n"
 if [[ $Mysql_INST != [1-4] ]]; then
-	echo "Input error, please input the correct num[1-3].."
+	echo "Input error, please input the correct num[1-4].."
 else
 	break
 fi
@@ -109,7 +109,7 @@ menu
 read -p "Please input which web server you want to install.." WEB_INST
 echo -e "\n"
 if [[ $WEB_INST != [1-4] ]]; then
-	echo "Input error, please input the correct num[1-3].."
+	echo "Input error, please input the correct num[1-4].."
 else
 	break
 fi
@@ -136,7 +136,7 @@ menu
 read -p "Please input which PHP you want to install.." PHP_INST
 echo -e "\n"
 if [[ $PHP_INST != [1-8] ]]; then
-	echo "Input error, please input the correct num[1-7].."
+	echo "Input error, please input the correct num[1-8].."
 else
 	break
 fi
@@ -413,7 +413,7 @@ make && make install
 
 sed -i 's/User daemon/User '$USER_WEB'/g' /usr/local/apache/conf/httpd.conf
 sed -i 's/Group daemon/Group '$USER_WEB'/g' /usr/local/apache/conf/httpd.conf
-sed -i 's/DirectoryIndex index.html/DirectoryIndex index.php/g'/usr/local/apache/conf/httpd.conf
+sed -i 's/DirectoryIndex index.html/DirectoryIndex index.php index.html/g' /usr/local/apache/conf/httpd.conf
 sed -i 's/ErrorLog "logs\/error_log"/ErrorLog "\|\/usr\/local\/apache\/bin\/rotatelogs \/usr\/local\/apache\/logs\/error_%Y_%m_%d.log 86400 480"/g' /usr/local/apache/conf/httpd.conf
 sed -i 's/CustomLog "logs\/access_log" common/CustomLog "\|\/usr\/local\/apache\/bin\/rotatelogs \/usr\/local\/apache\/logs\/access_%Y_%m_%d.log 86400 480" combined/g' /usr/local/apache/conf/httpd.conf
 
@@ -502,7 +502,7 @@ make && make install
 
 sed -i 's/User daemon/User '$USER_WEB'/g' /usr/local/apache/conf/httpd.conf
 sed -i 's/Group daemon/Group '$USER_WEB'/g' /usr/local/apache/conf/httpd.conf
-sed -i 's/DirectoryIndex index.html/DirectoryIndex index.php/g'/usr/local/apache/conf/httpd.conf
+sed -i 's/DirectoryIndex index.html/DirectoryIndex index.php/g' /usr/local/apache/conf/httpd.conf
 sed -i 's/ErrorLog "logs\/error_log"/ErrorLog "\|\/usr\/local\/apache\/bin\/rotatelogs \/usr\/local\/apache\/logs\/error_%Y_%m_%d.log 86400 480"/g' /usr/local/apache/conf/httpd.conf
 sed -i 's/CustomLog "logs\/access_log" common/CustomLog "\|\/usr\/local\/apache\/bin\/rotatelogs \/usr\/local\/apache\/logs\/access_%Y_%m_%d.log 86400 480" combined/g' /usr/local/apache/conf/httpd.conf
 
