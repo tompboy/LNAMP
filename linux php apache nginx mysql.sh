@@ -14,6 +14,7 @@
 # Debug: Fix some mistakes..2017-04-22
 # Debug: Fix some mistakes..2017-04-26
 # Debug: Fix some mistakes..2017-08-08
+# Debug: Fix some mistakes..2017-08-11
 # Project home: https://github.com/tompboy/LNAMP
 # Version:V 0.10
 
