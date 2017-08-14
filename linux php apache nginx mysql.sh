@@ -15,6 +15,7 @@
 # Debug: Fix some mistakes..2017-04-26
 # Debug: Fix some mistakes..2017-08-08
 # Debug: Fix some mistakes..2017-08-11
+# Debug: Fix some mistakes..Change the method of generate random password ...2017-08-14
 # Project home: https://github.com/tompboy/LNAMP
 # Version:V 0.10
 
@@ -39,15 +40,17 @@ mkdir -p $INSTALL_PATH
 #内核大版本-kernel version
 RL=`uname -r|awk -F "." '{print $1}'`
 
+yum -y install expect && {
+
 #网站用户-user who run the web server
 USER_WEB=www
 
 #用户密码-the password for the user
-USER_PSWD=`echo $(date +%t%N)$RANDOM|md5sum|cut -c 2-11`
+USER_PSWD=`mkpasswd -l 16`
 echo -e "The user's password. is: $USER_PSWD">>$INSTALL_LOG
 
 #Mysql root 密码-the password for mysql root
-Mysql_PSWD=`echo $(date +%t%N)$RANDOM|md5sum|cut -c 2-11`
+Mysql_PSWD=`mkpasswd -l 16`
 echo -e "The Mysql root's password. is: $Mysql_PSWD">>$INSTALL_LOG
 
 #新建Mysql数据库名-the database name
@@ -56,10 +59,10 @@ Mysql_DBname=wwwdb
 #Mysql普通用户名-normal user for mysql
 Mysql_USER=wwwdbuser
 
-#Mysql普通用户随机10位数密码-password for normal user, random 10 chars
-Myuser_PSWD=`echo $(date +%t%N)$RANDOM|md5sum|cut -c 2-11`
+#Mysql普通用户随机16位数密码-password for normal user, random 16 chars
+Myuser_PSWD=`mkpasswd -l 16`
 echo -e "The Mysql user's password. is: $Myuser_PSWD">>$INSTALL_LOG
-
+} || echo "Install expect failed..."
 
 clear
 echo "###################################################################"
