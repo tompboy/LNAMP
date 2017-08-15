@@ -15,7 +15,8 @@
 # Debug: Fix some mistakes..2017-04-26
 # Debug: Fix some mistakes..2017-08-08
 # Debug: Fix some mistakes..2017-08-11
-# Debug: Fix some mistakes..Change the method of generate random password ...2017-08-14
+# Debug: Fix some mistakes..Change the method of generate random password...2017-08-14
+# Debug: Fix some mistakes..2017-08-15
 # Project home: https://github.com/tompboy/LNAMP
 # Version:V 0.10
 
@@ -62,7 +63,7 @@ Mysql_USER=wwwdbuser
 #Mysql普通用户随机16位数密码-password for normal user, random 16 chars
 Myuser_PSWD=`mkpasswd -l 16`
 echo -e "The Mysql user's password. is: $Myuser_PSWD">>$INSTALL_LOG
-} || echo "Install expect failed..."
+} || { echo "Install expect failed..."; exit 002; }
 
 clear
 echo "###################################################################"
@@ -95,6 +96,13 @@ else
 fi
 done
 
+#Mysql version, update here
+My55_Ver=5.5.57
+My56_Ver=5.6.37
+My57_Ver=5.7.19
+
+
+
 #Menu Web server
 while :; do
 menu(){
@@ -118,6 +126,14 @@ else
 fi
 done
 
+#Web Server version, update here
+APA24_Ver=2.4.27
+APR_Ver=1.6.2
+APRU_Ver=1.6.0
+NGX_Ver=1.12.1
+
+
+
 #Menu PHP
 while :; do
 menu(){
@@ -129,9 +145,9 @@ cat <<EOF
 2. Install PHP 5.3.29
 3. Install PHP 5.4.45
 4. Install PHP 5.5.38
-5. Install PHP 5.6.30
-6. Install PHP 7.0.17
-7. Install PHP 7.1.3
+5. Install PHP 5.6
+6. Install PHP 7.0
+7. Install PHP 7.1
 8. NOT install
 EOF
 }
@@ -144,6 +160,13 @@ else
 	break
 fi
 done
+
+#PHP version, update here
+PHP56_Ver=5.6.31
+PHP70_Ver=7.0.22
+PHP71_Ver=7.1.8
+
+
 
 CHK_SYS(){
 cd $INSTALL_PATH
@@ -265,7 +288,7 @@ else
 }
 fi
 echo "Downloading packages..">>$INSTALL_LOG
-wget -c http://nginx.org/download/nginx-1.10.2.tar.gz &&\
+wget -c http://nginx.org/download/nginx-$NGX_Ver.tar.gz &&\
 wget -c https://ftp.pcre.org/pub/pcre/pcre-8.40.tar.bz2 &&\
 wget -c http://zlib.net/fossils/zlib-1.2.11.tar.gz &&\
 wget -c https://mail.gnome.org/archives/xml/2012-August/txtbgxGXAvz4N.txt && mv txtbgxGXAvz4N.txt php-5.x.x.patch
@@ -283,12 +306,12 @@ wget -c https://mail.gnome.org/archives/xml/2012-August/txtbgxGXAvz4N.txt && mv 
 Mysql55_INST(){
 ##Install MySQL 5.5 ################
 cd $INSTALL_PATH
-wget -c https://dev.mysql.com/get/Downloads/MySQL-5.5/mysql-5.5.57-linux-glibc2.12-x86_64.tar.gz
-[ -f mysql-5.5.57-linux-glibc2.12-x86_64.tar.gz ] && [ ! -e Mysql55_INST.lock ] && {
+wget -c https://dev.mysql.com/get/Downloads/MySQL-5.5/mysql-$My55_Ver-linux-glibc2.12-x86_64.tar.gz
+[ -f mysql-$My55_Ver-linux-glibc2.12-x86_64.tar.gz ] && [ ! -e Mysql55_INST.lock ] && {
 	userdel -r mysql
 	useradd mysql
-	tar zxvf mysql-5.5.57-linux-glibc2.12-x86_64.tar.gz
-	cp -r mysql-5.5.57-linux-glibc2.12-x86_64 /usr/local/mysql
+	tar zxvf mysql-$My55_Ver-linux-glibc2.12-x86_64.tar.gz
+	cp -r mysql-$My55_Ver-linux-glibc2.12-x86_64 /usr/local/mysql
 	cd /usr/local/mysql
 	rm -f /etc/my.cnf
 	cp /usr/local/mysql/support-files/my-medium.cnf /etc/my.cnf
@@ -319,12 +342,12 @@ wget -c https://dev.mysql.com/get/Downloads/MySQL-5.5/mysql-5.5.57-linux-glibc2.
 Mysql56_INST(){
 ##Install MySQL 5.6 ################
 cd $INSTALL_PATH
-wget -c https://dev.mysql.com/get/Downloads/MySQL-5.6/mysql-5.6.37-linux-glibc2.12-x86_64.tar.gz
-[ -f mysql-5.6.37-linux-glibc2.12-x86_64.tar.gz ] && [ ! -e Mysql56_INST.lock ] && {
+wget -c https://dev.mysql.com/get/Downloads/MySQL-5.6/mysql-$My56_Ver-linux-glibc2.12-x86_64.tar.gz
+[ -f mysql-$My56_Ver-linux-glibc2.12-x86_64.tar.gz ] && [ ! -e Mysql56_INST.lock ] && {
 	userdel -r mysql
 	useradd mysql
-	tar zxvf mysql-5.6.37-linux-glibc2.12-x86_64.tar.gz
-	cp -r mysql-5.6.37-linux-glibc2.12-x86_64 /usr/local/mysql
+	tar zxvf mysql-$My56_Ver-linux-glibc2.12-x86_64.tar.gz
+	cp -r mysql-$My56_Ver-linux-glibc2.12-x86_64 /usr/local/mysql
 	cd /usr/local/mysql
 	rm -f /etc/my.cnf
 cat >>/etc/my.cnf<<EOF
@@ -361,12 +384,12 @@ EOF
 Mysql57_INST(){
 ##Install MySQL 5.7 ################
 cd $INSTALL_PATH
-wget -c https://dev.mysql.com/get/Downloads/MySQL-5.7/mysql-5.7.19-linux-glibc2.12-x86_64.tar.gz
-[ -f mysql-5.7.19-linux-glibc2.12-x86_64.tar.gz ] && [ ! -e Mysql57_INST.lock ] && {
+wget -c https://dev.mysql.com/get/Downloads/MySQL-5.7/mysql-$My57_Ver-linux-glibc2.12-x86_64.tar.gz
+[ -f mysql-$My57_Ver-linux-glibc2.12-x86_64.tar.gz ] && [ ! -e Mysql57_INST.lock ] && {
 	userdel -r mysql
 	useradd mysql
-	tar zxvf mysql-5.7.19-linux-glibc2.12-x86_64.tar.gz
-	cp -r mysql-5.7.19-linux-glibc2.12-x86_64 /usr/local/mysql
+	tar zxvf mysql-$My57_Ver-linux-glibc2.12-x86_64.tar.gz
+	cp -r mysql-$My57_Ver-linux-glibc2.12-x86_64 /usr/local/mysql
 	cd /usr/local/mysql
 	rm -f /etc/my.cnf
 cat >>/etc/my.cnf<<EOF
@@ -404,10 +427,10 @@ EOF
 APA22_INST(){
 ##Install apache2.2 #####################
 cd $INSTALL_PATH
-wget -c http://archive.apache.org/dist/httpd/httpd-2.2.32.tar.bz2
-[ -f httpd-2.2.32.tar.bz2 ] && [ ! -e APA22_INST.lock ] && {
-tar -jxvf httpd-2.2.32.tar.bz2
-cd httpd-2.2.32
+wget -c http://archive.apache.org/dist/httpd/httpd-2.2.34.tar.bz2
+[ -f httpd-2.2.34.tar.bz2 ] && [ ! -e APA22_INST.lock ] && {
+tar -jxvf httpd-2.2.34.tar.bz2
+cd httpd-2.2.34
 ./configure --prefix=/usr/local/apache --enable-module=so --enable-mods-shared='rewrite' --enable-deflate --enable-proxy-http --enable-proxy
 make && make install
 
@@ -422,12 +445,9 @@ sed -i 's/CustomLog "logs\/access_log" common/CustomLog "\|\/usr\/local\/apache\
 
 
 cat >>/usr/local/apache/conf/httpd.conf<<EOF
-
 AddType application/x-httpd-php .php     
 AddType application/x-httpd-php-source .phps
-
 NameVirtualHost *:80
-
 <VirtualHost *:80>
 DocumentRoot "/home/www"
 ServerName www.www.net
@@ -437,16 +457,12 @@ Order allow,deny
 Allow from all
 </Directory>
 </VirtualHost>
-
-
 ExtendedStatus On
-
 <location /apstatus>
 SetHandler server-status
 Order Allow,Deny
 Allow from all
 </location>
-
 <IfModule mpm_prefork_module>
     StartServers          5
     MinSpareServers       5
@@ -455,9 +471,7 @@ Allow from all
     MaxClients          2000
     MaxRequestsPerChild   15000
 </IfModule>
-
 #压缩级别
-
 DeflateCompressionLevel 9
 SetOutputFilter DEFLATE
 AddOutputFilterByType DEFLATE text/html text/plain text/xml application/x-javascript application/x-httpd-php
@@ -478,16 +492,16 @@ echo "Apache2.2 installed success...">>$INSTALL_LOG
 APA24_INST(){
 ##Install apache 2.4 #####################
 cd $INSTALL_PATH
-wget -c http://archive.apache.org/dist/httpd/httpd-2.4.25.tar.bz2 &&\
-wget -c http://archive.apache.org/dist/apr/apr-1.5.2.tar.bz2 &&\
-wget -c http://archive.apache.org/dist/apr/apr-util-1.5.4.tar.bz2
-[ -f apr-1.5.2.tar.bz2 ] && [ -f apr-util-1.5.4.tar.bz2 ] && [ -f httpd-2.4.25.tar.bz2 ] && [ ! -e APA24_INST.lock ] && {
-tar jxvf apr-1.5.2.tar.bz2
-cd apr-1.5.2
+wget -c http://archive.apache.org/dist/httpd/httpd-$APA24_Ver.tar.bz2 &&\
+wget -c http://archive.apache.org/dist/apr/apr-$APR_Ver.tar.bz2 &&\
+wget -c http://archive.apache.org/dist/apr/apr-util-$APRU_Ver.tar.bz2
+[ -f apr-$APR_Ver.tar.bz2 ] && [ -f apr-util-$APRU_Ver.tar.bz2 ] && [ -f httpd-$APA24_Ver.tar.bz2 ] && [ ! -e APA24_INST.lock ] && {
+tar jxvf apr-$APR_Ver.tar.bz2
+cd apr-$APR_Ver
 ./configure --prefix=/usr/local/apr && make && make install
 cd $INSTALL_PATH
-tar jxvf apr-util-1.5.4.tar.bz2
-cd apr-util-1.5.4
+tar jxvf apr-util-$APRU_Ver.tar.bz2
+cd apr-util-$APRU_Ver
 ./configure --prefix=/usr/local/apr-util --with-apr=/usr/local/apr/bin/apr-1-config && make && make install
 cd $INSTALL_PATH
 tar jxvf pcre-8.40.tar.bz2
@@ -495,8 +509,8 @@ cd pcre-8.40
 ./configure --prefix=/usr/local/pcre && make && make install
 
 cd $INSTALL_PATH
-tar -jxvf httpd-2.4.25.tar.bz2
-cd httpd-2.4.25
+tar -jxvf httpd-$APA24_Ver.tar.bz2
+cd httpd-$APA24_Ver
 ./configure --prefix=/usr/local/apache --with-apr=/usr/local/apr --with-apr-util=/usr/local/apr-util --enable-module=so --enable-mods-shared='rewrite' --enable-deflate --enable-proxy-http --enable-proxy --with-pcre=/usr/local/pcre
 make && make install
 
@@ -511,10 +525,8 @@ sed -i 's/CustomLog "logs\/access_log" common/CustomLog "\|\/usr\/local\/apache\
 
 
 cat >>/usr/local/apache/conf/httpd.conf<<EOF
-
 AddType application/x-httpd-php .php     
 AddType application/x-httpd-php-source .phps
-
 <VirtualHost *:80>
 DocumentRoot "/home/www"
 ServerName www.www.net
@@ -524,15 +536,11 @@ AllowOverride All
 Require all granted
 </Directory>
 </VirtualHost>
-
-
 ExtendedStatus On
-
 <location /apstatus>
 SetHandler server-status
 Require all granted
 </location>
-
 <IfModule mpm_event_module>
     StartServers             3
     MinSpareThreads         75
@@ -542,10 +550,8 @@ Require all granted
     MaxRequestWorkers      500
     MaxConnectionsPerChild   8000
 </IfModule>
-
 LoadModule deflate_module modules/mod_deflate.so
 LoadModule filter_module modules/mod_filter.so
-
 DeflateCompressionLevel 9
 SetOutputFilter DEFLATE
 AddOutputFilterByType DEFLATE text/html text/plain text/xml application/x-javascript application/x-httpd-php
@@ -566,11 +572,11 @@ echo "Apache2.4 installed success...">>$INSTALL_LOG
 NGX_INST(){
 ##Install nginx################
 cd $INSTALL_PATH
-[ -f pcre-8.40.tar.bz2 ] && [ -f zlib-1.2.11.tar.gz ] && [ -f nginx-1.10.2.tar.gz ] && [ ! -e NGX_INST.lock ] && {
+[ -f pcre-8.40.tar.bz2 ] && [ -f zlib-1.2.11.tar.gz ] && [ -f nginx-$NGX_Ver.tar.gz ] && [ ! -e NGX_INST.lock ] && {
 	tar jxvf pcre-8.40.tar.bz2
 	tar zxvf zlib-1.2.11.tar.gz
-	tar zxvf nginx-1.10.2.tar.gz
-	cd nginx-1.10.2
+	tar zxvf nginx-$NGX_Ver.tar.gz
+	cd nginx-$NGX_Ver
 	./configure --user=$USER_WEB --group=$USER_WEB --prefix=/usr/local/nginx --with-http_stub_status_module --with-http_gzip_static_module --with-http_sub_module  --with-http_realip_module --with-http_addition_module --with-pcre=$INSTALL_PATH/pcre-8.40 --with-zlib=$INSTALL_PATH/zlib-1.2.11
 	make && make install
 [ $? -eq 0 ] && {
@@ -584,61 +590,61 @@ cd $INSTALL_PATH
 	}
 }
 
-FGP_INST(){
-##Install jpeg##################
-cd $INSTALL_PATH
-wget -c http://down1.chinaunix.net/distfiles/jpegsrc.v6b.tar.gz &&\
-wget -c http://down1.chinaunix.net/distfiles/freetype-2.4.8.tar.bz2 &&\
-wget -c http://down1.chinaunix.net/distfiles/gd-2.0.33.tar.gz
-[ -f jpegsrc.v6b.tar.gz ] && {
-	tar -xzvf jpegsrc.v6b.tar.gz
-	cd jpeg-6b/
-	yes|cp /usr/share/libtool/config/config.guess .
-	yes|cp /usr/share/libtool/config/config.sub .
-	mkdir -p /usr/local/jpeg/include
-	mkdir -p /usr/local/jpeg/lib
-	mkdir -p /usr/local/jpeg/bin
-	mkdir -p /usr/local/jpeg/man/man1
-	./configure --prefix=/usr/local/jpeg --enable-shared
-	make && make install
-[ $? -eq 0 ] && {
-	echo "jpeg installed success.">>$INSTALL_LOG
-	} || {
-		echo "jpeg installed failed.">>$INSTALL_LOG
-		exit 63
-		}
-}
-
-
-
-##Install freetype################
-cd $INSTALL_PATH
-
-[ -f freetype-2.4.8.tar.bz2 ] && {
-	tar jxvf freetype-2.4.8.tar.bz2
-	cd freetype-2.4.8
-	./configure --prefix=/usr/local/freetype
-	make && make install
-[ $? -eq 0 ] && echo "freetype installed success">>$INSTALL_LOG || {
-	echo "freetype installed failed.">>$INSTALL_LOG
-	exit 69
-	}
-}
-
-##Install GD lib###############
-cd $INSTALL_PATH
-
-[ -f gd-2.0.33.tar.gz ] && {
-	tar -zxvf gd-2.0.33.tar.gz
-	cd gd-2.0.33
-	./configure --prefix=/usr/local/gd2 --with-png --with-freetype-dir=/usr/local/freetype --with-jpeg-dir=/usr/local/jpeg
-	make && make install
-[ $? -eq 0 ] && echo "gd lib installed success">>$INSTALL_LOG; touch $INSTALL_PATH/FGP_INST.lock || {
-	echo "gd lib installed failed.">>$INSTALL_LOG
-	exit 60
-	}
-	}
-}
+#FGP_INST(){
+###Install jpeg##################
+#cd $INSTALL_PATH
+#wget -c http://down1.chinaunix.net/distfiles/jpegsrc.v6b.tar.gz &&\
+#wget -c http://down1.chinaunix.net/distfiles/freetype-2.4.8.tar.bz2 &&\
+#wget -c http://down1.chinaunix.net/distfiles/gd-2.0.33.tar.gz
+#[ -f jpegsrc.v6b.tar.gz ] && {
+#	tar -xzvf jpegsrc.v6b.tar.gz
+#	cd jpeg-6b/
+#	yes|cp /usr/share/libtool/config/config.guess .
+#	yes|cp /usr/share/libtool/config/config.sub .
+#	mkdir -p /usr/local/jpeg/include
+#	mkdir -p /usr/local/jpeg/lib
+#	mkdir -p /usr/local/jpeg/bin
+#	mkdir -p /usr/local/jpeg/man/man1
+#	./configure --prefix=/usr/local/jpeg --enable-shared
+#	make && make install
+#[ $? -eq 0 ] && {
+#	echo "jpeg installed success.">>$INSTALL_LOG
+#	} || {
+#		echo "jpeg installed failed.">>$INSTALL_LOG
+#		exit 63
+#		}
+#}
+#
+#
+#
+###Install freetype################
+#cd $INSTALL_PATH
+#
+#[ -f freetype-2.4.8.tar.bz2 ] && {
+#	tar jxvf freetype-2.4.8.tar.bz2
+#	cd freetype-2.4.8
+#	./configure --prefix=/usr/local/freetype
+#	make && make install
+#[ $? -eq 0 ] && echo "freetype installed success">>$INSTALL_LOG || {
+#	echo "freetype installed failed.">>$INSTALL_LOG
+#	exit 69
+#	}
+#}
+#
+###Install GD lib###############
+#cd $INSTALL_PATH
+#
+#[ -f gd-2.0.33.tar.gz ] && {
+#	tar -zxvf gd-2.0.33.tar.gz
+#	cd gd-2.0.33
+#	./configure --prefix=/usr/local/gd2 --with-png --with-freetype-dir=/usr/local/freetype --with-jpeg-dir=/usr/local/jpeg
+#	make && make install
+#[ $? -eq 0 ] && echo "gd lib installed success">>$INSTALL_LOG; touch $INSTALL_PATH/FGP_INST.lock || {
+#	echo "gd lib installed failed.">>$INSTALL_LOG
+#	exit 60
+#	}
+#	}
+#}
 
 PHP52_INST(){
 ## Install PHP 5.2 ###################
@@ -842,10 +848,10 @@ PHP56_INST(){
 ln -s /usr/lib64/libjpeg.so /usr/lib/
 ln -s /usr/lib64/libpng.so /usr/lib/
 cd $INSTALL_PATH
-wget -c http://cn2.php.net/distributions/php-5.6.30.tar.bz2
-[ -f php-5.6.30.tar.bz2 ] && [ ! -e PHP56_INST.lock ] && {
-	tar jxvf php-5.6.30.tar.bz2
-	cd php-5.6.30/
+wget -c http://cn2.php.net/distributions/php-$PHP56_Ver.tar.bz2
+[ -f php-$PHP56_Ver.tar.bz2 ] && [ ! -e PHP56_INST.lock ] && {
+	tar jxvf php-$PHP56_Ver.tar.bz2
+	cd php-$PHP56_Ver/
 	if [ $WEB_INST = 3 ]; then
 		./configure --prefix=/usr/local/php --with-mysql=/usr/local/mysql --enable-fpm --with-freetype-dir --with-jpeg-dir --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql
 		make && make install
@@ -891,10 +897,10 @@ PHP70_INST(){
 ln -s /usr/lib64/libjpeg.so /usr/lib/
 ln -s /usr/lib64/libpng.so /usr/lib/
 cd $INSTALL_PATH
-wget -c http://cn2.php.net/distributions/php-7.0.17.tar.bz2
-[ -f php-7.0.17.tar.bz2 ] && [ ! -e PHP70_INST.lock ] && {
-	tar jxvf php-7.0.17.tar.bz2
-	cd php-7.0.17/
+wget -c http://cn2.php.net/distributions/php-$PHP70_Ver.tar.bz2
+[ -f php-$PHP70_Ver.tar.bz2 ] && [ ! -e PHP70_INST.lock ] && {
+	tar jxvf php-$PHP70_Ver.tar.bz2
+	cd php-$PHP70_Ver/
 	if [ $WEB_INST = 3 ]; then
 		./configure --prefix=/usr/local/php --with-mysql=/usr/local/mysql --enable-fpm --with-freetype-dir --with-jpeg-dir --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql
 		make && make install
@@ -940,10 +946,10 @@ PHP71_INST(){
 ln -s /usr/lib64/libjpeg.so /usr/lib/
 ln -s /usr/lib64/libpng.so /usr/lib/
 cd $INSTALL_PATH
-wget -c http://cn2.php.net/distributions/php-7.1.3.tar.bz2
-[ -f php-7.1.3.tar.bz2 ] && [ ! -e PHP71_INST.lock ] && {
-	tar jxvf php-7.1.3.tar.bz2
-	cd php-7.1.3/
+wget -c http://cn2.php.net/distributions/php-$PHP71_Ver.tar.bz2
+[ -f php-$PHP71_Ver.tar.bz2 ] && [ ! -e PHP71_INST.lock ] && {
+	tar jxvf php-$PHP71_Ver.tar.bz2
+	cd php-$PHP71_Ver/
 	if [ $WEB_INST = 3 ]; then
 		./configure --prefix=/usr/local/php --with-mysql=/usr/local/mysql --enable-fpm --with-freetype-dir --with-jpeg-dir --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql
 		make && make install
@@ -1154,6 +1160,7 @@ EOF
 	fi
 fi
 
+
 [ $RL = 2 -o $RL = 3 ] && {
 cat > /etc/rc.d/init.d/mysqld <<EOF
 #!/bin/bash
@@ -1232,9 +1239,9 @@ echo -e "The Mysql user's password. is: $Myuser_PSWD">>$INSTALL_LOG
 echo -e "\n"
 
 
-DATE_INST=`date +%Y-%m-%d-%H:%M`
-echo "Install finished at $DATE_INST."
+DATE_FIN=`date +%Y-%m-%d-%H:%M`
+echo "Install finished at $DATE_FIN.."
 echo "#####################END"
-echo "Install finished at $DATE_INST.">>$INSTALL_LOG
+echo "Install finished at $DATE_FIN.">>$INSTALL_LOG
 echo -e "${GREEN_COLOR}You can find these important info in $INSTALL_LOG..$RES"
 echo "#####################END">>$INSTALL_LOG
