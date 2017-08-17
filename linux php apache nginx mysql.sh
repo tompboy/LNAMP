@@ -17,6 +17,7 @@
 # Debug: Fix some mistakes..2017-08-11
 # Debug: Fix some mistakes..Change the method of generate random password...2017-08-14
 # Debug: Fix some mistakes..2017-08-15
+# Update: PCRE version..2017-08-17
 # Project home: https://github.com/tompboy/LNAMP
 # Version:V 0.10
 
@@ -268,6 +269,9 @@ useradd -s /sbin/nologin $USER_WEB && echo "$USER_WEB:$USER_PSWD"|chpasswd
 }
 
 
+PCRE_Ver=8.41
+
+
 DOWN_SOFT(){
 cd $INSTALL_PATH
 #安装依赖包\下载安装源码包-download the source packages and depended packages
@@ -289,7 +293,7 @@ else
 fi
 echo "Downloading packages..">>$INSTALL_LOG
 wget -c http://nginx.org/download/nginx-$NGX_Ver.tar.gz &&\
-wget -c https://ftp.pcre.org/pub/pcre/pcre-8.40.tar.bz2 &&\
+wget -c https://ftp.pcre.org/pub/pcre/pcre-$PCRE_Ver.tar.bz2 &&\
 wget -c http://zlib.net/fossils/zlib-1.2.11.tar.gz &&\
 wget -c https://mail.gnome.org/archives/xml/2012-August/txtbgxGXAvz4N.txt && mv txtbgxGXAvz4N.txt php-5.x.x.patch
 [ $? -eq 0 ] && {
@@ -504,8 +508,8 @@ tar jxvf apr-util-$APRU_Ver.tar.bz2
 cd apr-util-$APRU_Ver
 ./configure --prefix=/usr/local/apr-util --with-apr=/usr/local/apr/bin/apr-1-config && make && make install
 cd $INSTALL_PATH
-tar jxvf pcre-8.40.tar.bz2
-cd pcre-8.40
+tar jxvf pcre-$PCRE_Ver.tar.bz2
+cd pcre-$PCRE_Ver
 ./configure --prefix=/usr/local/pcre && make && make install
 
 cd $INSTALL_PATH
@@ -572,12 +576,12 @@ echo "Apache2.4 installed success...">>$INSTALL_LOG
 NGX_INST(){
 ##Install nginx################
 cd $INSTALL_PATH
-[ -f pcre-8.40.tar.bz2 ] && [ -f zlib-1.2.11.tar.gz ] && [ -f nginx-$NGX_Ver.tar.gz ] && [ ! -e NGX_INST.lock ] && {
-	tar jxvf pcre-8.40.tar.bz2
+[ -f pcre-$PCRE_Ver.tar.bz2 ] && [ -f zlib-1.2.11.tar.gz ] && [ -f nginx-$NGX_Ver.tar.gz ] && [ ! -e NGX_INST.lock ] && {
+	tar jxvf pcre-$PCRE_Ver.tar.bz2
 	tar zxvf zlib-1.2.11.tar.gz
 	tar zxvf nginx-$NGX_Ver.tar.gz
 	cd nginx-$NGX_Ver
-	./configure --user=$USER_WEB --group=$USER_WEB --prefix=/usr/local/nginx --with-http_stub_status_module --with-http_gzip_static_module --with-http_sub_module  --with-http_realip_module --with-http_addition_module --with-pcre=$INSTALL_PATH/pcre-8.40 --with-zlib=$INSTALL_PATH/zlib-1.2.11
+	./configure --user=$USER_WEB --group=$USER_WEB --prefix=/usr/local/nginx --with-http_stub_status_module --with-http_gzip_static_module --with-http_sub_module  --with-http_realip_module --with-http_addition_module --with-pcre=$INSTALL_PATH/pcre-$PCRE_Ver --with-zlib=$INSTALL_PATH/zlib-1.2.11
 	make && make install
 [ $? -eq 0 ] && {
 	ln -sf /usr/local/nginx/sbin/nginx /usr/bin/nginx && echo "Nginx installed success.">>$INSTALL_LOG
