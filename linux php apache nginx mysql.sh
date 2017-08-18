@@ -16,8 +16,9 @@
 # Debug: Fix some mistakes..2017-08-08
 # Debug: Fix some mistakes..2017-08-11
 # Debug: Fix some mistakes..Change the method of generate random password...2017-08-14
-# Debug: Fix some mistakes..2017-08-15
+# Debug: Fix some mistakes..Your can set the software version num...2017-08-15
 # Update: PCRE version..2017-08-17
+# Debug: Fix some mistakes..2017-08-18
 # Project home: https://github.com/tompboy/LNAMP
 # Version:V 0.10
 
@@ -1109,7 +1110,7 @@ esac
 [ ! -e $INSTALL_PATH/ZendGL_INST.lock ] && ZendGL_INST
 
 #ADD to system on boot
-##/etc/rcS.d
+#### Web
 if [ $WEB_INST = 3 ]; then
 	if [ $RL = 2 -o $RL = 3 ]; then
 cat > /etc/rc.d/init.d/nginx <<EOF
@@ -1164,6 +1165,7 @@ EOF
 	fi
 fi
 
+### Mysql
 
 [ $RL = 2 -o $RL = 3 ] && {
 cat > /etc/rc.d/init.d/mysqld <<EOF
