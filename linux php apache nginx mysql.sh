@@ -19,6 +19,7 @@
 # Debug: Fix some mistakes..Your can set the software version num...2017-08-15
 # Update: PCRE version..2017-08-17
 # Debug: Fix some mistakes..2017-08-18
+# Debug: Fix some mistakes..2017-08-25
 # Project home: https://github.com/tompboy/LNAMP
 # Version:V 0.10
 
@@ -98,12 +99,6 @@ else
 fi
 done
 
-#Mysql version, update here
-My55_Ver=5.5.57
-My56_Ver=5.6.37
-My57_Ver=5.7.19
-
-
 
 #Menu Web server
 while :; do
@@ -127,14 +122,6 @@ else
 	break
 fi
 done
-
-#Web Server version, update here
-APA24_Ver=2.4.27
-APR_Ver=1.6.2
-APRU_Ver=1.6.0
-NGX_Ver=1.12.1
-
-
 
 #Menu PHP
 while :; do
@@ -162,6 +149,22 @@ else
 	break
 fi
 done
+
+
+#Mysql version, update here
+My55_Ver=5.5.57
+My56_Ver=5.6.37
+My57_Ver=5.7.19
+
+#Web Server version, update here
+APA24_Ver=2.4.27
+APR_Ver=1.6.2
+APRU_Ver=1.6.0
+NGX_Ver=1.12.1
+PCRE_Ver=8.41
+OSSL_Ver=1.0.2l
+
+
 
 #PHP version, update here
 PHP56_Ver=5.6.31
@@ -270,7 +273,7 @@ useradd -s /sbin/nologin $USER_WEB && echo "$USER_WEB:$USER_PSWD"|chpasswd
 }
 
 
-PCRE_Ver=8.41
+
 
 
 DOWN_SOFT(){
@@ -577,12 +580,14 @@ echo "Apache2.4 installed success...">>$INSTALL_LOG
 NGX_INST(){
 ##Install nginx################
 cd $INSTALL_PATH
-[ -f pcre-$PCRE_Ver.tar.bz2 ] && [ -f zlib-1.2.11.tar.gz ] && [ -f nginx-$NGX_Ver.tar.gz ] && [ ! -e NGX_INST.lock ] && {
+wget -c https://www.openssl.org/source/openssl-$OSSL_Ver.tar.gz
+[ -f pcre-$PCRE_Ver.tar.bz2 ] && [ -f zlib-1.2.11.tar.gz ] && [ -f nginx-$NGX_Ver.tar.gz ] && [ ! -e NGX_INST.lock ] && [ -f openssl-$OSSL_Ver.tar.gz ] && {
 	tar jxvf pcre-$PCRE_Ver.tar.bz2
 	tar zxvf zlib-1.2.11.tar.gz
 	tar zxvf nginx-$NGX_Ver.tar.gz
+	tar zxvf openssl-$OSSL_Ver.tar.gz
 	cd nginx-$NGX_Ver
-	./configure --user=$USER_WEB --group=$USER_WEB --prefix=/usr/local/nginx --with-http_stub_status_module --with-http_gzip_static_module --with-http_sub_module  --with-http_realip_module --with-http_addition_module --with-pcre=$INSTALL_PATH/pcre-$PCRE_Ver --with-zlib=$INSTALL_PATH/zlib-1.2.11
+	./configure --user=$USER_WEB --group=$USER_WEB --prefix=/usr/local/nginx --with-http_stub_status_module --with-http_gzip_static_module --with-http_sub_module  --with-http_realip_module --with-http_addition_module --with-pcre=$INSTALL_PATH/pcre-$PCRE_Ver --with-zlib=$INSTALL_PATH/zlib-1.2.11 --with-http_ssl_module --with-openssl=$INSTALL_PATH/openssl-$OSSL_Ver
 	make && make install
 [ $? -eq 0 ] && {
 	ln -sf /usr/local/nginx/sbin/nginx /usr/bin/nginx && echo "Nginx installed success.">>$INSTALL_LOG
@@ -594,6 +599,7 @@ cd $INSTALL_PATH
 		}
 	}
 }
+
 
 #FGP_INST(){
 ###Install jpeg##################
