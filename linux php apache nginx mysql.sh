@@ -180,6 +180,8 @@ cd $INSTALL_PATH
 echo "系统信息收集中/gathering system info...">>$INSTALL_LOG
 echo "gathering system info..."
 
+echo -e "127.0.0.1 $HOSTNAME">>/etc/hosts
+
 echo "文件系统/file-systems">>$INSTALL_LOG
 df -h >>$INSTALL_LOG
 echo "#######END1">>$INSTALL_LOG
