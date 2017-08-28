@@ -20,8 +20,9 @@
 # Update: PCRE version..2017-08-17
 # Debug: Fix some mistakes..2017-08-18
 # Debug: Fix some mistakes..2017-08-25
+# Debug: Fix some mistakes..2017-08-28
 # Project home: https://github.com/tompboy/LNAMP
-# Version:V 0.10
+# Version:V 0.15
 
 
 [ `id -u` != 0 ] && { echo "Error: You must run this script $0 with root..."; exit 9; }
@@ -163,6 +164,7 @@ APRU_Ver=1.6.0
 NGX_Ver=1.12.1
 PCRE_Ver=8.41
 OSSL_Ver=1.0.2l
+ZLIB_Ver=1.2.11
 
 
 
@@ -300,7 +302,7 @@ fi
 echo "Downloading packages..">>$INSTALL_LOG
 wget -c http://nginx.org/download/nginx-$NGX_Ver.tar.gz &&\
 wget -c https://ftp.pcre.org/pub/pcre/pcre-$PCRE_Ver.tar.bz2 &&\
-wget -c http://zlib.net/fossils/zlib-1.2.11.tar.gz &&\
+wget -c http://zlib.net/fossils/zlib-$ZLIB_Ver.tar.gz &&\
 wget -c https://mail.gnome.org/archives/xml/2012-August/txtbgxGXAvz4N.txt && mv txtbgxGXAvz4N.txt php-5.x.x.patch
 [ $? -eq 0 ] && {
 	echo "download packages success.">>$INSTALL_LOG
@@ -583,13 +585,13 @@ NGX_INST(){
 ##Install nginx################
 cd $INSTALL_PATH
 wget -c https://www.openssl.org/source/openssl-$OSSL_Ver.tar.gz
-[ -f pcre-$PCRE_Ver.tar.bz2 ] && [ -f zlib-1.2.11.tar.gz ] && [ -f nginx-$NGX_Ver.tar.gz ] && [ ! -e NGX_INST.lock ] && [ -f openssl-$OSSL_Ver.tar.gz ] && {
+[ -f pcre-$PCRE_Ver.tar.bz2 ] && [ -f zlib-$ZLIB_Ver.tar.gz ] && [ -f nginx-$NGX_Ver.tar.gz ] && [ ! -e NGX_INST.lock ] && [ -f openssl-$OSSL_Ver.tar.gz ] && {
 	tar jxvf pcre-$PCRE_Ver.tar.bz2
-	tar zxvf zlib-1.2.11.tar.gz
+	tar zxvf zlib-$ZLIB_Ver.tar.gz
 	tar zxvf nginx-$NGX_Ver.tar.gz
 	tar zxvf openssl-$OSSL_Ver.tar.gz
 	cd nginx-$NGX_Ver
-	./configure --user=$USER_WEB --group=$USER_WEB --prefix=/usr/local/nginx --with-http_stub_status_module --with-http_gzip_static_module --with-http_sub_module  --with-http_realip_module --with-http_addition_module --with-pcre=$INSTALL_PATH/pcre-$PCRE_Ver --with-zlib=$INSTALL_PATH/zlib-1.2.11 --with-http_ssl_module --with-openssl=$INSTALL_PATH/openssl-$OSSL_Ver
+	./configure --user=$USER_WEB --group=$USER_WEB --prefix=/usr/local/nginx --with-http_stub_status_module --with-http_gzip_static_module --with-http_sub_module  --with-http_realip_module --with-http_addition_module --with-pcre=$INSTALL_PATH/pcre-$PCRE_Ver --with-zlib=$INSTALL_PATH/zlib-$ZLIB_Ver --with-http_ssl_module --with-openssl=$INSTALL_PATH/openssl-$OSSL_Ver
 	make && make install
 [ $? -eq 0 ] && {
 	ln -sf /usr/local/nginx/sbin/nginx /usr/bin/nginx && echo "Nginx installed success.">>$INSTALL_LOG
