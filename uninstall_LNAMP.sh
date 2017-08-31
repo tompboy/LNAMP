@@ -22,3 +22,4 @@ rm -rf /usr/local/php*
 rm -rf /usr/local/nginx*
 rm -rf /usr/local/apache*
 rm -rf /data/*.lock
+rm -f /etc/my.cnf

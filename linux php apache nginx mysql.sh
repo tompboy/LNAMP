@@ -296,11 +296,11 @@ if [ $RL = 2 -o $RL = 3 ]; then
 	rpm -qa|grep epel-release
 	[ $? -eq 0 ] && yum -y install kernel-devel rpm-build patch make gcc gcc-c++ flex bison \
 	file libxml2 libxml2-devel curl curl-devel libjpeg libjpeg-devel libtool libpng \
-	libpng-devel wget libaio* vim libmcrypt libmcrypt-devel mcrypt mhash openssl openssl-devel libtool-ltdl-devel  freetype freetype-devel gd-devel numactl|| exit 39
+	libpng-devel wget libaio* vim libmcrypt libmcrypt-devel mcrypt mhash openssl openssl-devel libtool-ltdl-devel  freetype freetype-devel gd-devel numactl expat-devel|| exit 39
 else
 	[ $RL = 4 ] && {
 	apt-get update &&\
-	apt-get -y install automake patch make gcc flex bison file libxml2 libxml2-dev libjpeg-dev libpng-dev curl libtool wget libaio-dev vim mcrypt openssl libssl-dev zlib1g zlib1g-dev libfreetype6 libfreetype6-dev libjpeg-dev libcurl4-gnutls-dev libmcrypt-dev libtool-bin &&\
+	apt-get -y install automake patch make gcc flex bison file libxml2 libxml2-dev libjpeg-dev libpng-dev curl libtool wget libaio-dev vim mcrypt openssl libssl-dev zlib1g zlib1g-dev libfreetype6 libfreetype6-dev libjpeg-dev libcurl4-gnutls-dev libmcrypt-dev libtool-bin libexpat1-dev&&\
 	ln -s /usr/lib/x86_64-linux-gnu/libssl.so /usr/lib
 }
 fi
@@ -562,7 +562,7 @@ Require all granted
     StartServers             3
     MinSpareThreads         75
     MaxSpareThreads        250
-	ThreadLimit				250
+	ThreadLimit		250
     ThreadsPerChild         250
     MaxRequestWorkers      500
     MaxConnectionsPerChild   8000
