@@ -11,12 +11,14 @@
 
 /usr/local/nginx/sbin/nginx -s stop
 /usr/local/apache/bin/apachectl -k stop
-/usr/local/php/sbin/php-fpm stop
+service php-fpm stop
+service vsftpd stop
+/usr/local/nginx_php/sbin/php-fpm stop
 /usr/local/mysql/support-files/mysql.server stop
 userdel -r mysql
 userdel -r www
-rm -rf /usr/local/mysql/
-rm -rf /usr/local/php/
-rm -rf /usr/local/nginx/
-rm -rf /usr/local/apache
+rm -rf /usr/local/mysql*
+rm -rf /usr/local/php*
+rm -rf /usr/local/nginx*
+rm -rf /usr/local/apache*
 rm -rf /data/*.lock
