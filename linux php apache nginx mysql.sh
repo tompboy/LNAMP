@@ -26,6 +26,7 @@
 #      Mysql:/usr/local/mysql5.5.57 or /usr/local/mysql5.6.37 or.., and will create a soft link to /usr/local/mysql..
 #		PHP:/usr/local/apache_php52 or /usr/local/nginx_php53 or .., and will create a soft link to 
 #			/usr/local/apache_php or /usr/local/nginx_php..2017-08-31
+# Debug: change sth version, php, mysql, apache..2017-10-16
 # Project home: https://github.com/tompboy/LNAMP
 # Version:V 0.16
 
@@ -113,7 +114,7 @@ cat <<EOF
 ######################################
 #######  WEB server ##################
 ######################################
-1. Install Apache 2.2
+1. Install Apache 2.2.34
 2. Install Apache 2.4
 3. Install Nginx
 4. NOT install
@@ -158,12 +159,12 @@ done
 
 
 #Mysql version, update here
-My55_Ver=5.5.57
-My56_Ver=5.6.37
-My57_Ver=5.7.19
+My55_Ver=5.5.58
+My56_Ver=5.6.38
+My57_Ver=5.7.20
 
 #Web Server version, update here
-APA24_Ver=2.4.27
+APA24_Ver=2.4.28
 APR_Ver=1.6.2
 APRU_Ver=1.6.0
 NGX_Ver=1.12.1
@@ -175,8 +176,8 @@ ZLIB_Ver=1.2.11
 
 #PHP version, update here
 PHP56_Ver=5.6.31
-PHP70_Ver=7.0.22
-PHP71_Ver=7.1.8
+PHP70_Ver=7.0.24
+PHP71_Ver=7.1.10
 
 
 
