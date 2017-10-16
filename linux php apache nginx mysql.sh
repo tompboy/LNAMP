@@ -27,6 +27,7 @@
 #		PHP:/usr/local/apache_php52 or /usr/local/nginx_php53 or .., and will create a soft link to 
 #			/usr/local/apache_php or /usr/local/nginx_php..2017-08-31
 # Debug: change sth version, php, mysql, apache..2017-10-16
+# Debug: Fix some mistakes..2017-10-16
 # Project home: https://github.com/tompboy/LNAMP
 # Version:V 0.16
 
@@ -270,8 +271,8 @@ fi
 	echo "Vsftpd installed failed.">>$INSTALL_LOG
 	exit 2
 	}
-
-useradd -s /sbin/nologin $USER_WEB && echo "$USER_WEB:$USER_PSWD"|chpasswd
+USER_IF=`cat /etc/passwd|awk -F ":" '{print $1}'|grep www`
+[ "$USER_IF"x != "$USER_WEB"x ] && useradd -s /sbin/nologin $USER_WEB && echo "$USER_WEB:$USER_PSWD"|chpasswd
 [ $? -eq 0 ] && {
 	echo "user $USER_WEB created success">>$INSTALL_LOG
 	touch $INSTALL_PATH/FTP_INST.lock
