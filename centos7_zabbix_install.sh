@@ -5,6 +5,7 @@
 # E-mail:cylcjy009@gmail.com
 # Website:www.pboy8.top pboy8.taobao.com
 # Desc:Install zabbix 3.0.x on linux Centos6 and 7, IN redhat7 ,you should use centos7's yum repo..
+# Debug: Fix some mistakes;--2017-10-19
 # Project home: https://github.com/tompboy
 # Version:V 0.1
 
@@ -53,7 +54,8 @@ make && make install
 	sed -i 's/\/usr\/local\/sbin\/zabbix_agentd/\/usr\/local\/zabbix\/sbin\/zabbix_agentd/g' /etc/init.d/zabbix_agentd
 	sed -i 's/\/usr\/local\/sbin\/zabbix_server/\/usr\/local\/zabbix\/sbin\/zabbix_server/g' /etc/init.d/zabbix_server
 	echo "zabbix installed success.."
-	echo "You may edit ${GREEN_COLOR}'/usr/local/zabbix/etc/zabbix_server.conf'$RES and ${GREEN_COLOR}'/usr/local/zabbix/etc/zabbix_server.conf'$RES manually.."
+	echo "You may edit ${GREEN_COLOR}'/usr/local/zabbix/etc/zabbix_server.conf'$RES and ${GREEN_COLOR}'/usr/local/zabbix/etc/zabbix_agentd.conf'$RES manually.."
+	echo "Please visit http://{your server'IP} to install zabbix..."
 	} || {
 	echo "zabbix installed failed.."
  	}
