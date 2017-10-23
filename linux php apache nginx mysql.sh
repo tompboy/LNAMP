@@ -29,6 +29,7 @@
 # Debug: change sth version, php, mysql, apache..2017-10-16
 # Debug: Fix some mistakes..2017-10-16
 # Debug: Fix some mistakes..2017-10-19
+# Debug: Fix some mistakes..2017-10-23
 # Project home: https://github.com/tompboy/LNAMP
 # Version:V 0.16
 
@@ -1076,6 +1077,8 @@ EOF
 			exit 75
 			}
 	fi
+	elif [ $WEB_INST = 4 ]; then
+	echo "No web server installed..">>$INSTALL_LOG
 else
 	if [ $RL = 2 -o $RL = 3 ]; then
 cat > /etc/rc.d/init.d/httpd <<EOF
@@ -1105,7 +1108,7 @@ EOF
 fi
 
 ### Mysql
-
+if [ $Mysql_INST -le 3 ]; then
 [ $RL = 2 -o $RL = 3 ] && {
 cat > /etc/rc.d/init.d/mysqld <<EOF
 #!/bin/bash
@@ -1131,6 +1134,9 @@ EOF
 	exit 76
 	}
 }
+else
+echo "No Mysql installed.">>$INSTALL_LOG
+fi
 
 
 #iptables
