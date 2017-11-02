@@ -30,6 +30,7 @@
 # Debug: Fix some mistakes..2017-10-16
 # Debug: Fix some mistakes..2017-10-19
 # Debug: Fix some mistakes..2017-10-23
+# Debug: update sth versions, php, apache..2017-11-2
 # Project home: https://github.com/tompboy/LNAMP
 # Version:V 0.16
 
@@ -167,10 +168,10 @@ My56_Ver=5.6.38
 My57_Ver=5.7.20
 
 #Web Server version, update here
-APA24_Ver=2.4.28
-APR_Ver=1.6.2
-APRU_Ver=1.6.0
-NGX_Ver=1.12.1
+APA24_Ver=2.4.29
+APR_Ver=1.6.3
+APRU_Ver=1.6.1
+NGX_Ver=1.12.2
 PCRE_Ver=8.41
 OSSL_Ver=1.0.2l
 ZLIB_Ver=1.2.11
@@ -178,9 +179,9 @@ ZLIB_Ver=1.2.11
 
 
 #PHP version, update here
-PHP56_Ver=5.6.31
-PHP70_Ver=7.0.24
-PHP71_Ver=7.1.10
+PHP56_Ver=5.6.32
+PHP70_Ver=7.0.25
+PHP71_Ver=7.1.11
 
 
 
