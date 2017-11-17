@@ -636,7 +636,7 @@ wget -c https://mail.gnome.org/archives/xml/2012-August/txtbgxGXAvz4N.txt && mv 
 	patch -p0 -b < ../php-5.x.x.patch
 	if [ $WEB_INST = 3 -a ! -e NGX_PHP52_INST.lock ]; then 
 		gzip -cd /data/php-5.2.17-fpm-0.5.14.diff.gz | patch -d /data/php-5.2.17 -p1
-		./configure --prefix=/usr/local/nginx_php52 --with-mysql=/usr/local/mysql --enable-fastcgi --enable-fpm --with-freetype-dir --with-jpeg-dir --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd
+		./configure --prefix=/usr/local/nginx_php52 --with-mysql=/usr/local/mysql --enable-fastcgi --enable-fpm --enable-zip --with-freetype-dir --with-jpeg-dir --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd
 		make -j$CPU_C && make install
 		[ $? -eq 0 ] && {
 		ln -s /usr/local/nginx_php52 /usr/local/nginx_php
@@ -656,7 +656,7 @@ wget -c https://mail.gnome.org/archives/xml/2012-August/txtbgxGXAvz4N.txt && mv 
 			}
 		}
 	else
-		./configure --prefix=/usr/local/apache_php52 --with-mysql=/usr/local/mysql --with-apxs2=/usr/local/apache/bin/apxs --with-freetype-dir --with-jpeg-dir --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd
+		./configure --prefix=/usr/local/apache_php52 --enable-zip --with-mysql=/usr/local/mysql --with-apxs2=/usr/local/apache/bin/apxs --with-freetype-dir --with-jpeg-dir --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd
 		make -j$CPU_C && make install
 		[ $? -eq 0 ] && {
 		ln -s /usr/local/apache_php52 /usr/local/apache_php
@@ -709,7 +709,7 @@ wget -c http://cn2.php.net/distributions/php-5.3.29.tar.bz2
 			exit 58
 			}
 	else
-		./configure --prefix=/usr/local/apache_php53 --with-mysql=/usr/local/mysql --with-apxs2=/usr/local/apache/bin/apxs --with-freetype-dir --with-jpeg-dir --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql --enable-bcmath --enable-sockets --with-gettext
+		./configure --prefix=/usr/local/apache_php53 --enable-zip --with-mysql=/usr/local/mysql --with-apxs2=/usr/local/apache/bin/apxs --with-freetype-dir --with-jpeg-dir --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql --enable-bcmath --enable-sockets --with-gettext
 		make -j$CPU_C && make install
 		[ $? -eq 0 ] && {
 		ln -s /usr/local/apache_php53 /usr/local/apache_php
@@ -761,7 +761,7 @@ wget -c http://cn2.php.net/distributions/php-5.4.45.tar.bz2
 			exit 58
 			}
 	else
-		./configure --prefix=/usr/local/apache_php54 --with-mysql=/usr/local/mysql --with-apxs2=/usr/local/apache/bin/apxs --with-freetype-dir --with-jpeg-dir --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql --enable-bcmath --enable-sockets --with-gettext
+		./configure --prefix=/usr/local/apache_php54 --enable-zip --with-mysql=/usr/local/mysql --with-apxs2=/usr/local/apache/bin/apxs --with-freetype-dir --with-jpeg-dir --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql --enable-bcmath --enable-sockets --with-gettext
 		make -j$CPU_C && make install
 		[ $? -eq 0 ] && {
 		ln -s /usr/local/apache_php54 /usr/local/apache_php
@@ -812,7 +812,7 @@ wget -c http://cn2.php.net/distributions/php-5.5.38.tar.bz2
 			exit 58
 			}
 	else
-		./configure --prefix=/usr/local/apache_php55 --with-mysql=/usr/local/mysql --with-apxs2=/usr/local/apache/bin/apxs --with-freetype-dir --with-jpeg-dir --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql --enable-bcmath --enable-sockets --with-gettext
+		./configure --prefix=/usr/local/apache_php55 --enable-zip --with-mysql=/usr/local/mysql --with-apxs2=/usr/local/apache/bin/apxs --with-freetype-dir --with-jpeg-dir --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql --enable-bcmath --enable-sockets --with-gettext
 		make -j$CPU_C && make install
 		[ $? -eq 0 ] && {
 		ln -s /usr/local/apache_php55 /usr/local/apache_php
@@ -863,7 +863,7 @@ wget -c http://cn2.php.net/distributions/php-$PHP56_Ver.tar.bz2
 			exit 58
 			}
 	else
-		./configure --prefix=/usr/local/apache_php$PHP56_Ver --with-mysql=/usr/local/mysql --with-apxs2=/usr/local/apache/bin/apxs --with-freetype-dir --with-jpeg-dir --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql --enable-bcmath --enable-sockets --with-gettext
+		./configure --prefix=/usr/local/apache_php$PHP56_Ver --enable-zip --with-mysql=/usr/local/mysql --with-apxs2=/usr/local/apache/bin/apxs --with-freetype-dir --with-jpeg-dir --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql --enable-bcmath --enable-sockets --with-gettext
 		make -j$CPU_C && make install
 		[ $? -eq 0 ] && {
 		ln -s /usr/local/apache_php$PHP56_Ver /usr/local/apache_php
@@ -914,7 +914,7 @@ wget -c http://cn2.php.net/distributions/php-$PHP70_Ver.tar.bz2
 			exit 58
 			}
 	else
-		./configure --prefix=/usr/local/apache_php$PHP70_Ver --with-mysql=/usr/local/mysql --with-apxs2=/usr/local/apache/bin/apxs --with-freetype-dir --with-jpeg-dir --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql --enable-bcmath --enable-sockets --with-gettext
+		./configure --prefix=/usr/local/apache_php$PHP70_Ver --enable-zip --with-mysql=/usr/local/mysql --with-apxs2=/usr/local/apache/bin/apxs --with-freetype-dir --with-jpeg-dir --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql --enable-bcmath --enable-sockets --with-gettext
 		make -j$CPU_C && make install
 		[ $? -eq 0 ] && {
 		ln -s /usr/local/apache_php$PHP70_Ver /usr/local/apache_php
@@ -965,7 +965,7 @@ wget -c http://cn2.php.net/distributions/php-$PHP71_Ver.tar.bz2
 			exit 58
 			}
 	else
-		./configure --prefix=/usr/local/apache_php$PHP71_Ver --with-mysql=/usr/local/mysql --with-apxs2=/usr/local/apache/bin/apxs --with-freetype-dir --with-jpeg-dir --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql --enable-bcmath --enable-sockets --with-gettext
+		./configure --prefix=/usr/local/apache_php$PHP71_Ver --enable-zip --with-mysql=/usr/local/mysql --with-apxs2=/usr/local/apache/bin/apxs --with-freetype-dir --with-jpeg-dir --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql --enable-bcmath --enable-sockets --with-gettext
 		make -j$CPU_C && make install
 		[ $? -eq 0 ] && {
 		ln -s /usr/local/apache_php$PHP71_Ver /usr/local/apache_php
