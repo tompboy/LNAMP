@@ -56,6 +56,10 @@ mkdir -p $INSTALL_PATH
 #内核大版本-kernel version
 RL=`uname -r|awk -F "." '{print $1}'`
 
+#CPU核数，cpu cores
+CPU_C=`cat /proc/cpuinfo |grep "processor"|wc -l`
+
+
 yum -y install expect && {
 
 #网站用户-user who run the web server
@@ -455,7 +459,7 @@ wget -c http://archive.apache.org/dist/httpd/httpd-2.2.34.tar.bz2
 tar -jxvf httpd-2.2.34.tar.bz2
 cd httpd-2.2.34
 ./configure --prefix=/usr/local/apache2.2 --enable-module=so --enable-mods-shared='rewrite' --enable-deflate --enable-proxy-http --enable-proxy
-make && make install
+make -j$CPU_C && make install
 
 [ $? -eq 0 ] && {
 #vi /usr/local/apache/conf/httpd.conf
@@ -521,21 +525,21 @@ wget -c http://archive.apache.org/dist/apr/apr-util-$APRU_Ver.tar.bz2
 [ -f apr-$APR_Ver.tar.bz2 ] && [ -f apr-util-$APRU_Ver.tar.bz2 ] && [ -f httpd-$APA24_Ver.tar.bz2 ] && [ ! -e APA24_INST.lock ] && {
 tar jxvf apr-$APR_Ver.tar.bz2
 cd apr-$APR_Ver
-./configure --prefix=/usr/local/apr && make && make install
+./configure --prefix=/usr/local/apr && make -j$CPU_C && make install
 cd $INSTALL_PATH
 tar jxvf apr-util-$APRU_Ver.tar.bz2
 cd apr-util-$APRU_Ver
-./configure --prefix=/usr/local/apr-util --with-apr=/usr/local/apr/bin/apr-1-config && make && make install
+./configure --prefix=/usr/local/apr-util --with-apr=/usr/local/apr/bin/apr-1-config && make -j$CPU_C && make install
 cd $INSTALL_PATH
 tar jxvf pcre-$PCRE_Ver.tar.bz2
 cd pcre-$PCRE_Ver
-./configure --prefix=/usr/local/pcre && make && make install
+./configure --prefix=/usr/local/pcre && make -j$CPU_C && make install
 
 cd $INSTALL_PATH
 tar -jxvf httpd-$APA24_Ver.tar.bz2
 cd httpd-$APA24_Ver
 ./configure --prefix=/usr/local/apache$APA24_Ver --with-apr=/usr/local/apr --with-apr-util=/usr/local/apr-util --enable-module=so --enable-mods-shared='rewrite' --enable-deflate --enable-proxy-http --enable-proxy --with-pcre=/usr/local/pcre
-make && make install
+make -j$CPU_C && make install
 
 [ $? -eq 0 ] && {
 #vi /usr/local/apache/conf/httpd.conf
@@ -605,7 +609,7 @@ wget -c https://www.openssl.org/source/openssl-$OSSL_Ver.tar.gz
 	tar zxvf openssl-$OSSL_Ver.tar.gz
 	cd nginx-$NGX_Ver
 	./configure --user=$USER_WEB --group=$USER_WEB --prefix=/usr/local/nginx --with-http_stub_status_module --with-http_gzip_static_module --with-http_sub_module  --with-http_realip_module --with-http_addition_module --with-pcre=$INSTALL_PATH/pcre-$PCRE_Ver --with-zlib=$INSTALL_PATH/zlib-$ZLIB_Ver --with-http_ssl_module --with-openssl=$INSTALL_PATH/openssl-$OSSL_Ver
-	make && make install
+	make -j$CPU_C && make install
 [ $? -eq 0 ] && {
 	ln -sf /usr/local/nginx/sbin/nginx /usr/bin/nginx && echo "Nginx installed success.">>$INSTALL_LOG
 	touch $INSTALL_PATH/NGX_INST.lock
@@ -633,7 +637,7 @@ wget -c https://mail.gnome.org/archives/xml/2012-August/txtbgxGXAvz4N.txt && mv 
 	if [ $WEB_INST = 3 -a ! -e NGX_PHP52_INST.lock ]; then 
 		gzip -cd /data/php-5.2.17-fpm-0.5.14.diff.gz | patch -d /data/php-5.2.17 -p1
 		./configure --prefix=/usr/local/nginx_php52 --with-mysql=/usr/local/mysql --enable-fastcgi --enable-fpm --with-freetype-dir --with-jpeg-dir --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd
-		make && make install
+		make -j$CPU_C && make install
 		[ $? -eq 0 ] && {
 		ln -s /usr/local/nginx_php52 /usr/local/nginx_php
 		cp php.ini-recommended /usr/local/nginx_php/lib/php.ini
@@ -653,7 +657,7 @@ wget -c https://mail.gnome.org/archives/xml/2012-August/txtbgxGXAvz4N.txt && mv 
 		}
 	else
 		./configure --prefix=/usr/local/apache_php52 --with-mysql=/usr/local/mysql --with-apxs2=/usr/local/apache/bin/apxs --with-freetype-dir --with-jpeg-dir --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd
-		make && make install
+		make -j$CPU_C && make install
 		[ $? -eq 0 ] && {
 		ln -s /usr/local/apache_php52 /usr/local/apache_php
 		cp php.ini-recommended /usr/local/apache_php/lib/php.ini
@@ -681,7 +685,7 @@ wget -c http://cn2.php.net/distributions/php-5.3.29.tar.bz2
 	cd php-5.3.29/
 	if [ $WEB_INST = 3 -a ! -e NGX_PHP53_INST.lock ]; then
 		./configure --prefix=/usr/local/nginx_php53 --with-mysql=/usr/local/mysql --enable-fpm --enable-zip --with-freetype-dir --with-jpeg-dir --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql --enable-bcmath --enable-sockets --with-gettext
-		make && make install
+		make -j$CPU_C && make install
 		[ $? -eq 0 ] && {
 		ln -s /usr/local/nginx_php53 /usr/local/nginx_php
 		cp php.ini-production /usr/local/nginx_php/lib/php.ini
@@ -706,7 +710,7 @@ wget -c http://cn2.php.net/distributions/php-5.3.29.tar.bz2
 			}
 	else
 		./configure --prefix=/usr/local/apache_php53 --with-mysql=/usr/local/mysql --with-apxs2=/usr/local/apache/bin/apxs --with-freetype-dir --with-jpeg-dir --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql --enable-bcmath --enable-sockets --with-gettext
-		make && make install
+		make -j$CPU_C && make install
 		[ $? -eq 0 ] && {
 		ln -s /usr/local/apache_php53 /usr/local/apache_php
 		cp php.ini-production /usr/local/apache_php/lib/php.ini
@@ -733,7 +737,7 @@ wget -c http://cn2.php.net/distributions/php-5.4.45.tar.bz2
 	cd php-5.4.45/
 	if [ $WEB_INST = 3 -a ! -e NGX_PHP54_INST.lock ]; then
 		./configure --prefix=/usr/local/nginx_php54 --with-mysql=/usr/local/mysql --enable-fpm --enable-zip --with-freetype-dir --with-jpeg-dir --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql --enable-bcmath --enable-sockets --with-gettext
-		make && make install
+		make -j$CPU_C && make install
 		[ $? -eq 0 ] && {
 		ln -s /usr/local/nginx_php54 /usr/local/nginx_php
 		cp php.ini-production /usr/local/nginx_php/lib/php.ini
@@ -758,7 +762,7 @@ wget -c http://cn2.php.net/distributions/php-5.4.45.tar.bz2
 			}
 	else
 		./configure --prefix=/usr/local/apache_php54 --with-mysql=/usr/local/mysql --with-apxs2=/usr/local/apache/bin/apxs --with-freetype-dir --with-jpeg-dir --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql --enable-bcmath --enable-sockets --with-gettext
-		make && make install
+		make -j$CPU_C && make install
 		[ $? -eq 0 ] && {
 		ln -s /usr/local/apache_php54 /usr/local/apache_php
 		cp php.ini-production /usr/local/apache_php/lib/php.ini
@@ -784,7 +788,7 @@ wget -c http://cn2.php.net/distributions/php-5.5.38.tar.bz2
 	cd php-5.5.38/
 	if [ $WEB_INST = 3 -a ! -e NGX_PHP55_INST.lock ]; then
 		./configure --prefix=/usr/local/nginx_php55 --with-mysql=/usr/local/mysql --enable-fpm --enable-zip --with-freetype-dir --with-jpeg-dir --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql --enable-bcmath --enable-sockets --with-gettext
-		make && make install
+		make -j$CPU_C && make install
 		[ $? -eq 0 ] && {
 		ln -s /usr/local/nginx_php55 /usr/local/nginx_php
 		cp php.ini-production /usr/local/nginx_php/lib/php.ini
@@ -809,7 +813,7 @@ wget -c http://cn2.php.net/distributions/php-5.5.38.tar.bz2
 			}
 	else
 		./configure --prefix=/usr/local/apache_php55 --with-mysql=/usr/local/mysql --with-apxs2=/usr/local/apache/bin/apxs --with-freetype-dir --with-jpeg-dir --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql --enable-bcmath --enable-sockets --with-gettext
-		make && make install
+		make -j$CPU_C && make install
 		[ $? -eq 0 ] && {
 		ln -s /usr/local/apache_php55 /usr/local/apache_php
 		cp php.ini-production /usr/local/apache_php/lib/php.ini
@@ -835,7 +839,7 @@ wget -c http://cn2.php.net/distributions/php-$PHP56_Ver.tar.bz2
 	cd php-$PHP56_Ver/
 	if [ $WEB_INST = 3 -a ! -e NGX_PHP56_INST.lock ]; then
 		./configure --prefix=/usr/local/nginx_php$PHP56_Ver --with-mysql=/usr/local/mysql --enable-fpm --enable-zip --with-freetype-dir --with-jpeg-dir --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql --enable-bcmath --enable-sockets --with-gettext
-		make && make install
+		make -j$CPU_C && make install
 		[ $? -eq 0 ] && {
 		ln -s /usr/local/nginx_php$PHP56_Ver /usr/local/nginx_php
 		cp php.ini-production /usr/local/nginx_php/lib/php.ini
@@ -860,7 +864,7 @@ wget -c http://cn2.php.net/distributions/php-$PHP56_Ver.tar.bz2
 			}
 	else
 		./configure --prefix=/usr/local/apache_php$PHP56_Ver --with-mysql=/usr/local/mysql --with-apxs2=/usr/local/apache/bin/apxs --with-freetype-dir --with-jpeg-dir --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql --enable-bcmath --enable-sockets --with-gettext
-		make && make install
+		make -j$CPU_C && make install
 		[ $? -eq 0 ] && {
 		ln -s /usr/local/apache_php$PHP56_Ver /usr/local/apache_php
 		cp php.ini-production /usr/local/apache_php/lib/php.ini
@@ -886,7 +890,7 @@ wget -c http://cn2.php.net/distributions/php-$PHP70_Ver.tar.bz2
 	cd php-$PHP70_Ver/
 	if [ $WEB_INST = 3 -a ! -e NGX_PHP70_INST.lock ]; then
 		./configure --prefix=/usr/local/nginx_php$PHP70_Ver --with-mysql=/usr/local/mysql --enable-fpm --enable-zip --with-freetype-dir --with-jpeg-dir --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql --enable-bcmath --enable-sockets --with-gettext
-		make && make install
+		make -j$CPU_C && make install
 		[ $? -eq 0 ] && {
 		ln -s /usr/local/nginx_php$PHP70_Ver /usr/local/nginx_php
 		cp php.ini-production /usr/local/nginx_php/lib/php.ini
@@ -911,7 +915,7 @@ wget -c http://cn2.php.net/distributions/php-$PHP70_Ver.tar.bz2
 			}
 	else
 		./configure --prefix=/usr/local/apache_php$PHP70_Ver --with-mysql=/usr/local/mysql --with-apxs2=/usr/local/apache/bin/apxs --with-freetype-dir --with-jpeg-dir --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql --enable-bcmath --enable-sockets --with-gettext
-		make && make install
+		make -j$CPU_C && make install
 		[ $? -eq 0 ] && {
 		ln -s /usr/local/apache_php$PHP70_Ver /usr/local/apache_php
 		cp php.ini-production /usr/local/apache_php/lib/php.ini
@@ -937,7 +941,7 @@ wget -c http://cn2.php.net/distributions/php-$PHP71_Ver.tar.bz2
 	cd php-$PHP71_Ver/
 	if [ $WEB_INST = 3 -a ! -e NGX_PHP71_INST.lock ]; then
 		./configure --prefix=/usr/local/nginx_php$PHP71_Ver --with-mysql=/usr/local/mysql --enable-fpm --enable-zip --with-freetype-dir --with-jpeg-dir --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql --enable-bcmath --enable-sockets --with-gettext
-		make && make install
+		make -j$CPU_C && make install
 		[ $? -eq 0 ] && {
 		ln -s /usr/local/nginx_php$PHP71_Ver /usr/local/nginx_php
 		cp php.ini-production /usr/local/nginx_php/lib/php.ini
@@ -962,7 +966,7 @@ wget -c http://cn2.php.net/distributions/php-$PHP71_Ver.tar.bz2
 			}
 	else
 		./configure --prefix=/usr/local/apache_php$PHP71_Ver --with-mysql=/usr/local/mysql --with-apxs2=/usr/local/apache/bin/apxs --with-freetype-dir --with-jpeg-dir --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql --enable-bcmath --enable-sockets --with-gettext
-		make && make install
+		make -j$CPU_C && make install
 		[ $? -eq 0 ] && {
 		ln -s /usr/local/apache_php$PHP71_Ver /usr/local/apache_php
 		cp php.ini-production /usr/local/apache_php/lib/php.ini
