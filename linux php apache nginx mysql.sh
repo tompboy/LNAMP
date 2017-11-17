@@ -31,8 +31,9 @@
 # Debug: Fix some mistakes..2017-10-19
 # Debug: Fix some mistakes..2017-10-23
 # Debug: update sth versions, php, apache..2017-11-2
+# Add: nginx php+enable-zip..2017-11-17
 # Project home: https://github.com/tompboy/LNAMP
-# Version:V 0.16
+# Version:V 0.18
 
 
 [ `id -u` != 0 ] && { echo "Error: You must run this script $0 with root..."; exit 9; }
@@ -679,7 +680,7 @@ wget -c http://cn2.php.net/distributions/php-5.3.29.tar.bz2
 	tar jxvf php-5.3.29.tar.bz2
 	cd php-5.3.29/
 	if [ $WEB_INST = 3 -a ! -e NGX_PHP53_INST.lock ]; then
-		./configure --prefix=/usr/local/nginx_php53 --with-mysql=/usr/local/mysql --enable-fpm --with-freetype-dir --with-jpeg-dir --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql --enable-bcmath --enable-sockets --with-gettext
+		./configure --prefix=/usr/local/nginx_php53 --with-mysql=/usr/local/mysql --enable-fpm --enable-zip --with-freetype-dir --with-jpeg-dir --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql --enable-bcmath --enable-sockets --with-gettext
 		make && make install
 		[ $? -eq 0 ] && {
 		ln -s /usr/local/nginx_php53 /usr/local/nginx_php
@@ -731,7 +732,7 @@ wget -c http://cn2.php.net/distributions/php-5.4.45.tar.bz2
 	tar jxvf php-5.4.45.tar.bz2
 	cd php-5.4.45/
 	if [ $WEB_INST = 3 -a ! -e NGX_PHP54_INST.lock ]; then
-		./configure --prefix=/usr/local/nginx_php54 --with-mysql=/usr/local/mysql --enable-fpm --with-freetype-dir --with-jpeg-dir --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql --enable-bcmath --enable-sockets --with-gettext
+		./configure --prefix=/usr/local/nginx_php54 --with-mysql=/usr/local/mysql --enable-fpm --enable-zip --with-freetype-dir --with-jpeg-dir --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql --enable-bcmath --enable-sockets --with-gettext
 		make && make install
 		[ $? -eq 0 ] && {
 		ln -s /usr/local/nginx_php54 /usr/local/nginx_php
@@ -782,7 +783,7 @@ wget -c http://cn2.php.net/distributions/php-5.5.38.tar.bz2
 	tar jxvf php-5.5.38.tar.bz2
 	cd php-5.5.38/
 	if [ $WEB_INST = 3 -a ! -e NGX_PHP55_INST.lock ]; then
-		./configure --prefix=/usr/local/nginx_php55 --with-mysql=/usr/local/mysql --enable-fpm --with-freetype-dir --with-jpeg-dir --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql --enable-bcmath --enable-sockets --with-gettext
+		./configure --prefix=/usr/local/nginx_php55 --with-mysql=/usr/local/mysql --enable-fpm --enable-zip --with-freetype-dir --with-jpeg-dir --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql --enable-bcmath --enable-sockets --with-gettext
 		make && make install
 		[ $? -eq 0 ] && {
 		ln -s /usr/local/nginx_php55 /usr/local/nginx_php
@@ -833,7 +834,7 @@ wget -c http://cn2.php.net/distributions/php-$PHP56_Ver.tar.bz2
 	tar jxvf php-$PHP56_Ver.tar.bz2
 	cd php-$PHP56_Ver/
 	if [ $WEB_INST = 3 -a ! -e NGX_PHP56_INST.lock ]; then
-		./configure --prefix=/usr/local/nginx_php$PHP56_Ver --with-mysql=/usr/local/mysql --enable-fpm --with-freetype-dir --with-jpeg-dir --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql --enable-bcmath --enable-sockets --with-gettext
+		./configure --prefix=/usr/local/nginx_php$PHP56_Ver --with-mysql=/usr/local/mysql --enable-fpm --enable-zip --with-freetype-dir --with-jpeg-dir --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql --enable-bcmath --enable-sockets --with-gettext
 		make && make install
 		[ $? -eq 0 ] && {
 		ln -s /usr/local/nginx_php$PHP56_Ver /usr/local/nginx_php
@@ -884,7 +885,7 @@ wget -c http://cn2.php.net/distributions/php-$PHP70_Ver.tar.bz2
 	tar jxvf php-$PHP70_Ver.tar.bz2
 	cd php-$PHP70_Ver/
 	if [ $WEB_INST = 3 -a ! -e NGX_PHP70_INST.lock ]; then
-		./configure --prefix=/usr/local/nginx_php$PHP70_Ver --with-mysql=/usr/local/mysql --enable-fpm --with-freetype-dir --with-jpeg-dir --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql --enable-bcmath --enable-sockets --with-gettext
+		./configure --prefix=/usr/local/nginx_php$PHP70_Ver --with-mysql=/usr/local/mysql --enable-fpm --enable-zip --with-freetype-dir --with-jpeg-dir --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql --enable-bcmath --enable-sockets --with-gettext
 		make && make install
 		[ $? -eq 0 ] && {
 		ln -s /usr/local/nginx_php$PHP70_Ver /usr/local/nginx_php
@@ -935,7 +936,7 @@ wget -c http://cn2.php.net/distributions/php-$PHP71_Ver.tar.bz2
 	tar jxvf php-$PHP71_Ver.tar.bz2
 	cd php-$PHP71_Ver/
 	if [ $WEB_INST = 3 -a ! -e NGX_PHP71_INST.lock ]; then
-		./configure --prefix=/usr/local/nginx_php$PHP71_Ver --with-mysql=/usr/local/mysql --enable-fpm --with-freetype-dir --with-jpeg-dir --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql --enable-bcmath --enable-sockets --with-gettext
+		./configure --prefix=/usr/local/nginx_php$PHP71_Ver --with-mysql=/usr/local/mysql --enable-fpm --enable-zip --with-freetype-dir --with-jpeg-dir --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql --enable-bcmath --enable-sockets --with-gettext
 		make && make install
 		[ $? -eq 0 ] && {
 		ln -s /usr/local/nginx_php$PHP71_Ver /usr/local/nginx_php
