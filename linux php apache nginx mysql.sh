@@ -32,6 +32,7 @@
 # Debug: Fix some mistakes..2017-10-23
 # Debug: update sth versions, php, apache..2017-11-2
 # Add: nginx php+enable-zip..2017-11-17
+# Debug: Fix MySQL version...2018-01-25
 # Project home: https://github.com/tompboy/LNAMP
 # Version:V 0.18
 
@@ -168,9 +169,9 @@ done
 
 
 #Mysql version, update here
-My55_Ver=5.5.58
-My56_Ver=5.6.38
-My57_Ver=5.7.20
+My55_Ver=5.5.59
+My56_Ver=5.6.39
+My57_Ver=5.7.21
 
 #Web Server version, update here
 APA24_Ver=2.4.29
@@ -178,15 +179,15 @@ APR_Ver=1.6.3
 APRU_Ver=1.6.1
 NGX_Ver=1.12.2
 PCRE_Ver=8.41
-OSSL_Ver=1.0.2l
+OSSL_Ver=1.0.2n
 ZLIB_Ver=1.2.11
 
 
 
 #PHP version, update here
-PHP56_Ver=5.6.32
-PHP70_Ver=7.0.25
-PHP71_Ver=7.1.11
+PHP56_Ver=5.6.33
+PHP70_Ver=7.0.27
+PHP71_Ver=7.1.13
 
 
 
