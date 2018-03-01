@@ -33,6 +33,7 @@
 # Debug: update sth versions, php, apache..2017-11-2
 # Add: nginx php+enable-zip..2017-11-17
 # Debug: Fix MySQL version...2018-01-25
+# Debug: Fix MySQL version...2018-03-01
 # Project home: https://github.com/tompboy/LNAMP
 # Version:V 0.18
 
@@ -107,7 +108,7 @@ cat <<EOF
 EOF
 }
 menu
-read -p "Please input which web server you want to install.." Mysql_INST
+read -p "Please input which Mysql Database you want to install.." Mysql_INST
 echo -e "\n"
 if [[ $Mysql_INST != [1-4] ]]; then
 	echo "Input error, please input the correct num[1-4].."
