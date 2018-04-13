@@ -523,7 +523,8 @@ APA24_INST(){
 cd $INSTALL_PATH
 wget -c http://archive.apache.org/dist/httpd/httpd-$APA24_Ver.tar.bz2 &&\
 wget -c http://archive.apache.org/dist/apr/apr-$APR_Ver.tar.bz2 &&\
-wget -c http://archive.apache.org/dist/apr/apr-util-$APRU_Ver.tar.bz2
+wget -c http://archive.apache.org/dist/apr/apr-util-$APRU_Ver.tar.bz2 &&\
+wget -c https://ftp.pcre.org/pub/pcre/pcre-$PCRE_Ver.tar.bz2
 [ -f apr-$APR_Ver.tar.bz2 ] && [ -f apr-util-$APRU_Ver.tar.bz2 ] && [ -f httpd-$APA24_Ver.tar.bz2 ] && [ ! -e APA24_INST.lock ] && {
 tar jxvf apr-$APR_Ver.tar.bz2
 cd apr-$APR_Ver
