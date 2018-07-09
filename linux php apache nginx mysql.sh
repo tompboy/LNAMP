@@ -34,6 +34,7 @@
 # Add: nginx php+enable-zip..2017-11-17
 # Debug: Fix MySQL version...2018-01-25
 # Debug: Fix MySQL version...2018-03-01
+# Debug: Fix some mistakes...2018-07-09
 # Project home: https://github.com/tompboy/LNAMP
 # Version:V 0.18
 
@@ -155,14 +156,15 @@ cat <<EOF
 5. Install PHP 5.6
 6. Install PHP 7.0
 7. Install PHP 7.1
-8. NOT install
+8. Install PHP 7.2
+9. NOT install
 EOF
 }
 menu
 read -p "Please input which PHP you want to install.." PHP_INST
 echo -e "\n"
-if [[ $PHP_INST != [1-8] ]]; then
-	echo "Input error, please input the correct num[1-8].."
+if [[ $PHP_INST != [1-9] ]]; then
+	echo "Input error, please input the correct num[1-9].."
 else
 	break
 fi
@@ -170,25 +172,26 @@ done
 
 
 #Mysql version, update here
-My55_Ver=5.5.59
-My56_Ver=5.6.39
-My57_Ver=5.7.21
+My55_Ver=5.5.60
+My56_Ver=5.6.40
+My57_Ver=5.7.22
 
 #Web Server version, update here
-APA24_Ver=2.4.29
+APA24_Ver=2.4.33
 APR_Ver=1.6.3
 APRU_Ver=1.6.1
-NGX_Ver=1.12.2
-PCRE_Ver=8.41
-OSSL_Ver=1.0.2n
+NGX_Ver=1.14.0
+PCRE_Ver=8.42
+OSSL_Ver=1.1.0h
 ZLIB_Ver=1.2.11
 
 
 
 #PHP version, update here
-PHP56_Ver=5.6.33
-PHP70_Ver=7.0.27
-PHP71_Ver=7.1.13
+PHP56_Ver=5.6.36
+PHP70_Ver=7.0.30
+PHP71_Ver=7.1.19
+PHP72_Ver=7.2.7
 
 
 
@@ -949,18 +952,18 @@ wget -c http://cn2.php.net/distributions/php-$PHP71_Ver.tar.bz2
 		ln -s /usr/local/nginx_php$PHP71_Ver /usr/local/nginx_php
 		cp php.ini-production /usr/local/nginx_php/lib/php.ini
 		sed -i 's/short_open_tag = Off/short_open_tag = On/g' /usr/local/nginx_php/lib/php.ini
-		cd /usr/local/nginx_php/etc/
-		cp php-fpm.conf.default php-fpm.conf
-		sed -i 's/user = nobody/user = '$USER_WEB'/g' /usr/local/nginx_php/etc/php-fpm.conf
-		sed -i 's/group = nobody/group = '$USER_WEB'/g' /usr/local/nginx_php/etc/php-fpm.conf
-		sed -i 's/;rlimit_files = 1024/rlimit_files = 10240/g' /usr/local/nginx_php/etc/php-fpm.conf
-		sed -i 's/;listen.allowed_clients = 127.0.0.1/listen.allowed_clients = 127.0.0.1/g' /usr/local/nginx_php/etc/php-fpm.conf
-		sed -i 's/pm = dynamic/pm = static/g' /usr/local/nginx_php/etc/php-fpm.conf
-		sed -i 's/pm.max_children = 5/pm.max_children = 100/g' /usr/local/nginx_php/etc/php-fpm.conf
-		sed -i 's/;pm.max_requests = 500/pm.max_requests = 5000/g' /usr/local/nginx_php/etc/php-fpm.conf
-		sed -i 's/;pm.status_path = \/pmstatus/pm.status_path = \/pmstatus/g' /usr/local/nginx_php/etc/php-fpm.conf
-		sed -i 's/;request_terminate_timeout = 0/request_terminate_timeout = 30s/g' /usr/local/nginx_php/etc/php-fpm.conf
-		sed -i 's/;pid = run\/php-fpm.pid/pid = run\/php-fpm.pid/g' /usr/local/nginx_php/etc/php-fpm.conf
+		cd /usr/local/nginx_php/etc/php-fpm.d
+		cp www.conf.default www.conf
+		sed -i 's/user = nobody/user = '$USER_WEB'/g' /usr/local/nginx_php/etc/php-fpm.d/www.conf
+		sed -i 's/group = nobody/group = '$USER_WEB'/g' /usr/local/nginx_php/etc/php-fpm.d/www.conf
+		sed -i 's/;rlimit_files = 1024/rlimit_files = 10240/g' /usr/local/nginx_php/etc/php-fpm.d/www.conf
+		sed -i 's/;listen.allowed_clients = 127.0.0.1/listen.allowed_clients = 127.0.0.1/g' /usr/local/nginx_php/etc/php-fpm.d/www.conf
+		sed -i 's/pm = dynamic/pm = static/g' /usr/local/nginx_php/etc/php-fpm.d/www.conf
+		sed -i 's/pm.max_children = 5/pm.max_children = 100/g' /usr/local/nginx_php/etc/php-fpm.d/www.conf
+		sed -i 's/;pm.max_requests = 500/pm.max_requests = 5000/g' /usr/local/nginx_php/etc/php-fpm.d/www.conf
+		sed -i 's/;pm.status_path = \/pmstatus/pm.status_path = \/pmstatus/g' /usr/local/nginx_php/etc/php-fpm.d/www.conf
+		sed -i 's/;request_terminate_timeout = 0/request_terminate_timeout = 30s/g' /usr/local/nginx_php/etc/php-fpm.d/www.conf
+		sed -i 's/;pid = run\/php-fpm.pid/pid = run\/php-fpm.pid/g' /usr/local/nginx_php/etc/php-fpm.d/www.conf
 		touch /$INSTALL_PATH/NGX_PHP71_INST.lock
 		echo "Nginx PHP installed success">>$INSTALL_LOG
 		} || {
@@ -985,6 +988,56 @@ wget -c http://cn2.php.net/distributions/php-$PHP71_Ver.tar.bz2
 }
 
 
+PHP72_INST(){
+##Install PHP 7.2 ###################
+ln -s /usr/lib64/libjpeg.so /usr/lib/
+ln -s /usr/lib64/libpng.so /usr/lib/
+cd $INSTALL_PATH
+wget -c http://cn2.php.net/distributions/php-$PHP72_Ver.tar.bz2
+[ -f php-$PHP72_Ver.tar.bz2 ] && {
+	tar jxvf php-$PHP72_Ver.tar.bz2
+	cd php-$PHP71_Ver/
+	if [ $WEB_INST = 3 -a ! -e NGX_PHP71_INST.lock ]; then
+		./configure --prefix=/usr/local/nginx_php$PHP72_Ver --with-mysql=/usr/local/mysql --enable-fpm --enable-zip --with-freetype-dir --with-jpeg-dir --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql --enable-bcmath --enable-sockets --with-gettext
+		make -j$CPU_C && make install
+		[ $? -eq 0 ] && {
+		ln -s /usr/local/nginx_php$PHP72_Ver /usr/local/nginx_php
+		cp php.ini-production /usr/local/nginx_php/lib/php.ini
+		sed -i 's/short_open_tag = Off/short_open_tag = On/g' /usr/local/nginx_php/lib/php.ini
+		cd /usr/local/nginx_php/etc/php-fpm.d
+		cp www.conf.default www.conf
+		sed -i 's/user = nobody/user = '$USER_WEB'/g' /usr/local/nginx_php/etc/php-fpm.d/www.conf
+		sed -i 's/group = nobody/group = '$USER_WEB'/g' /usr/local/nginx_php/etc/php-fpm.d/www.conf
+		sed -i 's/;rlimit_files = 1024/rlimit_files = 10240/g' /usr/local/nginx_php/etc/php-fpm.d/www.conf
+		sed -i 's/;listen.allowed_clients = 127.0.0.1/listen.allowed_clients = 127.0.0.1/g' /usr/local/nginx_php/etc/php-fpm.d/www.conf
+		sed -i 's/pm = dynamic/pm = static/g' /usr/local/nginx_php/etc/php-fpm.d/www.conf
+		sed -i 's/pm.max_children = 5/pm.max_children = 100/g' /usr/local/nginx_php/etc/php-fpm.d/www.conf
+		sed -i 's/;pm.max_requests = 500/pm.max_requests = 5000/g' /usr/local/nginx_php/etc/php-fpm.d/www.conf
+		sed -i 's/;pm.status_path = \/pmstatus/pm.status_path = \/pmstatus/g' /usr/local/nginx_php/etc/php-fpm.d/www.conf
+		sed -i 's/;request_terminate_timeout = 0/request_terminate_timeout = 30s/g' /usr/local/nginx_php/etc/php-fpm.d/www.conf
+		sed -i 's/;pid = run\/php-fpm.pid/pid = run\/php-fpm.pid/g' /usr/local/nginx_php/etc/php-fpm.d/www.conf
+		touch /$INSTALL_PATH/NGX_PHP72_INST.lock
+		echo "Nginx PHP installed success">>$INSTALL_LOG
+		} || {
+			echo "Nginx PHP installed failed">>$INSTALL_LOG
+			exit 58
+			}
+	else
+		./configure --prefix=/usr/local/apache_php$PHP72_Ver --enable-zip --with-mysql=/usr/local/mysql --with-apxs2=/usr/local/apache/bin/apxs --with-freetype-dir --with-jpeg-dir --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql --enable-bcmath --enable-sockets --with-gettext
+		make -j$CPU_C && make install
+		[ $? -eq 0 ] && {
+		ln -s /usr/local/apache_php$PHP72_Ver /usr/local/apache_php
+		cp php.ini-production /usr/local/apache_php/lib/php.ini
+		sed -i 's/short_open_tag = Off/short_open_tag = On/g' /usr/local/apache_php/lib/php.ini
+		touch /$INSTALL_PATH/APA_PHP72_INST.lock
+		echo "Apache PHP installed success">>$INSTALL_LOG
+		} || {
+			echo "Apache PHP installed failed">>$INSTALL_LOG
+			exit 58
+			}
+	fi
+	}
+}
 
 [ ! -e $INSTALL_PATH/CHK_SYS.lock ] && CHK_SYS
 [ ! -e $INSTALL_PATH/FTP_INST.lock ] && FTP_INST
@@ -1052,6 +1105,10 @@ case $PHP_INST in
 	
 	7)
 	[ ! -e $INSTALL_PATH/NGX_PHP71_INST.lock -o ! -e $INSTALL_PATH/APA_PHP71_INST.lock ] && PHP71_INST
+	;;
+	
+	8)
+	[ ! -e $INSTALL_PATH/NGX_PHP72_INST.lock -o ! -e $INSTALL_PATH/APA_PHP72_INST.lock ] && PHP72_INST
 	;;
 
 esac
