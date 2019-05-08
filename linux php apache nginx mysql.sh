@@ -1098,8 +1098,14 @@ ln -s /usr/lib64/libjpeg.so /usr/lib/
 ln -s /usr/lib64/libpng.so /usr/lib/
 cd $INSTALL_PATH
 wget -c http://cn2.php.net/distributions/php-$PHP73_Ver.tar.bz2
+wget -c https://libzip.org/download/libzip-1.5.2.tar.xz
+wget -c https://github.com/Kitware/CMake/releases/download/v3.14.3/cmake-3.14.3.tar.gz
 [ -f php-$PHP73_Ver.tar.bz2 ] && {
 	tar jxvf php-$PHP73_Ver.tar.bz2
+	tar Jxvf libzip-1.5.2.tar.xz
+	cd libzip-1.5.2
+	mkdir build && cd build
+	cmake ..
 	cd php-$PHP73_Ver/
 	if [ $WEB_INST = 3 -a ! -e NGX_PHP71_INST.lock ]; then
 		./configure --prefix=/usr/local/nginx_php$PHP73_Ver --with-mysql=/usr/local/mysql --enable-fpm --enable-zip --with-freetype-dir --with-jpeg-dir --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql --enable-bcmath --enable-sockets --with-gettext
@@ -1127,7 +1133,7 @@ wget -c http://cn2.php.net/distributions/php-$PHP73_Ver.tar.bz2
 			exit 58
 			}
 	else
-		./configure --prefix=/usr/local/apache_php$PHP73_Ver --enable-zip --with-mysql=/usr/local/mysql --with-apxs2=/usr/local/apache/bin/apxs --with-freetype-dir --with-jpeg-dir --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql --enable-bcmath --enable-sockets --with-gettext
+		./configure --prefix=/usr/local/apache_php$PHP73_Ver --enable-zip --with-apxs2=/usr/local/apache/bin/apxs --with-freetype-dir --with-jpeg-dir --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql --enable-bcmath --enable-sockets --with-gettext
 		make -j$CPU_C && make install
 		[ $? -eq 0 ] && {
 		ln -s /usr/local/apache_php$PHP73_Ver /usr/local/apache_php
