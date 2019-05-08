@@ -1050,7 +1050,7 @@ wget -c http://cn2.php.net/distributions/php-$PHP72_Ver.tar.bz2
 [ -f php-$PHP72_Ver.tar.bz2 ] && {
 	tar jxvf php-$PHP72_Ver.tar.bz2
 	cd php-$PHP72_Ver/
-	if [ $WEB_INST = 3 -a ! -e NGX_PHP71_INST.lock ]; then
+	if [ $WEB_INST = 3 -a ! -e NGX_PHP72_INST.lock ]; then
 		./configure --prefix=/usr/local/nginx_php$PHP72_Ver --with-mysql=/usr/local/mysql --enable-fpm --enable-zip --with-freetype-dir --with-jpeg-dir --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql --enable-bcmath --enable-sockets --with-gettext
 		make -j$CPU_C && make install
 		[ $? -eq 0 ] && {
