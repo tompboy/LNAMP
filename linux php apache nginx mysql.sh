@@ -317,7 +317,7 @@ if [ $RL = 2 -o $RL = 3 ]; then
 	rpm -qa|grep epel-release
 	[ $? -eq 0 ] && yum -y install kernel-devel rpm-build patch make gcc gcc-c++ flex bison \
 	file libxml2 libxml2-devel curl curl-devel libjpeg libjpeg-devel libtool libpng \
-	libpng-devel wget libaio* vim libmcrypt libmcrypt-devel mcrypt mhash openssl openssl-devel libtool-ltdl-devel  freetype freetype-devel gd-devel numactl expat-devel|| exit 39
+	libpng-devel wget libaio* vim libmcrypt libmcrypt-devel mcrypt mhash openssl openssl-devel libtool-ltdl-devel  freetype freetype-devel gd-devel numactl expat-devel zlib-devel|| exit 39
 else
 	[ $RL = 4 ] && {
 	apt-get update &&\
@@ -445,7 +445,7 @@ EOF
 [ $? -eq 0 ] && {
 	LPASD=`cat /tmp/mysqlinstall{$DATE_INST}.log|grep root@localhost|awk -F":" '{print $4}'|sed s/[[:space:]]//g`
 	#重设root用户密码
-	/usr/local/mysql/bin/mysql -u root -p$LPASD -e "alter user root password '$Mysql_PSWD';"
+	/usr/local/mysql/bin/mysql -u root -p$LPASD --connect-expired-password -e "alter user 'root'@'localhost' IDENTIFIED BY '$Mysql_PSWD';"
 	#创建数据库
 	/usr/local/mysql/bin/mysql -u root -p$Mysql_PSWD -e "create database $Mysql_DBname default charset utf8;"
 	#赋普通用户权
@@ -490,7 +490,7 @@ EOF
 [ $? -eq 0 ] && {
 	LPASD=`cat /tmp/mysqlinstall{$DATE_INST}.log|grep root@localhost|awk -F":" '{print $4}'|sed s/[[:space:]]//g`
 	#重设root用户密码
-	/usr/local/mysql/bin/mysql -u root -p$LPASD -e "alter user root password '$Mysql_PSWD';"
+	/usr/local/mysql/bin/mysql -u root -p$LPASD --connect-expired-password -e "alter user 'root'@'localhost' IDENTIFIED BY '$Mysql_PSWD';"
 	#创建数据库
 	/usr/local/mysql/bin/mysql -u root -p$Mysql_PSWD -e "create database $Mysql_DBname default charset utf8;"
 	#赋普通用户权
@@ -966,7 +966,7 @@ wget -c http://cn2.php.net/distributions/php-$PHP70_Ver.tar.bz2
 		sed -i 's/;pm.status_path = \/pmstatus/pm.status_path = \/pmstatus/g' /usr/local/nginx_php/etc/php-fpm.conf
 		sed -i 's/;request_terminate_timeout = 0/request_terminate_timeout = 30s/g' /usr/local/nginx_php/etc/php-fpm.conf
 		sed -i 's/;pid = run\/php-fpm.pid/pid = run\/php-fpm.pid/g' /usr/local/nginx_php/etc/php-fpm.conf
-		touch /$INSTALL_PATH/NGX_PHP70_INST.lock
+		touch $INSTALL_PATH/NGX_PHP70_INST.lock
 		echo "Nginx PHP installed success">>$INSTALL_LOG
 		} || {
 			echo "Nginx PHP installed failed">>$INSTALL_LOG
@@ -979,7 +979,7 @@ wget -c http://cn2.php.net/distributions/php-$PHP70_Ver.tar.bz2
 		ln -s /usr/local/apache_php$PHP70_Ver /usr/local/apache_php
 		cp php.ini-production /usr/local/apache_php/lib/php.ini
 		sed -i 's/short_open_tag = Off/short_open_tag = On/g' /usr/local/apache_php/lib/php.ini
-		touch /$INSTALL_PATH/APA_PHP70_INST.lock
+		touch $INSTALL_PATH/APA_PHP70_INST.lock
 		echo "Apache PHP installed success">>$INSTALL_LOG
 		} || {
 			echo "Apache PHP installed failed">>$INSTALL_LOG
@@ -1017,7 +1017,7 @@ wget -c http://cn2.php.net/distributions/php-$PHP71_Ver.tar.bz2
 		sed -i 's/;pm.status_path = \/pmstatus/pm.status_path = \/pmstatus/g' /usr/local/nginx_php/etc/php-fpm.d/www.conf
 		sed -i 's/;request_terminate_timeout = 0/request_terminate_timeout = 30s/g' /usr/local/nginx_php/etc/php-fpm.d/www.conf
 		sed -i 's/;pid = run\/php-fpm.pid/pid = run\/php-fpm.pid/g' /usr/local/nginx_php/etc/php-fpm.d/www.conf
-		touch /$INSTALL_PATH/NGX_PHP71_INST.lock
+		touch $INSTALL_PATH/NGX_PHP71_INST.lock
 		echo "Nginx PHP installed success">>$INSTALL_LOG
 		} || {
 			echo "Nginx PHP installed failed">>$INSTALL_LOG
@@ -1030,7 +1030,7 @@ wget -c http://cn2.php.net/distributions/php-$PHP71_Ver.tar.bz2
 		ln -s /usr/local/apache_php$PHP71_Ver /usr/local/apache_php
 		cp php.ini-production /usr/local/apache_php/lib/php.ini
 		sed -i 's/short_open_tag = Off/short_open_tag = On/g' /usr/local/apache_php/lib/php.ini
-		touch /$INSTALL_PATH/APA_PHP71_INST.lock
+		touch $INSTALL_PATH/APA_PHP71_INST.lock
 		echo "Apache PHP installed success">>$INSTALL_LOG
 		} || {
 			echo "Apache PHP installed failed">>$INSTALL_LOG
@@ -1069,7 +1069,7 @@ wget -c http://cn2.php.net/distributions/php-$PHP72_Ver.tar.bz2
 		sed -i 's/;pm.status_path = \/pmstatus/pm.status_path = \/pmstatus/g' /usr/local/nginx_php/etc/php-fpm.d/www.conf
 		sed -i 's/;request_terminate_timeout = 0/request_terminate_timeout = 30s/g' /usr/local/nginx_php/etc/php-fpm.d/www.conf
 		sed -i 's/;pid = run\/php-fpm.pid/pid = run\/php-fpm.pid/g' /usr/local/nginx_php/etc/php-fpm.d/www.conf
-		touch /$INSTALL_PATH/NGX_PHP72_INST.lock
+		touch $INSTALL_PATH/NGX_PHP72_INST.lock
 		echo "Nginx PHP installed success">>$INSTALL_LOG
 		} || {
 			echo "Nginx PHP installed failed">>$INSTALL_LOG
@@ -1082,7 +1082,7 @@ wget -c http://cn2.php.net/distributions/php-$PHP72_Ver.tar.bz2
 		ln -s /usr/local/apache_php$PHP72_Ver /usr/local/apache_php
 		cp php.ini-production /usr/local/apache_php/lib/php.ini
 		sed -i 's/short_open_tag = Off/short_open_tag = On/g' /usr/local/apache_php/lib/php.ini
-		touch /$INSTALL_PATH/APA_PHP72_INST.lock
+		touch $INSTALL_PATH/APA_PHP72_INST.lock
 		echo "Apache PHP installed success">>$INSTALL_LOG
 		} || {
 			echo "Apache PHP installed failed">>$INSTALL_LOG
@@ -1103,12 +1103,21 @@ wget -c https://github.com/Kitware/CMake/releases/download/v3.14.3/cmake-3.14.3.
 [ -f php-$PHP73_Ver.tar.bz2 ] && {
 	tar jxvf php-$PHP73_Ver.tar.bz2
 	tar Jxvf libzip-1.5.2.tar.xz
-	cd libzip-1.5.2
+	tar zxvf cmake-3.14.3.tar.gz
+	cd cmake-3.14.3
+	./configure &&gmake && make install
+	cd $INSTALL_PATH/libzip-1.5.2
 	mkdir build && cd build
+	yum -y install mysql-devel
 	cmake ..
-	cd php-$PHP73_Ver/
-	if [ $WEB_INST = 3 -a ! -e NGX_PHP71_INST.lock ]; then
-		./configure --prefix=/usr/local/nginx_php$PHP73_Ver --with-mysql=/usr/local/mysql --enable-fpm --enable-zip --with-freetype-dir --with-jpeg-dir --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql --enable-bcmath --enable-sockets --with-gettext
+	make && make install
+echo '/usr/local/lib64
+/usr/local/lib
+/usr/lib
+/usr/lib64'>>/etc/ld.so.conf&&ldconfig
+	cd $INSTALL_PATH/php-$PHP73_Ver/
+	if [ $WEB_INST = 3 -a ! -e NGX_PHP73_INST.lock ]; then
+		./configure --prefix=/usr/local/nginx_php$PHP73_Ver --enable-fpm --enable-zip --with-freetype-dir --with-jpeg-dir --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mysqli --with-pdo-mysql --enable-bcmath --enable-sockets --with-gettext
 		make -j$CPU_C && make install
 		[ $? -eq 0 ] && {
 		ln -s /usr/local/nginx_php$PHP73_Ver /usr/local/nginx_php
@@ -1126,7 +1135,7 @@ wget -c https://github.com/Kitware/CMake/releases/download/v3.14.3/cmake-3.14.3.
 		sed -i 's/;pm.status_path = \/pmstatus/pm.status_path = \/pmstatus/g' /usr/local/nginx_php/etc/php-fpm.d/www.conf
 		sed -i 's/;request_terminate_timeout = 0/request_terminate_timeout = 30s/g' /usr/local/nginx_php/etc/php-fpm.d/www.conf
 		sed -i 's/;pid = run\/php-fpm.pid/pid = run\/php-fpm.pid/g' /usr/local/nginx_php/etc/php-fpm.d/www.conf
-		touch /$INSTALL_PATH/NGX_PHP72_INST.lock
+		touch $INSTALL_PATH/NGX_PHP73_INST.lock
 		echo "Nginx PHP installed success">>$INSTALL_LOG
 		} || {
 			echo "Nginx PHP installed failed">>$INSTALL_LOG
@@ -1139,7 +1148,7 @@ wget -c https://github.com/Kitware/CMake/releases/download/v3.14.3/cmake-3.14.3.
 		ln -s /usr/local/apache_php$PHP73_Ver /usr/local/apache_php
 		cp php.ini-production /usr/local/apache_php/lib/php.ini
 		sed -i 's/short_open_tag = Off/short_open_tag = On/g' /usr/local/apache_php/lib/php.ini
-		touch /$INSTALL_PATH/APA_PHP73_INST.lock
+		touch $INSTALL_PATH/APA_PHP73_INST.lock
 		echo "Apache PHP installed success">>$INSTALL_LOG
 		} || {
 			echo "Apache PHP installed failed">>$INSTALL_LOG
