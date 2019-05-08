@@ -167,7 +167,9 @@ menu
 read -p "Please input which PHP you want to install.." PHP_INST
 echo -e "\n"
 if [[ $PHP_INST != [1-9] ]]; then
-	echo "Input error, please input the correct num[1-10].."
+	if [ j$PHP_INST != jX ]; then
+		echo "Input error, please input the correct num[1-9] Or X.."
+	fi
 else
 	break
 fi
