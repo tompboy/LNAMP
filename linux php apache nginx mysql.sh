@@ -346,8 +346,8 @@ wget -c https://dev.mysql.com/get/Downloads/MySQL-5.5/mysql-$My55_Ver-linux-glib
 	userdel -r mysql
 	useradd mysql
 	tar zxvf mysql-$My55_Ver-linux-glibc2.12-x86_64.tar.gz
-	cp -r mysql-$My55_Ver-linux-glibc2.12-x86_64 /usr/local/mysql$My55_Ver
-	ln -s /usr/local/mysql$My55_Ver /usr/local/mysql
+	cp -rf mysql-$My55_Ver-linux-glibc2.12-x86_64 /usr/local/mysql$My55_Ver
+	ln -sf /usr/local/mysql$My55_Ver /usr/local/mysql
 	cd /usr/local/mysql
 	rm -f /etc/my.cnf
 	cp /usr/local/mysql/support-files/my-medium.cnf /etc/my.cnf
@@ -383,8 +383,8 @@ wget -c https://dev.mysql.com/get/Downloads/MySQL-5.6/mysql-$My56_Ver-linux-glib
 	userdel -r mysql
 	useradd mysql
 	tar zxvf mysql-$My56_Ver-linux-glibc2.12-x86_64.tar.gz
-	cp -r mysql-$My56_Ver-linux-glibc2.12-x86_64 /usr/local/mysql$My56_Ver
-	ln -s /usr/local/mysql$My56_Ver /usr/local/mysql
+	cp -rf mysql-$My56_Ver-linux-glibc2.12-x86_64 /usr/local/mysql$My56_Ver
+	ln -sf /usr/local/mysql$My56_Ver /usr/local/mysql
 	cd /usr/local/mysql
 	rm -f /etc/my.cnf
 cat >>/etc/my.cnf<<EOF
@@ -426,8 +426,8 @@ wget -c https://dev.mysql.com/get/Downloads/MySQL-5.7/mysql-$My57_Ver-linux-glib
 	userdel -r mysql
 	useradd mysql
 	tar zxvf mysql-$My57_Ver-linux-glibc2.12-x86_64.tar.gz
-	cp -r mysql-$My57_Ver-linux-glibc2.12-x86_64 /usr/local/mysql$My57_Ver
-	ln -s /usr/local/mysql$My57_Ver /usr/local/mysql
+	cp -rf mysql-$My57_Ver-linux-glibc2.12-x86_64 /usr/local/mysql$My57_Ver
+	ln -sf /usr/local/mysql$My57_Ver /usr/local/mysql
 	cd /usr/local/mysql
 	rm -f /etc/my.cnf
 cat >>/etc/my.cnf<<EOF
@@ -471,8 +471,8 @@ wget -c https://dev.mysql.com/get/Downloads/MySQL-8.0/mysql-$My80_Ver-linux-glib
 	userdel -r mysql
 	useradd mysql
 	tar Jxvf mysql-$My80_Ver-linux-glibc2.12-x86_64.tar.xz
-	cp -r mysql-$My80_Ver-linux-glibc2.12-x86_64 /usr/local/mysql$My80_Ver
-	ln -s /usr/local/mysql$My80_Ver /usr/local/mysql
+	cp -rf mysql-$My80_Ver-linux-glibc2.12-x86_64 /usr/local/mysql$My80_Ver
+	ln -sf /usr/local/mysql$My80_Ver /usr/local/mysql
 	cd /usr/local/mysql
 	rm -f /etc/my.cnf
 cat >>/etc/my.cnf<<EOF
@@ -1100,7 +1100,7 @@ cd $INSTALL_PATH
 wget -c http://cn2.php.net/distributions/php-$PHP73_Ver.tar.bz2
 [ -f php-$PHP73_Ver.tar.bz2 ] && {
 	tar jxvf php-$PHP73_Ver.tar.bz2
-	cd php-$PHP71_Ver/
+	cd php-$PHP73_Ver/
 	if [ $WEB_INST = 3 -a ! -e NGX_PHP71_INST.lock ]; then
 		./configure --prefix=/usr/local/nginx_php$PHP73_Ver --with-mysql=/usr/local/mysql --enable-fpm --enable-zip --with-freetype-dir --with-jpeg-dir --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql --enable-bcmath --enable-sockets --with-gettext
 		make -j$CPU_C && make install
