@@ -35,6 +35,7 @@
 # Debug: Fix MySQL version...2018-01-25
 # Debug: Fix MySQL version...2018-03-01
 # Debug: Fix some mistakes...2018-07-09
+# Debug: Fix some mistakes...2019-05-08
 # Project home: https://github.com/tompboy/LNAMP
 # Version:V 0.18
 
@@ -105,14 +106,15 @@ cat <<EOF
 1. Install Mysql 5.5
 2. Install Mysql 5.6
 3. Install Mysql 5.7
-4. NOT install
+4. Install Mysql 8.0
+5. NOT install
 EOF
 }
 menu
 read -p "Please input which Mysql Database you want to install.." Mysql_INST
 echo -e "\n"
-if [[ $Mysql_INST != [1-4] ]]; then
-	echo "Input error, please input the correct num[1-4].."
+if [[ $Mysql_INST != [1-5] ]]; then
+	echo "Input error, please input the correct num[1-5].."
 else
 	break
 fi
@@ -157,14 +159,15 @@ cat <<EOF
 6. Install PHP 7.0
 7. Install PHP 7.1
 8. Install PHP 7.2
-9. NOT install
+9. Install PHP 7.3
+10. NOT install
 EOF
 }
 menu
 read -p "Please input which PHP you want to install.." PHP_INST
 echo -e "\n"
 if [[ $PHP_INST != [1-9] ]]; then
-	echo "Input error, please input the correct num[1-9].."
+	echo "Input error, please input the correct num[1-10].."
 else
 	break
 fi
@@ -172,27 +175,28 @@ done
 
 
 #Mysql version, update here
-My55_Ver=5.5.60
-My56_Ver=5.6.40
-My57_Ver=5.7.22
+My55_Ver=5.5.62
+My56_Ver=5.6.44
+My57_Ver=5.7.26
+My80_Ver=8.0.16
 
 #Web Server version, update here
-APA24_Ver=2.4.33
-APR_Ver=1.6.3
+APA24_Ver=2.4.39
+APR_Ver=1.7.0
 APRU_Ver=1.6.1
-NGX_Ver=1.14.0
-PCRE_Ver=8.42
-OSSL_Ver=1.1.0h
+NGX_Ver=1.16.0
+PCRE_Ver=8.43
+OSSL_Ver=1.1.1b
 ZLIB_Ver=1.2.11
 
 
 
 #PHP version, update here
-PHP56_Ver=5.6.36
-PHP70_Ver=7.0.30
-PHP71_Ver=7.1.19
-PHP72_Ver=7.2.7
-
+PHP56_Ver=5.6.40
+PHP70_Ver=7.0.33
+PHP71_Ver=7.1.29
+PHP72_Ver=7.2.18
+PHP73_Ver=7.3.5
 
 
 CHK_SYS(){
@@ -432,6 +436,7 @@ port = 3306
 server_id = 1
 max_connections = 500
 wait_timeout = 30
+innodb_file_per_table = 1
 EOF
 	bin/mysqld --initialize --user=mysql &>/tmp/mysqlinstall{$DATE_INST}.log
 	/usr/local/mysql/support-files/mysql.server start
@@ -455,6 +460,52 @@ EOF
 		}
 	}
 }
+
+Mysql80_INST(){
+##Install MySQL 8.0 ################
+cd $INSTALL_PATH
+wget -c https://dev.mysql.com/get/Downloads/MySQL-8.0/mysql-$My80_Ver-linux-glibc2.12-x86_64.tar.xz
+[ -f mysql-$My80_Ver-linux-glibc2.12-x86_64.tar.xz ] && [ ! -e Mysql80_INST.lock ] && {
+	userdel -r mysql
+	useradd mysql
+	tar Jxvf mysql-$My80_Ver-linux-glibc2.12-x86_64.tar.xz
+	cp -r mysql-$My80_Ver-linux-glibc2.12-x86_64 /usr/local/mysql$My80_Ver
+	ln -s /usr/local/mysql$My80_Ver /usr/local/mysql
+	cd /usr/local/mysql
+	rm -f /etc/my.cnf
+cat >>/etc/my.cnf<<EOF
+[mysqld]
+datadir = /usr/local/mysql/data
+basedir = /usr/local/mysql
+port = 3306
+server_id = 1
+max_connections = 500
+wait_timeout = 30
+innodb_file_per_table = 1
+EOF
+	bin/mysqld --initialize --user=mysql &>/tmp/mysqlinstall{$DATE_INST}.log
+	/usr/local/mysql/support-files/mysql.server start
+[ $? -eq 0 ] && {
+	LPASD=`cat /tmp/mysqlinstall{$DATE_INST}.log|grep root@localhost|awk -F":" '{print $4}'|sed s/[[:space:]]//g`
+	#重设root用户密码
+	/usr/local/mysql/bin/mysql -u root -p$LPASD -e "alter user root password '$Mysql_PSWD';"
+	#创建数据库
+	/usr/local/mysql/bin/mysql -u root -p$Mysql_PSWD -e "create database $Mysql_DBname default charset utf8;"
+	#赋普通用户权
+	/usr/local/mysql/bin/mysql -u root -p$Mysql_PSWD -e "grant all on $Mysql_DBname.* to $Mysql_USER@'127.0.0.1' identified by '$Myuser_PSWD';"
+	#刷新权限
+	/usr/local/mysql/bin/mysql -u root -p$Mysql_PSWD -e "flush privileges;"
+	cp /usr/local/mysql/support-files/mysql.server /etc/init.d/mysqld
+	service mysqld stop
+	touch $INSTALL_PATH/Mysql80_INST.lock
+	echo "Mysql installed successful.">>$INSTALL_LOG
+	} || {
+		echo "Mysql installed failed.">>$INSTALL_LOG
+		exit 5
+		}
+	}
+}
+
 
 APA22_INST(){
 ##Install apache2.2 #####################
@@ -996,7 +1047,7 @@ cd $INSTALL_PATH
 wget -c http://cn2.php.net/distributions/php-$PHP72_Ver.tar.bz2
 [ -f php-$PHP72_Ver.tar.bz2 ] && {
 	tar jxvf php-$PHP72_Ver.tar.bz2
-	cd php-$PHP71_Ver/
+	cd php-$PHP72_Ver/
 	if [ $WEB_INST = 3 -a ! -e NGX_PHP71_INST.lock ]; then
 		./configure --prefix=/usr/local/nginx_php$PHP72_Ver --with-mysql=/usr/local/mysql --enable-fpm --enable-zip --with-freetype-dir --with-jpeg-dir --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql --enable-bcmath --enable-sockets --with-gettext
 		make -j$CPU_C && make install
@@ -1039,6 +1090,57 @@ wget -c http://cn2.php.net/distributions/php-$PHP72_Ver.tar.bz2
 	}
 }
 
+PHP73_INST(){
+##Install PHP 7.3 ###################
+ln -s /usr/lib64/libjpeg.so /usr/lib/
+ln -s /usr/lib64/libpng.so /usr/lib/
+cd $INSTALL_PATH
+wget -c http://cn2.php.net/distributions/php-$PHP73_Ver.tar.bz2
+[ -f php-$PHP73_Ver.tar.bz2 ] && {
+	tar jxvf php-$PHP73_Ver.tar.bz2
+	cd php-$PHP71_Ver/
+	if [ $WEB_INST = 3 -a ! -e NGX_PHP71_INST.lock ]; then
+		./configure --prefix=/usr/local/nginx_php$PHP73_Ver --with-mysql=/usr/local/mysql --enable-fpm --enable-zip --with-freetype-dir --with-jpeg-dir --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql --enable-bcmath --enable-sockets --with-gettext
+		make -j$CPU_C && make install
+		[ $? -eq 0 ] && {
+		ln -s /usr/local/nginx_php$PHP73_Ver /usr/local/nginx_php
+		cp php.ini-production /usr/local/nginx_php/lib/php.ini
+		sed -i 's/short_open_tag = Off/short_open_tag = On/g' /usr/local/nginx_php/lib/php.ini
+		cd /usr/local/nginx_php/etc/php-fpm.d
+		cp www.conf.default www.conf
+		sed -i 's/user = nobody/user = '$USER_WEB'/g' /usr/local/nginx_php/etc/php-fpm.d/www.conf
+		sed -i 's/group = nobody/group = '$USER_WEB'/g' /usr/local/nginx_php/etc/php-fpm.d/www.conf
+		sed -i 's/;rlimit_files = 1024/rlimit_files = 10240/g' /usr/local/nginx_php/etc/php-fpm.d/www.conf
+		sed -i 's/;listen.allowed_clients = 127.0.0.1/listen.allowed_clients = 127.0.0.1/g' /usr/local/nginx_php/etc/php-fpm.d/www.conf
+		sed -i 's/pm = dynamic/pm = static/g' /usr/local/nginx_php/etc/php-fpm.d/www.conf
+		sed -i 's/pm.max_children = 5/pm.max_children = 100/g' /usr/local/nginx_php/etc/php-fpm.d/www.conf
+		sed -i 's/;pm.max_requests = 500/pm.max_requests = 5000/g' /usr/local/nginx_php/etc/php-fpm.d/www.conf
+		sed -i 's/;pm.status_path = \/pmstatus/pm.status_path = \/pmstatus/g' /usr/local/nginx_php/etc/php-fpm.d/www.conf
+		sed -i 's/;request_terminate_timeout = 0/request_terminate_timeout = 30s/g' /usr/local/nginx_php/etc/php-fpm.d/www.conf
+		sed -i 's/;pid = run\/php-fpm.pid/pid = run\/php-fpm.pid/g' /usr/local/nginx_php/etc/php-fpm.d/www.conf
+		touch /$INSTALL_PATH/NGX_PHP72_INST.lock
+		echo "Nginx PHP installed success">>$INSTALL_LOG
+		} || {
+			echo "Nginx PHP installed failed">>$INSTALL_LOG
+			exit 58
+			}
+	else
+		./configure --prefix=/usr/local/apache_php$PHP73_Ver --enable-zip --with-mysql=/usr/local/mysql --with-apxs2=/usr/local/apache/bin/apxs --with-freetype-dir --with-jpeg-dir --with-png-dir --with-zlib --with-curl --with-iconv --enable-mbstring --with-gd --with-openssl --with-mcrypt --with-mysqli=/usr/local/mysql/bin/mysql_config --with-pdo-mysql=/usr/local/mysql --enable-bcmath --enable-sockets --with-gettext
+		make -j$CPU_C && make install
+		[ $? -eq 0 ] && {
+		ln -s /usr/local/apache_php$PHP73_Ver /usr/local/apache_php
+		cp php.ini-production /usr/local/apache_php/lib/php.ini
+		sed -i 's/short_open_tag = Off/short_open_tag = On/g' /usr/local/apache_php/lib/php.ini
+		touch /$INSTALL_PATH/APA_PHP73_INST.lock
+		echo "Apache PHP installed success">>$INSTALL_LOG
+		} || {
+			echo "Apache PHP installed failed">>$INSTALL_LOG
+			exit 58
+			}
+	fi
+	}
+}
+
 [ ! -e $INSTALL_PATH/CHK_SYS.lock ] && CHK_SYS
 [ ! -e $INSTALL_PATH/FTP_INST.lock ] && FTP_INST
 [ ! -e $INSTALL_PATH/DOWN_SOFT.lock ] && DOWN_SOFT
@@ -1055,6 +1157,10 @@ case $Mysql_INST in
 	
 	3)
 	[ ! -e $INSTALL_PATH/Mysql57_INST.lock ] && Mysql57_INST
+	;;
+	
+	4)
+	[ ! -e $INSTALL_PATH/Mysql80_INST.lock ] && Mysql80_INST
 	;;
 
 esac
@@ -1109,6 +1215,10 @@ case $PHP_INST in
 	
 	8)
 	[ ! -e $INSTALL_PATH/NGX_PHP72_INST.lock -o ! -e $INSTALL_PATH/APA_PHP72_INST.lock ] && PHP72_INST
+	;;
+	
+	9)
+	[ ! -e $INSTALL_PATH/NGX_PHP73_INST.lock -o ! -e $INSTALL_PATH/APA_PHP73_INST.lock ] && PHP73_INST
 	;;
 
 esac
