@@ -21,7 +21,7 @@ source /etc/profile
 
 useradd -c "Zabbix Monitoring" zabbix
 
-yum -y install iksemel iksemel-devel perl-DBI postfix libidn-devel rpm-devel OpenIPMI-devel glib2 glib2-devel bzip2 bzip2-devel ncurses ncurses-devel e2fsprogs e2fsprogs-devel krb5 krb5-devel libidn openldap-devel nss_ldap openldap-clients openldap-servers net-snmp* OpenIPMI java-devel
+yum -y install iksemel iksemel-devel perl-DBI postfix libidn-devel rpm-devel OpenIPMI-devel glib2 glib2-devel bzip2 bzip2-devel ncurses ncurses-devel e2fsprogs e2fsprogs-devel krb5 krb5-devel libidn openldap-devel nss_ldap openldap-clients openldap-servers net-snmp* OpenIPMI java-devel gnutls-devel libevent-devel
 
 
 cd /data
