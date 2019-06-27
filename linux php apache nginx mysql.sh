@@ -667,7 +667,7 @@ wget -c https://www.openssl.org/source/openssl-$OSSL_Ver.tar.gz
 	tar zxvf nginx-$NGX_Ver.tar.gz
 	tar zxvf openssl-$OSSL_Ver.tar.gz
 	cd nginx-$NGX_Ver
-	./configure --user=$USER_WEB --group=$USER_WEB --prefix=/usr/local/nginx --with-http_stub_status_module --with-http_gzip_static_module --with-http_sub_module  --with-http_realip_module --with-http_addition_module --with-pcre=$INSTALL_PATH/pcre-$PCRE_Ver --with-zlib=$INSTALL_PATH/zlib-$ZLIB_Ver --with-http_ssl_module --with-openssl=$INSTALL_PATH/openssl-$OSSL_Ver --with-http_v2_module
+	./configure --user=$USER_WEB --group=$USER_WEB --prefix=/usr/local/nginx --with-http_stub_status_module --with-http_gzip_static_module --with-http_sub_module  --with-http_realip_module --with-http_addition_module --with-pcre=$INSTALL_PATH/pcre-$PCRE_Ver --with-zlib=$INSTALL_PATH/zlib-$ZLIB_Ver --with-http_ssl_module --with-openssl=$INSTALL_PATH/openssl-$OSSL_Ver --with-http_v2_module --with-stream
 	make -j$CPU_C && make install
 [ $? -eq 0 ] && {
 	ln -sf /usr/local/nginx/sbin/nginx /usr/bin/nginx && echo "Nginx installed success.">>$INSTALL_LOG
